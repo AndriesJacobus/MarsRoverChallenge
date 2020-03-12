@@ -1,0 +1,10 @@
+<h2>App Home Page</h2>
+<p>
+    Nothing much to see here yet, so go ahead and Sign Up ir Login.
+</p>
+<p id=”notice”><%= notice %></p>
+
+<% if current_user %>
+  Logged in as <%= current_user.email %>.<br/>
+  <%= link_to "Log Out", logout_path %>
+<% end %>

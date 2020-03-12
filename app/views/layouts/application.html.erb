@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>App</title>
+    <%= csrf_meta_tags %>
+
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+  
+    <nav>
+      <div class="nav-wrapper blue-grey darken-1">
+        <a href="#" class="brand-logo center">App</a>
+        <ul id="nav-mobile" class="right">
+          <% if current_user %>
+            <li>
+              <%= link_to '<i class="material-icons tooltipped" data-position="bottom" data-tooltip="Logout">file_download</i>'.html_safe, logout_path, style: "color: white;" %></li>
+          <% else %>
+            <li><%= link_to '<i class="material-icons tooltipped" data-position="bottom" data-tooltip="Sign Up">edit</i>'.html_safe, signup_path, style: "color: white;" %></li>
+            <li><%= link_to '<i class="material-icons tooltipped" data-position="bottom" data-tooltip="Login">file_upload</i>'.html_safe, login_path, style: "color: white;" %></li>
+          <% end %>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container">
+
+      <%= yield %>
+    </div>
+  </body>
+</html>
