@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Username:</strong>
+  <%= @api_key.username %>
+</p>
+
+<p>
+  <strong>Password:</strong>
+  <%= @api_key.password %>
+</p>
+
+<%= link_to 'Edit', edit_api_key_path(@api_key) %> |
+<%= link_to 'Back', api_keys_path %>

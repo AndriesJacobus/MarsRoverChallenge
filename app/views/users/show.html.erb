@@ -1,9 +1,44 @@
+<h3>User Page:</h3>
+
 <p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Email:</strong>
-  <%= @user.email %>
-</p>
+<br/>
 
-<%= link_to 'Edit', edit_user_path(@user) %> |
-<%= link_to 'Back', users_path %>
+<div class="row">
+  <div class="col s12 m6">
+    <div class="card blue white-text z-depth-5 hoverable">
+      <div class="card-content">
+        <span class="card-title">User Information:</span>
+        <p>
+          <strong>Email:</strong><br/>
+          <%= @user.email %>
+        </p>
+        <br/>
+
+        <p>
+          <strong>Name:</strong><br/>
+          <%= @user.name %>
+        </p>
+        <br/>
+
+        <p>
+          <strong>Surname:</strong><br/>
+          <%= @user.surname %>
+        </p>
+        <br/>
+
+        <p>
+          <strong>User Type:</strong><br/>
+          <%= @user.usertype %>
+        </p>
+        <br/>
+      </div>
+    </div>
+  </div>
+</div>
+
+<br/>
+
+
+<%= link_to 'Edit', edit_user_path(@user), class: "waves-effect waves-light blue lighten-1 btn-small white-text" %> |
+<%= link_to 'Back', users_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text"  %>

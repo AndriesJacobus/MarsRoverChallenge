@@ -10,13 +10,56 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190824145637) do
+ActiveRecord::Schema.define(version: 20200319022826) do
+
+  create_table "api_keys", force: :cascade do |t|
+    t.string "username"
+    t.string "password"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "devices", force: :cascade do |t|
+    t.string "Name"
+    t.string "SigfoxID"
+    t.string "SigfoxName"
+    t.string "SerialNumber"
+    t.decimal "Longitude"
+    t.decimal "Latitude"
+    t.string "SigfoxDeviceTypeID"
+    t.string "SigfoxDeviceTypeName"
+    t.string "SigfoxGroupID"
+    t.string "SigfoxGroupName"
+    t.integer "SigfoxActivationTime"
+    t.integer "SigfoxCreationTime"
+    t.string "SigfoxCreatedByID"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "map_groups", force: :cascade do |t|
+    t.string "Name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "devices_added"
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.integer "Time"
+    t.string "Data"
+    t.integer "LQI"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email"
     t.string "password_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "name"
+    t.string "surname"
+    t.string "usertype", default: "Operator"
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 

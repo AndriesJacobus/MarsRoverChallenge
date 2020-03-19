@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  resources :map_groups
+  resources :devices
+  resources :messages
+  resources :api_keys
   root 'home#index'
   
   resources :users

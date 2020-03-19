@@ -39,6 +39,8 @@ gem 'pg', '0.18.1', group: :production
 
 gem 'rails_12factor', group: :production
 
+gem 'simple_form'
+
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 

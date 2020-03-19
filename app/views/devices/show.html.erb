@@ -1,0 +1,69 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @device.Name %>
+</p>
+
+<p>
+  <strong>Sigfoxid:</strong>
+  <%= @device.SigfoxID %>
+</p>
+
+<p>
+  <strong>Sigfoxname:</strong>
+  <%= @device.SigfoxName %>
+</p>
+
+<p>
+  <strong>Serialnumber:</strong>
+  <%= @device.SerialNumber %>
+</p>
+
+<p>
+  <strong>Longitude:</strong>
+  <%= @device.Longitude %>
+</p>
+
+<p>
+  <strong>Latitude:</strong>
+  <%= @device.Latitude %>
+</p>
+
+<p>
+  <strong>Sigfoxdevicetypeid:</strong>
+  <%= @device.SigfoxDeviceTypeID %>
+</p>
+
+<p>
+  <strong>Sigfoxdevicetypename:</strong>
+  <%= @device.SigfoxDeviceTypeName %>
+</p>
+
+<p>
+  <strong>Sigfoxgroupid:</strong>
+  <%= @device.SigfoxGroupID %>
+</p>
+
+<p>
+  <strong>Sigfoxgroupname:</strong>
+  <%= @device.SigfoxGroupName %>
+</p>
+
+<p>
+  <strong>Sigfoxactivationtime:</strong>
+  <%= @device.SigfoxActivationTime %>
+</p>
+
+<p>
+  <strong>Sigfoxcreationtime:</strong>
+  <%= @device.SigfoxCreationTime %>
+</p>
+
+<p>
+  <strong>Sigfoxcreatedbyid:</strong>
+  <%= @device.SigfoxCreatedByID %>
+</p>
+
+<%= link_to 'Edit', edit_device_path(@device) %> |
+<%= link_to 'Back', devices_path %>

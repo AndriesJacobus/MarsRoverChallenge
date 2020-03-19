@@ -1,0 +1,31 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  Name: MyString
+  SigfoxID: MyString
+  SigfoxName: MyString
+  SerialNumber: MyString
+  Longitude: 9.99
+  Latitude: 9.99
+  SigfoxDeviceTypeID: MyString
+  SigfoxDeviceTypeName: MyString
+  SigfoxGroupID: MyString
+  SigfoxGroupName: MyString
+  SigfoxActivationTime: 1
+  SigfoxCreationTime: 1
+  SigfoxCreatedByID: MyString
+
+two:
+  Name: MyString
+  SigfoxID: MyString
+  SigfoxName: MyString
+  SerialNumber: MyString
+  Longitude: 9.99
+  Latitude: 9.99
+  SigfoxDeviceTypeID: MyString
+  SigfoxDeviceTypeName: MyString
+  SigfoxGroupID: MyString
+  SigfoxGroupName: MyString
+  SigfoxActivationTime: 1
+  SigfoxCreationTime: 1
+  SigfoxCreatedByID: MyString
