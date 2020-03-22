@@ -13,10 +13,30 @@
  *= require_tree .
  *= require_self
  *= require material_icons
+ *= require toastr
  */
 
- @import "materialize";
+  @import "materialize";
 
- select {
+  select {
     display: block;
- }
+  }
+
+  a:hover {
+    background-color: #42A5F5;
+    text-decoration: underline;
+  }
+
+  .scroller {
+    width: 95%;
+    overflow: scroll;
+    padding: 25px;
+    border: 1px solid grey;
+  }
+
+  .cardSubTitle {
+    font-size: medium;
+    text-decoration: underline;
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }

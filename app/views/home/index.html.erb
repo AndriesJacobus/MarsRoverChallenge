@@ -3,15 +3,15 @@
 <p id=”notice”><%= notice %></p>
 
 <% if current_user %>
-  Logged in as <u><%= current_user.email %></u>
+  Logged in as: <u><%= current_user.email %></u>
   
   <br/>
   
   <p>
-    Nothing much to see here yet, so go ahead to the <br/><br/>
-    <%= link_to 'user page', current_user, class: "waves-effect waves-light blue lighten-1 btn-small", style: "color: white;" %>
+    Nothing much to see here yet, so go ahead to the <br/><br/><br/>
+    <%= link_to 'user page', current_user, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
     or
-    <%= link_to "Log Out", logout_path, class: "waves-effect waves-light blue lighten-1 btn-small", style: "color: white;" %>
+    <%= link_to "Log Out", logout_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
   </p>
   
 <% else %>
@@ -19,10 +19,10 @@
   <br/>
   
   <p>
-    Nothing much to see here yet, so go ahead and <br/><br/>
-    <%= link_to "Sign Up", signup_path, class: "waves-effect waves-light blue lighten-1 btn-small", style: "color: white;" %>
+    Nothing much to see here yet, so go ahead and <br/><br/><br/>
+    <%= link_to "Sign Up", signup_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
     or
-    <%= link_to "Login", login_path, class: "waves-effect waves-light blue lighten-1 btn-small", style: "color: white;" %>
+    <%= link_to "Login", login_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
   </p>
   
 <% end %>

@@ -28,7 +28,7 @@ class MapGroupsController < ApplicationController
 
     respond_to do |format|
       if @map_group.save
-        format.html { redirect_to @map_group, notice: 'Map group was successfully created.' }
+        format.html { redirect_to @map_group, flash: {success: 'Map group was successfully created.' } }
         format.json { render :show, status: :created, location: @map_group }
       else
         format.html { render :new }
@@ -42,7 +42,7 @@ class MapGroupsController < ApplicationController
   def update
     respond_to do |format|
       if @map_group.update(map_group_params)
-        format.html { redirect_to @map_group, notice: 'Map group was successfully updated.' }
+        format.html { redirect_to @map_group, flash: {success: 'Map group was successfully updated.' } }
         format.json { render :show, status: :ok, location: @map_group }
       else
         format.html { render :edit }
@@ -56,7 +56,7 @@ class MapGroupsController < ApplicationController
   def destroy
     @map_group.destroy
     respond_to do |format|
-      format.html { redirect_to map_groups_url, notice: 'Map group was successfully destroyed.' }
+      format.html { redirect_to map_groups_url, flash: {warning: 'Map group was successfully destroyed.' } }
       format.json { head :no_content }
     end
   end

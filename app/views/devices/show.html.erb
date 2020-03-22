@@ -1,69 +1,92 @@
 <p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Name:</strong>
-  <%= @device.Name %>
-</p>
+<br/>
 
-<p>
-  <strong>Sigfoxid:</strong>
-  <%= @device.SigfoxID %>
-</p>
+<div class="row">
+  <div class="col s12 m6">
+    <div class="card blue white-text z-depth-5 hoverable">
+      <div class="card-content">
+        <span class="card-title">Device Information:</span>
+        <hr style = "display: block; height: 1px; border: 0; border-top: 1px solid #ccc; margin: 1em 0; padding: 0;"/>
+        
+        <p class = "cardSubTitle">Basic Information:</p>
 
-<p>
-  <strong>Sigfoxname:</strong>
-  <%= @device.SigfoxName %>
-</p>
+        <p>
+          <strong>Name:</strong>
+          <%= @device.Name %>
+        </p>
 
-<p>
-  <strong>Serialnumber:</strong>
-  <%= @device.SerialNumber %>
-</p>
+        <p>
+          <strong>Sigfoxid:</strong>
+          <%= @device.SigfoxID %>
+        </p>
 
-<p>
-  <strong>Longitude:</strong>
-  <%= @device.Longitude %>
-</p>
+        <p>
+          <strong>Sigfoxname:</strong>
+          <%= @device.SigfoxName %>
+        </p>
 
-<p>
-  <strong>Latitude:</strong>
-  <%= @device.Latitude %>
-</p>
+        <p>
+          <strong>Serialnumber:</strong>
+          <%= @device.SerialNumber %>
+        </p>
+        
+        <p class = "cardSubTitle">Placed Location Information:</p>
 
-<p>
-  <strong>Sigfoxdevicetypeid:</strong>
-  <%= @device.SigfoxDeviceTypeID %>
-</p>
+        <p>
+          <strong>Longitude:</strong>
+          <%= @device.Longitude %>
+        </p>
 
-<p>
-  <strong>Sigfoxdevicetypename:</strong>
-  <%= @device.SigfoxDeviceTypeName %>
-</p>
+        <p>
+          <strong>Latitude:</strong>
+          <%= @device.Latitude %>
+        </p>
+        
+        <p class = "cardSubTitle">Sigfox Information:</p>
 
-<p>
-  <strong>Sigfoxgroupid:</strong>
-  <%= @device.SigfoxGroupID %>
-</p>
+        <p>
+          <strong>Sigfoxdevicetypeid:</strong>
+          <%= @device.SigfoxDeviceTypeID %>
+        </p>
 
-<p>
-  <strong>Sigfoxgroupname:</strong>
-  <%= @device.SigfoxGroupName %>
-</p>
+        <p>
+          <strong>Sigfoxdevicetypename:</strong>
+          <%= @device.SigfoxDeviceTypeName %>
+        </p>
 
-<p>
-  <strong>Sigfoxactivationtime:</strong>
-  <%= @device.SigfoxActivationTime %>
-</p>
+        <p>
+          <strong>Sigfoxgroupid:</strong>
+          <%= @device.SigfoxGroupID %>
+        </p>
 
-<p>
-  <strong>Sigfoxcreationtime:</strong>
-  <%= @device.SigfoxCreationTime %>
-</p>
+        <p>
+          <strong>Sigfoxgroupname:</strong>
+          <%= @device.SigfoxGroupName %>
+        </p>
 
-<p>
-  <strong>Sigfoxcreatedbyid:</strong>
-  <%= @device.SigfoxCreatedByID %>
-</p>
+        <p>
+          <strong>Sigfoxactivationtime:</strong>
+          <%= @device.SigfoxActivationTime %>
+        </p>
 
-<%= link_to 'Edit', edit_device_path(@device) %> |
-<%= link_to 'Back', devices_path %>
+        <p>
+          <strong>Sigfoxcreationtime:</strong>
+          <%= @device.SigfoxCreationTime %>
+        </p>
+
+        <p>
+          <strong>Sigfoxcreatedbyid:</strong>
+          <%= @device.SigfoxCreatedByID %>
+        </p>
+
+        <br/>
+      </div>
+    </div>
+  </div>
+</div>
+
+<br/>
+
+<%= link_to 'Edit', edit_device_path(@device), class: "waves-effect waves-light blue lighten-1 btn-small white-text" %> |
+<%= link_to 'Back', devices_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>

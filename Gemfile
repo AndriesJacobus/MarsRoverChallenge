@@ -41,6 +41,14 @@ gem 'rails_12factor', group: :production
 
 gem 'simple_form'
 
+# Export to excell
+gem 'rubyzip', '>= 1.2.1'
+gem 'axlsx', git: 'https://github.com/randym/axlsx.git', ref: 'c8ac844'
+gem 'axlsx_rails'
+
+# Toastr
+gem 'toastr-rails'
+
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
