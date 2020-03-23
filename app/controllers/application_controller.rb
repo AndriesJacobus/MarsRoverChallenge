@@ -10,8 +10,13 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def authorize_user
+    #redirects to home page
+    redirect_to root_path, flash: {warning: 'Please log in before viewing pages.' } unless current_user
+  end 
+
   def authorize_admin
-    #redirects to previous page
+    #redirects to home page
     redirect_to root_path, flash: {warning: 'Please log in before viewing pages.' } unless current_user && current_user.usertype == "Admin"
   end 
 end
