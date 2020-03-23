@@ -12,18 +12,36 @@
   
     <nav>
       <div class="nav-wrapper blue lighten-1">
+      
         <a href="/" class="brand-logo center">Wi-I Cloud Server</a>
         <ul id="nav-mobile" class="right">
           <% if current_user %>
             <li>
-              <%= link_to '<i class="material-icons tooltipped" data-position="bottom" data-tooltip="Logout">file_download</i>'.html_safe, logout_path, style: "color: white;" %></li>
+              <%= link_to '<i class="material-icons tooltipped" data-position="bottom" data-tooltip="Logout">file_download</i>'.html_safe, logout_path, style: "color: white;" %>
+            </li>
           <% else %>
             <li><%= link_to '<i class="material-icons tooltipped" data-position="bottom" data-tooltip="Sign Up">edit</i>'.html_safe, signup_path, style: "color: white;" %></li>
             <li><%= link_to '<i class="material-icons tooltipped" data-position="bottom" data-tooltip="Login">file_upload</i>'.html_safe, login_path, style: "color: white;" %></li>
           <% end %>
         </ul>
+
       </div>
     </nav>
+    
+    <% if current_user %>
+    
+      <ul id="slide-out" class="sidenav">
+        <li>
+          <%= link_to "<i class='material-icons'>person</i>#{current_user.email}".html_safe, current_user, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
+        </li>
+        <li><div class="divider"></div></li>
+        <li><a class="waves-effect" href="#!"><i class="material-icons">cloud</i>Second Link With Waves</a></li>
+        <li><div class="divider"></div></li>
+      </ul>
+
+      <a href="#" data-target="slide-out" class="sidenav-trigger" style = "top: 20px; position: absolute; margin-left: 20px;"><i class="material-icons" style = "background-color: #42A5F5; color: white;">menu</i></a>
+
+    <% end %>
 
     <% unless flash.empty? %>
       <script type="text/javascript">

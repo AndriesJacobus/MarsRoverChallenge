@@ -1,6 +1,5 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
-
   helper_method :current_user
   
   def current_user
@@ -10,4 +9,9 @@ class ApplicationController < ActionController::Base
       @current_user = nil
     end
   end
+
+  def authorize_admin
+    #redirects to previous page
+    redirect_to root_path, flash: {warning: 'Please log in before viewing pages.' } unless current_user && current_user.usertype == "Admin"
+  end 
 end

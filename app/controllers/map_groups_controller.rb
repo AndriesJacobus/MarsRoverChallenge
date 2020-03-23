@@ -1,5 +1,6 @@
 class MapGroupsController < ApplicationController
   before_action :set_map_group, only: [:show, :edit, :update, :destroy]
+  before_action :authorize_admin, only: :index
 
   # GET /map_groups
   # GET /map_groups.json

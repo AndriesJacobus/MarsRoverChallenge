@@ -1,5 +1,6 @@
 class DevicesController < ApplicationController
   before_action :set_device, only: [:show, :edit, :update, :destroy]
+  before_action :authorize_admin, only: :index
 
   # GET /devices
   # GET /devices.json
