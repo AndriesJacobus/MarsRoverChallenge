@@ -29,7 +29,7 @@ class ApiKeysController < ApplicationController
 
     respond_to do |format|
       if @api_key.save
-        format.html { redirect_to @api_key, flash: {success: 'Api key was successfully created.'} }
+        format.html { redirect_to @api_key, flash: {success: 'Api key was successfully created'} }
         format.json { render :show, status: :created, location: @api_key }
       else
         format.html { render :new }
@@ -57,7 +57,7 @@ class ApiKeysController < ApplicationController
   def destroy
     @api_key.destroy
     respond_to do |format|
-      format.html { redirect_to api_keys_url, flash: {warning: 'Api key was successfully destroyed'} }
+      format.html { redirect_to api_keys_url, flash: {warning: 'Api key was successfully deleted'} }
       format.json { head :no_content }
     end
   end

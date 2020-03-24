@@ -1,54 +1,74 @@
-<h3 style = "display: inline-block;">Home Page</h3>
-
-<div style = "float: right;">
-  <br/><br/>
-
-  Quick Links: 
-  <%= link_to 'user page', current_user, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
-  |
-  <%= link_to "Log Out", logout_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
-  |
-  <%= link_to 'devices', devices_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
-  |
-  <%= link_to 'api keys', api_keys_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
-</div>
+<h3 style = "display: inline-block;"><u>Home Page</u></h3>
 
 <% if current_user %>
+  <div style = "float: right;">
+    <br/><br/>
+
+    Quick Links: 
+    <%= link_to 'my page', current_user, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
+    |
+    <%= link_to 'devices', devices_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
+    |
+    <%= link_to 'messages', messages_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
+    |
+    <%= link_to "Log Out", logout_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
+  </div>
+
   <br/>
 
   Logged in as: <u><%= current_user.name %>  <%= current_user.surname %></u>
   
   <br/>
-  
-  <p>
-    
-  </p>
 
-  <h4>Server Dashboard</h4>
+  <h4><u>Server Dashboard</u></h4>
 
   <br/>
 
   <div class="row" style = "height: 500px;">
-    <div class="col s4">
-      <%= link_to users_path do %>
-        <div class="card medium hoverable cardLink">
-          <div class="card-image">
-            <%= image_tag "users.jpg" %>
-            <span class="card-title" style = "color: #42A5F5; text-shadow: 2px 2px black;">Users</span>
+  
+    <% if current_user.usertype == "Admin" %>
+      <div class="col s4">
+        <%= link_to users_path do %>
+          <div class="card medium hoverable cardLink">
+            <div class="card-image">
+              <%= image_tag "users.jpg" %>
+              <span class="card-title" style = "color: #42A5F5; text-shadow: 2px 2px black;">Users</span>
+            </div>
+            <div class="card-content">
+              <p>
+                Users each have their own privelages based on their user type.
+                Admin users, for example, have access to all functionalities while
+                Operators, only have limited access to views such as Logs and Device Maps.
+              </p>
+            </div>
+            <div class="card-action center">
+              <%= link_to 'visit users', users_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
+            </div>
           </div>
-          <div class="card-content">
-            <p>
-              Users each have their own privelages based on their user type.
-              Admin users, for example, have access to all functionalities while
-              Operators, only have limited access to views such as Logs and Device Maps.
-            </p>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="col s4">
+        <%= link_to current_user do %>
+          <div class="card medium hoverable cardLink">
+            <div class="card-image">
+              <%= image_tag "users.jpg" %>
+              <span class="card-title" style = "color: #42A5F5; text-shadow: 2px 2px black;">My Page</span>
+            </div>
+            <div class="card-content">
+              <p>
+                Users each have their own privelages based on their user type.
+                Operators only have limited access to views such as Logs and Device Maps.
+              </p>
+            </div>
+            <div class="card-action center">
+              <%= link_to 'visit users', current_user, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
+            </div>
           </div>
-          <div class="card-action center">
-            <%= link_to 'visit users', users_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
-          </div>
-        </div>
-      <% end %>
-    </div>
+        <% end %>
+      </div>
+    <% end %>
+
     <div class="col s4">
       <%= link_to devices_path do %>
         <div class="card medium hoverable cardLink">
@@ -69,6 +89,7 @@
         </div>
       <% end %>
     </div>
+
     <div class="col s4">
       <%= link_to messages_path do %>
         <div class="card medium hoverable cardLink">
@@ -88,25 +109,29 @@
         </div>
       <% end %>
     </div>
-    <div class="col s4">
-      <%= link_to api_keys_path do %>
-        <div class="card medium hoverable cardLink">
-          <div class="card-image">
-            <%= image_tag "api_keys.jpg" %>
-            <span class="card-title" style = "color: #42A5F5; text-shadow: 2px 2px black;">API Keys</span>
+
+    <% if current_user.usertype == "Admin" %>
+      <div class="col s4">
+        <%= link_to api_keys_path do %>
+          <div class="card medium hoverable cardLink">
+            <div class="card-image">
+              <%= image_tag "api_keys.jpg" %>
+              <span class="card-title" style = "color: #42A5F5; text-shadow: 2px 2px black;">API Keys</span>
+            </div>
+            <div class="card-content">
+              <p>
+                API Keys manage the connection to the sigfox backend and allows
+                communication such that the Wi-I server to pull in information automatically.
+              </p>
+            </div>
+            <div class="card-action center">
+              <%= link_to 'visit api keys', api_keys_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
+            </div>
           </div>
-          <div class="card-content">
-            <p>
-              API Keys manage the connection to the sigfox backend and allows
-              communication such that the Wi-I server to pull in information automatically.
-            </p>
-          </div>
-          <div class="card-action center">
-            <%= link_to 'visit api keys', api_keys_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
-          </div>
-        </div>
-      <% end %>
-    </div>
+        <% end %>
+      </div>
+    <% end %>
+
     <div class="col s4">
       <%= link_to map_groups_path do %>
         <div class="card medium hoverable cardLink">
@@ -131,7 +156,7 @@
 <% else %>
   
   <p>
-    Nothing much to see here yet, so go ahead and <br/><br/><br/>
+    Nothing much to see here yet, so go ahead and <br/><br/>
     <%= link_to "Sign Up", signup_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
     or
     <%= link_to "Login", login_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
