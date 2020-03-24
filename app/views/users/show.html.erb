@@ -39,7 +39,12 @@
 
 <%= link_to 'Edit', edit_user_path(@user), class: "waves-effect waves-light blue lighten-1 btn-small white-text" %> |
 
-<% if current_user.usertype == "Admin" %>
+<% if !current_user %>
+  <%= link_to "Login", login_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
+  |
+<% end %>
+
+<% if current_user && current_user.usertype == "Admin" %>
   <%= link_to 'Back to Users', users_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text"  %>
   |
 <% end %>
