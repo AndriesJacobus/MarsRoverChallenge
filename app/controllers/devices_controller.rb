@@ -62,6 +62,87 @@ class DevicesController < ApplicationController
     end
   end
 
+  def set_device_info
+    current_device = Device.find(params[:id])
+
+    resp = get_device_info_internal
+
+    if resp["message"]
+      respond_to do |format|
+        format.html { redirect_to devices_url, flash: {warning: 'Device data could not be retrieved because SigFox request limit reached' } }
+        format.json { head :no_content }
+      end
+    elsif current_device == nil
+      respond_to do |format|
+        format.html { redirect_to devices_url, flash: {warning: 'Device data could not be retrieved because device could not be found' } }
+        format.json { head :no_content }
+      end
+    else
+      current_device.SigfoxName = resp["name"]
+      current_device.SigfoxDeviceTypeID = resp["deviceType"]["id"]
+      # current_device.SigfoxDeviceTypeName = 
+      current_device.SigfoxGroupID = resp["group"]["id"]
+      # current_device.SigfoxGroupName = 
+      current_device.SigfoxActivationTime = resp["activationTime"]
+      current_device.SigfoxCreationTime = resp["creationTime"]
+      current_device.SigfoxCreatedByID = resp["createdBy"]
+  
+      respond_to do |format|
+        if current_device.save
+          format.html { redirect_to @device, flash: {success: 'Device data was successfully autofilled' } }
+          format.json { render :show, status: :created, location: @device }
+        else
+          format.html { redirect_to devices_url, flash: {warning: 'Device could not be autofilled' } }
+          format.json { head :no_content }
+        end
+      end
+    end
+  end
+
+  def get_device_info_internal
+    url = URI.parse('https://api.sigfox.com/v2/devices/3AB6DA')
+    req = Net::HTTP::Get.new(url.path)
+    req.basic_auth '5e7a6a189ff3fb03e12d7a13', 'd40fd8169ba3ca312f033243586aa2d0'
+
+    res = Net::HTTP.start(url.hostname, url.port, :use_ssl => true, :verify_mode => OpenSSL::SSL::VERIFY_NONE) {|http|
+      http.request(req)
+    }
+
+    puts res.body
+    res.body
+  end
+
+  def get_device_info
+    # url = URI.parse('https://api.sigfox.com/v2/devices/3AB6DA')
+    # req = Net::HTTP::Get.new(url.path)
+    # req.basic_auth '5e7a6a189ff3fb03e12d7a13', 'd40fd8169ba3ca312f033243586aa2d0'
+
+    # sock = Net::HTTP.new(url.host, url.port)
+    # sock.use_ssl = true
+    # sock.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+    # resp = sock.start {|http| http.request(req) }
+    
+    # puts resp.body
+    # sock.finish
+
+    url = URI.parse('https://api.sigfox.com/v2/devices/3AB6DA')
+    req = Net::HTTP::Get.new(url.path)
+    req.basic_auth '5e7a6a189ff3fb03e12d7a13', 'd40fd8169ba3ca312f033243586aa2d0'
+
+    res = Net::HTTP.start(url.hostname, url.port, :use_ssl => true, :verify_mode => OpenSSL::SSL::VERIFY_NONE) {|http|
+      http.request(req)
+    }
+
+    puts res.body
+
+    if res.body["message"]
+      redirect_to devices_url, flash: {warning: 'Device data could not be retrieved because SigFox request limit reached' }
+    else
+      redirect_to devices_url, flash: {success: res.body }
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_device

@@ -32,6 +32,8 @@
           <td><%= device.SigfoxCreatedByID %></td>
           <td><%= link_to 'Show', device, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
           <td><%= link_to 'Edit', edit_device_path(device), class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
+          <td><%= button_to 'Autofil Device Data', set_device_info_path, method: :post, params: { id: device.id }, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
+          <td><%= button_to 'Get device info', get_device_info_path, method: :get, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
           <td><%= link_to 'Delete', device, method: :delete, data: { confirm: 'Are you sure?'}, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
         </tr>
       <% end %>
