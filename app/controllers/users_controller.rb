@@ -30,11 +30,6 @@ class UsersController < ApplicationController
   # POST /users
   # POST /users.json
   def create
-    # Only Admins can create
-    if current_user.usertype != "Admin"
-      redirect_to root_path, flash: {warning: 'Please log in as an Admin before viewing this page' }
-    end
-
     @user = User.new(user_params)
 
     respond_to do |format|
