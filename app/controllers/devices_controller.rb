@@ -2,6 +2,9 @@ class DevicesController < ApplicationController
   before_action :set_device, only: [:show, :edit, :update, :destroy]
   before_action :authorize_user, only: :index
 
+  require 'net/http'
+  require 'net/https'
+
   # GET /devices
   # GET /devices.json
   def index
