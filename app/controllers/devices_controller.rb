@@ -71,13 +71,19 @@ class DevicesController < ApplicationController
     resp = get_device_info_internal
 
     if resp["message"]
+      err = 'Device data could not be retrieved because SigFox request limit reached'
+
+      if resp["message"] == "Invalid value or type" || resp["message"] == "The requested resource was not found." 
+        err = 'Device data could not be retrieved because the device with the SigFoxId of ' + params[:SigfoxID] + ' could not be found'
+      end
+
       respond_to do |format|
-        format.html { redirect_to devices_url, flash: {warning: 'Device data could not be retrieved because SigFox request limit reached' } }
+        format.html { redirect_to devices_url, flash: {warning: err } }
         format.json { head :no_content }
       end
     elsif current_device == nil
       respond_to do |format|
-        format.html { redirect_to devices_url, flash: {warning: 'Device data could not be retrieved because device could not be found' } }
+        format.html { redirect_to devices_url, flash: {warning: 'Device data could not be retrieved because device record could not be found' } }
         format.json { head :no_content }
       end
     else
@@ -92,8 +98,8 @@ class DevicesController < ApplicationController
   
       respond_to do |format|
         if current_device.save
-          format.html { redirect_to @device, flash: {success: 'Device data was successfully autofilled' } }
-          format.json { render :show, status: :created, location: @device }
+          format.html { redirect_to current_device, flash: {success: 'Device data was successfully autofilled' } }
+          format.json { render :show, status: :created, location: current_device }
         else
           format.html { redirect_to devices_url, flash: {warning: 'Device could not be autofilled' } }
           format.json { head :no_content }
@@ -154,6 +160,6 @@ class DevicesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def device_params
-      params.require(:device).permit(:Name, :SigfoxID, :SigfoxName, :SerialNumber, :Longitude, :Latitude, :SigfoxDeviceTypeID, :SigfoxDeviceTypeName, :SigfoxGroupID, :SigfoxGroupName, :SigfoxActivationTime, :SigfoxCreationTime, :SigfoxCreatedByID)
+      params.require(:device).permit(:id, :Name, :SigfoxID, :SigfoxName, :SerialNumber, :Longitude, :Latitude, :SigfoxDeviceTypeID, :SigfoxDeviceTypeName, :SigfoxGroupID, :SigfoxGroupName, :SigfoxActivationTime, :SigfoxCreationTime, :SigfoxCreatedByID)
     end
 end
