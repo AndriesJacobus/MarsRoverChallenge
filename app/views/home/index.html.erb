@@ -26,7 +26,8 @@
 
   <div class="row" style = "height: 500px;">
   
-    <% if current_user.usertype == "Sysadmin" %>
+    <% if current_user.usertype == "Sysadmin" || current_user.usertype == "Client Admin" %>
+
       <div class="col s4">
         <%= link_to users_path do %>
           <div class="card medium hoverable cardLink">
@@ -47,70 +48,48 @@
           </div>
         <% end %>
       </div>
-    <% else %>
+
       <div class="col s4">
-        <%= link_to current_user do %>
+        <%= link_to devices_path do %>
           <div class="card medium hoverable cardLink">
             <div class="card-image">
-              <%= image_tag "users.jpg" %>
-              <span class="card-title" style = "color: #42A5F5; text-shadow: 2px 2px black;">My Page</span>
+              <%= image_tag "devices.jpg" %>
+              <span class="card-title" style = "color: #42A5F5; text-shadow: 2px 2px black;">Devices</span>
             </div>
             <div class="card-content">
               <p>
-                Users each have their own privileges based on their user type.
-                Operators only have limited access to views such as Logs and Device Maps.
+                Devices allow the Wi-I server to get information about the
+                perimeter that has been set up, and allows for managing and
+                control over states of the perimeter.
               </p>
             </div>
             <div class="card-action center">
-              <%= link_to 'visit users', current_user, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
+              <%= link_to 'visit devices', devices_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
             </div>
           </div>
         <% end %>
       </div>
-    <% end %>
 
-    <div class="col s4">
-      <%= link_to devices_path do %>
-        <div class="card medium hoverable cardLink">
-          <div class="card-image">
-            <%= image_tag "devices.jpg" %>
-            <span class="card-title" style = "color: #42A5F5; text-shadow: 2px 2px black;">Devices</span>
+      <div class="col s4">
+        <%= link_to messages_path do %>
+          <div class="card medium hoverable cardLink">
+            <div class="card-image">
+              <%= image_tag "messages.jpg" %>
+              <span class="card-title" style = "color: #42A5F5; text-shadow: 2px 2px black;">Messages</span>
+            </div>
+            <div class="card-content">
+              <p>
+                Messages are sent from the device to the SigFox backend as events occur.
+                These messages are then passed on to the the Wi-I Cloud Server, and displayed here.
+              </p>
+            </div>
+            <div class="card-action center">
+              <%= link_to 'visit messages', messages_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
+            </div>
           </div>
-          <div class="card-content">
-            <p>
-              Devices allow the Wi-I server to get information about the
-              perimeter that has been set up, and allows for managing and
-              control over states of the perimeter.
-            </p>
-          </div>
-          <div class="card-action center">
-            <%= link_to 'visit devices', devices_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
-          </div>
-        </div>
-      <% end %>
-    </div>
+        <% end %>
+      </div>
 
-    <div class="col s4">
-      <%= link_to messages_path do %>
-        <div class="card medium hoverable cardLink">
-          <div class="card-image">
-            <%= image_tag "messages.jpg" %>
-            <span class="card-title" style = "color: #42A5F5; text-shadow: 2px 2px black;">Messages</span>
-          </div>
-          <div class="card-content">
-            <p>
-              Messages are sent from the device to the SigFox backend as events occur.
-              These messages are then passed on to the the Wi-I Cloud Server, and displayed here.
-            </p>
-          </div>
-          <div class="card-action center">
-            <%= link_to 'visit messages', messages_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
-          </div>
-        </div>
-      <% end %>
-    </div>
-
-    <% if current_user.usertype == "Sysadmin" %>
       <div class="col s4">
         <%= link_to api_keys_path do %>
           <div class="card medium hoverable cardLink">
@@ -130,27 +109,51 @@
           </div>
         <% end %>
       </div>
-    <% end %>
 
-    <div class="col s4">
-      <%= link_to map_groups_path do %>
-        <div class="card medium hoverable cardLink">
-          <div class="card-image">
-            <%= image_tag "map_groups.jpg" %>
-            <span class="card-title" style = "color: #42A5F5; text-shadow: 2px 2px black;">Map Groups</span>
+      <div class="col s4">
+        <%= link_to map_groups_path do %>
+          <div class="card medium hoverable cardLink">
+            <div class="card-image">
+              <%= image_tag "map_groups.jpg" %>
+              <span class="card-title" style = "color: #42A5F5; text-shadow: 2px 2px black;">Map Groups</span>
+            </div>
+            <div class="card-content">
+              <p>
+                Devices are arranged on a map via map groups. A map group is
+                a group of devices coupled together to form a section of a perimeter.
+              </p>
+            </div>
+            <div class="card-action center">
+              <%= link_to 'visit map groups', map_groups_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
+            </div>
           </div>
-          <div class="card-content">
-            <p>
-              Devices are arranged on a map via map groups. A map group is
-              a group of devices coupled together to form a section of a perimeter.
-            </p>
+        <% end %>
+      </div>
+
+    <% else %>
+
+      <div class="col s4">
+        <%= link_to current_user do %>
+          <div class="card medium hoverable cardLink">
+            <div class="card-image">
+              <%= image_tag "users.jpg" %>
+              <span class="card-title" style = "color: #42A5F5; text-shadow: 2px 2px black;">My Page</span>
+            </div>
+            <div class="card-content">
+              <p>
+                Users each have their own privileges based on their user type.
+                Operators only have limited access to views such as Logs and Device Maps.
+              </p>
+            </div>
+            <div class="card-action center">
+              <%= link_to 'visit users', current_user, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
+            </div>
           </div>
-          <div class="card-action center">
-            <%= link_to 'visit map groups', map_groups_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
-          </div>
-        </div>
-      <% end %>
-    </div>
+        <% end %>
+      </div>
+
+    <% end %>
+    
   </div>    
   
 <% else %>
