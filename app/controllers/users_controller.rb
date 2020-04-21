@@ -6,11 +6,15 @@ class UsersController < ApplicationController
   # GET /users.json
   def index
     # Only Admins can view index
-    if current_user.usertype != "Admin"
+    if current_user.usertype == "Sysadmin"
+      @users = User.all
+    elsif current_user.usertype != "Client Admin"
+      # Todo: filter users to show only those with the same 'client'
+      #       tag as the current Admin
+      @users = User.all
+    else
       redirect_to root_path, flash: {warning: 'Please log in as an Admin before viewing this page' }
     end
-    
-    @users = User.all
   end
 
   # GET /users/1
@@ -61,7 +65,7 @@ class UsersController < ApplicationController
   # DELETE /users/1.json
   def destroy
     # Only Admins can delete
-    if current_user.usertype != "Admin"
+    if current_user.usertype != "Sysadmin" || current_user.usertype != "Client Admin"
       redirect_to root_path, flash: {warning: 'Please log in as an Admin before deleting users' }
     end
 

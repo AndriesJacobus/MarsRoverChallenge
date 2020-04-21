@@ -100,11 +100,18 @@ The functional requirements of the MVP Phase One include:
      - Installation of server on local controller
      - Synchronization of packets received from SigFox devices to local server with local server
 
+## Project View Hierarchy
+1. Clients (sigf device type)
+   1. Client Admin
+   2. Client Operator
+   3. Client Group (sigf Group like MyTestGroup)
+      1. Devices
+
 ## Extra Added Functional Requirements
 - [ ] Client Admin
-  - [ ] Create new User Type: Client Admin
+  - [x] Create new User Type: Client Admin
+  - [x] Rename Admin User Type to Sysadmin
   - [ ] Transfer Operator privileges to Client Admin
-  - [ ] Rename Admin User Type to Sysadmin
   - [ ] New Operator Privileges
     - [ ] View own user info
     - [ ] Map View
@@ -120,13 +127,6 @@ The functional requirements of the MVP Phase One include:
 - [ ] User Create Update
   - [ ] Only Sysadmins can create Client Admins
   - [ ] Only Sysadmins and Client Admins can create Operators
-
-## Project View Hierarchy
-1. Clients (sigf device type)
-   1. Client Admin
-   2. Client Operator
-   3. Client Group (sigf Group like MyTestGroup)
-      1. Devices
 
 ## Progress
 - [ ] 1. Configuration

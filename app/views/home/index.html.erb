@@ -26,7 +26,7 @@
 
   <div class="row" style = "height: 500px;">
   
-    <% if current_user.usertype == "Admin" %>
+    <% if current_user.usertype == "Sysadmin" %>
       <div class="col s4">
         <%= link_to users_path do %>
           <div class="card medium hoverable cardLink">
@@ -110,7 +110,7 @@
       <% end %>
     </div>
 
-    <% if current_user.usertype == "Admin" %>
+    <% if current_user.usertype == "Sysadmin" %>
       <div class="col s4">
         <%= link_to api_keys_path do %>
           <div class="card medium hoverable cardLink">

@@ -44,7 +44,7 @@
   |
 <% end %>
 
-<% if current_user && current_user.usertype == "Admin" %>
+<% if current_user && (current_user.usertype == "Sysadmin" || current_user.usertype == "Admin") %>
   <%= link_to 'Back to Users', users_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text"  %>
   |
 <% end %>
