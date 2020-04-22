@@ -87,14 +87,14 @@ class DevicesController < ApplicationController
         format.json { head :no_content }
       end
     else
-      current_device.SigfoxName = resp["name"]
-      current_device.SigfoxDeviceTypeID = resp["deviceType"]["id"]
-      # current_device.SigfoxDeviceTypeName = 
-      current_device.SigfoxGroupID = resp["group"]["id"]
-      # current_device.SigfoxGroupName = 
-      current_device.SigfoxActivationTime = resp["activationTime"]
-      current_device.SigfoxCreationTime = resp["creationTime"]
-      current_device.SigfoxCreatedByID = resp["createdBy"]
+      current_device.update_attribute(SigfoxName: resp["name"])
+      current_device.update_attribute(SigfoxDeviceTypeID: resp["deviceType"]["id"])
+      # current_device.update_attribute(SigfoxDeviceTypeName: )
+      current_device.update_attribute(SigfoxGroupID: resp["group"]["id"])
+      # current_device.update_attribute(SigfoxGroupName: )
+      current_device.update_attribute(SigfoxActivationTime: resp["activationTime"])
+      current_device.update_attribute(SigfoxCreationTime: resp["creationTime"])
+      current_device.update_attribute(SigfoxCreatedByID: resp["createdBy"])
   
       respond_to do |format|
         if current_device.save

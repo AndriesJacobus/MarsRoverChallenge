@@ -49,6 +49,10 @@ gem 'axlsx_rails'
 # Toastr
 gem 'toastr-rails'
 
+# React
+gem 'webpacker'
+gem 'react-rails'
+
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 

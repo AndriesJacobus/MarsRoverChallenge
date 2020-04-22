@@ -22,9 +22,13 @@
     display: block;
   }
 
-  a:hover {
+  .brand-logo:hover {
     background-color: #42A5F5;
     text-decoration: underline;
+  }
+
+  a:hover {
+    color: "black";
   }
 
   .scroller {

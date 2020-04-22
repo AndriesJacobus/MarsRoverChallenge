@@ -10,11 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200421000139) do
+ActiveRecord::Schema.define(version: 20200422013232) do
 
   create_table "api_keys", force: :cascade do |t|
     t.string "username"
     t.string "password"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "client_groups", force: :cascade do |t|
+    t.string "Name"
+    t.string "SigfoxGroupID"
+    t.string "SigfoxGroupName"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "clients", force: :cascade do |t|
+    t.string "Name"
+    t.string "SigfoxDeviceTypeID"
+    t.string "SigfoxDeviceTypeName"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

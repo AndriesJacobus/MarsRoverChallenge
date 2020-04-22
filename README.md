@@ -2,6 +2,19 @@
 Custom cloud front-end to connect to the Teqcon Sigfox back-end and manage IoT devices for security perimeters.
 Currently we are busy with the first iteration of the project - the **MVP Phase One**.
 
+## Code initiation and running
+### Prerequisites
+You need to have the following installed to run the project:
+- npm & node
+- ruby on rails (5.1>)
+
+### Build and run
+To build and run the code:
+
+`npm install`
+
+`rails server`
+
 ## MVP Phase One Features
 The functional requirements of the MVP Phase One include: 
 
@@ -104,21 +117,32 @@ The functional requirements of the MVP Phase One include:
 1. Clients (sigf device type)
    1. Client Admin
    2. Client Operator
-   3. Client Group (sigf Group like MyTestGroup)
+   3. Client Group (sigf Group)
       1. Devices
 
 ## Extra Added Functional Requirements
 - [ ] Client Admin
   - [x] Create new User Type: Client Admin
   - [x] Rename Admin User Type to Sysadmin
-  - [ ] Transfer Operator privileges to Client Admin
+  - [x] Transfer Operator privileges to Client Admin
   - [ ] New Operator Privileges
-    - [ ] View own user info
+    - [x] View own user info
     - [ ] Map View
     - [ ] Logs
 - [ ] Client Groups
-  - [ ] Create new Controller and View: Clients (= sifg DeviceType)
-  - [ ] Create new Controller and View: Client Groups (= sifg Group like MyTestGroup)
+  - [x] Create new Controller and View: Clients (= sifg DeviceType like Wi-i Platform Testing)
+  - [x] Create new Controller and View: Client Groups (= sifg Group like MyTestGroup)
+  - [ ] Clients View Styling Updates
+  - [ ] Client Groups View Styling Updates
+  - [ ] Link Clients Controller and View in Dashboard
+  - [ ] Link Client Groups Controller and View in Dashboard
+  - [ ] Create Dashboard process to setup a Client (according to Project View Hierarchy)
+    - [ ] Create Client
+    - [ ] Create/Link Client Admin
+    - [ ] Create/Link Operator
+    - [ ] Create/Link Client Group
+    - [ ] Create/Link Devices
+- [ ] Create Client hierarchy view in Dashoard (according to Project View Hierarchy)
 - [ ] Message Controller and View Updates
   - [ ] Add deviceID to Message
   - [ ] Add sigf device Name to Message

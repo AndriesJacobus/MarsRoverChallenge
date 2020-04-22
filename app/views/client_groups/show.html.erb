@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @client_group.Name %>
+</p>
+
+<p>
+  <strong>Sigfoxgroupid:</strong>
+  <%= @client_group.SigfoxGroupID %>
+</p>
+
+<p>
+  <strong>Sigfoxgroupname:</strong>
+  <%= @client_group.SigfoxGroupName %>
+</p>
+
+<%= link_to 'Edit', edit_client_group_path(@client_group) %> |
+<%= link_to 'Back', client_groups_path %>

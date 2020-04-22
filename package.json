@@ -2,6 +2,23 @@
   "name": "BReview",
   "private": true,
   "dependencies": {
-    "material-design-icons": "^3.0.1"
+    "@babel/core": "^7.9.0",
+    "@babel/preset-react": "^7.9.4",
+    "@material-ui/core": "^4.9.11",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/styles": "^4.9.10",
+    "@rails/webpacker": "4.2.2",
+    "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
+    "material-design-icons": "^3.0.1",
+    "material-ui": "^1.0.0-beta.47",
+    "prop-types": "^15.7.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react_ujs": "^2.6.1",
+    "typeface-roboto": "0.0.75",
+    "webpack": "^4.43.0"
+  },
+  "devDependencies": {
+    "webpack-dev-server": "^3.10.3"
   }
 }

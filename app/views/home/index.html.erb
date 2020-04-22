@@ -1,8 +1,10 @@
 <h3 style = "display: inline-block;"><u>Home Page</u></h3>
 
 <% if current_user %>
-  <div style = "float: right;">
-    <br/><br/>
+  
+  <div style = "display: inline-block; float: right;">
+    <br/>
+    <br/>
 
     Quick Links: 
     <%= link_to 'my page', current_user, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
@@ -21,114 +23,115 @@
   Logged in as: <u><%= current_user.name %>  <%= current_user.surname %></u>
   
   <br/>
+  <br/>
 
   <h4><u>Server Dashboard</u></h4>
 
   <br/>
 
-  <div class="row" style = "height: 500px;">
+  <div class="row">
   
     <% if current_user.usertype == "Sysadmin" || current_user.usertype == "Client Admin" %>
 
       <div class="col s4">
         <%= link_to users_path do %>
-          <div class="card medium hoverable cardLink">
-            <div class="card-image">
-              <%= image_tag "users.jpg" %>
-              <span class="card-title" style = "color: #42A5F5; text-shadow: 2px 2px black;">Users</span>
-            </div>
-            <div class="card-content">
-              <p>
-                Users each have their own privileges based on their user type.
+          <%= react_component("DashboardCard",
+            {
+              title:
+                "Users",
+              content:
+                "Users each have their own privileges based on their user type.
                 Admin users, for example, have access to all functionalities while
-                Operators, only have limited access to views such as Logs and Device Maps.
-              </p>
-            </div>
-            <div class="card-action center">
-              <%= link_to 'visit users', users_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
-            </div>
-          </div>
+                Operators, only have limited access to views such as Logs and Device Maps.",
+              resource:
+                asset_path("users.jpg"),
+              link:
+                users_path,
+              linkText:
+                "Go to Users",
+            })
+          %>
         <% end %>
       </div>
 
       <div class="col s4">
         <%= link_to devices_path do %>
-          <div class="card medium hoverable cardLink">
-            <div class="card-image">
-              <%= image_tag "devices.jpg" %>
-              <span class="card-title" style = "color: #42A5F5; text-shadow: 2px 2px black;">Devices</span>
-            </div>
-            <div class="card-content">
-              <p>
-                Devices allow the Wi-I server to get information about the
+          <%= react_component("DashboardCard",
+            {
+              title:
+                "Devices",
+              content:
+                "Devices allow the Wi-I server to get information about the
                 perimeter that has been set up, and allows for managing and
-                control over states of the perimeter.
-              </p>
-            </div>
-            <div class="card-action center">
-              <%= link_to 'visit devices', devices_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
-            </div>
-          </div>
+                control over states of the perimeter.",
+              resource:
+                asset_path("devices.jpg"),
+              link:
+                devices_path,
+              linkText:
+                "Go to Devices",
+            })
+          %>
         <% end %>
       </div>
 
       <div class="col s4">
         <%= link_to messages_path do %>
-          <div class="card medium hoverable cardLink">
-            <div class="card-image">
-              <%= image_tag "messages.jpg" %>
-              <span class="card-title" style = "color: #42A5F5; text-shadow: 2px 2px black;">Messages</span>
-            </div>
-            <div class="card-content">
-              <p>
-                Messages are sent from the device to the SigFox backend as events occur.
-                These messages are then passed on to the the Wi-I Cloud Server, and displayed here.
-              </p>
-            </div>
-            <div class="card-action center">
-              <%= link_to 'visit messages', messages_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
-            </div>
-          </div>
+          <%= react_component("DashboardCard",
+            {
+              title:
+                "Messages",
+              content:
+                "Messages are sent from the device to the SigFox backend as events occur.
+                These messages are then passed on to the the Wi-I Cloud Server, and displayed here.",
+              resource:
+                asset_path("messages.jpg"),
+              link:
+                messages_path,
+              linkText:
+                "Go to Messages",
+            })
+          %>
         <% end %>
       </div>
 
       <div class="col s4">
         <%= link_to api_keys_path do %>
-          <div class="card medium hoverable cardLink">
-            <div class="card-image">
-              <%= image_tag "api_keys.jpg" %>
-              <span class="card-title" style = "color: #42A5F5; text-shadow: 2px 2px black;">API Keys</span>
-            </div>
-            <div class="card-content">
-              <p>
-                API Keys manage the connection to the sigfox backend and allows
-                communication such that the Wi-I server can pull in information automatically.
-              </p>
-            </div>
-            <div class="card-action center">
-              <%= link_to 'visit api keys', api_keys_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
-            </div>
-          </div>
+          <%= react_component("DashboardCard",
+            {
+              title:
+                "API Keys",
+              content:
+                "API Keys manage the connection to the sigfox backend and allows
+                communication such that the Wi-I server can pull in information automatically.",
+              resource:
+                asset_path("api_keys.jpg"),
+              link:
+                api_keys_path,
+              linkText:
+                "Go to API Keys",
+            })
+          %>
         <% end %>
       </div>
 
       <div class="col s4">
         <%= link_to map_groups_path do %>
-          <div class="card medium hoverable cardLink">
-            <div class="card-image">
-              <%= image_tag "map_groups.jpg" %>
-              <span class="card-title" style = "color: #42A5F5; text-shadow: 2px 2px black;">Map Groups</span>
-            </div>
-            <div class="card-content">
-              <p>
-                Devices are arranged on a map via map groups. A map group is
-                a group of devices coupled together to form a section of a perimeter.
-              </p>
-            </div>
-            <div class="card-action center">
-              <%= link_to 'visit map groups', map_groups_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
-            </div>
-          </div>
+          <%= react_component("DashboardCard",
+            {
+              title:
+                "Map Groups",
+              content:
+                "Devices are arranged on a map via map groups. A map group is
+                a group of devices coupled together to form a section of a perimeter.",
+              resource:
+                asset_path("map_groups.jpg"),
+              link:
+                map_groups_path,
+              linkText:
+                "Go to Map Groups",
+            })
+          %>
         <% end %>
       </div>
 
@@ -136,21 +139,21 @@
 
       <div class="col s4">
         <%= link_to current_user do %>
-          <div class="card medium hoverable cardLink">
-            <div class="card-image">
-              <%= image_tag "users.jpg" %>
-              <span class="card-title" style = "color: #42A5F5; text-shadow: 2px 2px black;">My Page</span>
-            </div>
-            <div class="card-content">
-              <p>
-                Users each have their own privileges based on their user type.
-                Operators only have limited access to views such as Logs and Device Maps.
-              </p>
-            </div>
-            <div class="card-action center">
-              <%= link_to 'visit users', current_user, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
-            </div>
-          </div>
+          <%= react_component("DashboardCard",
+            {
+              title:
+                "My Page",
+              content:
+                "Users each have their own privileges based on their user type.
+                Operators only have limited access to views such as Logs and Maps.",
+              resource:
+                asset_path("api_keys.jpg"),
+              link:
+                current_user,
+              linkText:
+                "Go to My Page",
+            })
+          %>
         <% end %>
       </div>
 
