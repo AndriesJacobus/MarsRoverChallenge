@@ -8,7 +8,7 @@ class UsersController < ApplicationController
     # Only Admins can view index
     if current_user.usertype == "Sysadmin"
       @users = User.all
-    elsif current_user.usertype != "Client Admin"
+    elsif current_user.usertype == "Client Admin"
       # Todo: filter users to show only those with the same 'client'
       #       tag as the current Admin
       @users = User.all

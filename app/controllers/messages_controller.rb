@@ -5,7 +5,16 @@ class MessagesController < ApplicationController
   # GET /messages
   # GET /messages.json
   def index
-    @messages = Message.all
+    # Only Admins can view index
+    if current_user.usertype == "Sysadmin"
+      @messages = Message.all
+    elsif current_user.usertype == "Client Admin"
+      # Todo: filter messages to show only those with the same 'client'
+      #       tag as the current Admin
+      @messages = Message.all
+    else
+      redirect_to root_path, flash: {warning: 'Please log in as an Admin before viewing this page' }
+    end
   end
 
   # GET /messages/1

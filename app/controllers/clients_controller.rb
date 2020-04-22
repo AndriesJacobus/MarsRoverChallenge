@@ -1,10 +1,20 @@
 class ClientsController < ApplicationController
   before_action :set_client, only: [:show, :edit, :update, :destroy]
+  before_action :authorize_user, only: :index
 
   # GET /clients
   # GET /clients.json
   def index
-    @clients = Client.all
+    # Only Admins can view index
+    if current_user.usertype == "Sysadmin"
+      @clients = Client.all
+    elsif current_user.usertype == "Client Admin"
+      # Todo: filter clients to show only those with the same 'client'
+      #       tag as the current Admin
+      @clients = Client.all
+    else
+      redirect_to root_path, flash: {warning: 'Please log in as an Admin before viewing this page' }
+    end
   end
 
   # GET /clients/1
@@ -28,7 +38,7 @@ class ClientsController < ApplicationController
 
     respond_to do |format|
       if @client.save
-        format.html { redirect_to @client, notice: 'Client was successfully created.' }
+        format.html { redirect_to @client, flash: {success: 'Client was successfully created' } }
         format.json { render :show, status: :created, location: @client }
       else
         format.html { render :new }
@@ -42,7 +52,7 @@ class ClientsController < ApplicationController
   def update
     respond_to do |format|
       if @client.update(client_params)
-        format.html { redirect_to @client, notice: 'Client was successfully updated.' }
+        format.html { redirect_to @client, flash: {success: 'Client was successfully updated' } }
         format.json { render :show, status: :ok, location: @client }
       else
         format.html { render :edit }
@@ -56,7 +66,7 @@ class ClientsController < ApplicationController
   def destroy
     @client.destroy
     respond_to do |format|
-      format.html { redirect_to clients_url, notice: 'Client was successfully destroyed.' }
+      format.html { redirect_to clients_url, flash: {warning: 'Client was successfully deleted' } }
       format.json { head :no_content }
     end
   end

@@ -1,10 +1,20 @@
 class ClientGroupsController < ApplicationController
   before_action :set_client_group, only: [:show, :edit, :update, :destroy]
+  before_action :authorize_user, only: :index
 
   # GET /client_groups
   # GET /client_groups.json
   def index
-    @client_groups = ClientGroup.all
+    # Only Admins can view index
+    if current_user.usertype == "Sysadmin"
+      @client_groups = ClientGroup.all
+    elsif current_user.usertype == "Client Admin"
+      # Todo: filter client groups to show only those with the same 'client'
+      #       tag as the current Admin
+      @client_groups = ClientGroup.all
+    else
+      redirect_to root_path, flash: {warning: 'Please log in as an Admin before viewing this page' }
+    end
   end
 
   # GET /client_groups/1
@@ -28,7 +38,7 @@ class ClientGroupsController < ApplicationController
 
     respond_to do |format|
       if @client_group.save
-        format.html { redirect_to @client_group, notice: 'Client group was successfully created.' }
+        format.html { redirect_to @client_group, flash: {success: 'Client Group was successfully created' } }
         format.json { render :show, status: :created, location: @client_group }
       else
         format.html { render :new }
@@ -42,7 +52,7 @@ class ClientGroupsController < ApplicationController
   def update
     respond_to do |format|
       if @client_group.update(client_group_params)
-        format.html { redirect_to @client_group, notice: 'Client group was successfully updated.' }
+        format.html { redirect_to @client_group, flash: {success: 'Client Group was successfully updated' } }
         format.json { render :show, status: :ok, location: @client_group }
       else
         format.html { render :edit }
@@ -56,7 +66,7 @@ class ClientGroupsController < ApplicationController
   def destroy
     @client_group.destroy
     respond_to do |format|
-      format.html { redirect_to client_groups_url, notice: 'Client group was successfully destroyed.' }
+      format.html { redirect_to client_groups_url, flash: {warning: 'Client Group was successfully deleted' }  }
       format.json { head :no_content }
     end
   end

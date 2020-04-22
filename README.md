@@ -7,6 +7,9 @@ Currently we are busy with the first iteration of the project - the **MVP Phase 
 You need to have the following installed to run the project:
 - npm & node
 - ruby on rails (5.1>)
+- Database:
+  - Dev: smysql
+  - Prod: postgress
 
 ### Build and run
 To build and run the code:
@@ -132,8 +135,8 @@ The functional requirements of the MVP Phase One include:
 - [ ] Client Groups
   - [x] Create new Controller and View: Clients (= sifg DeviceType like Wi-i Platform Testing)
   - [x] Create new Controller and View: Client Groups (= sifg Group like MyTestGroup)
-  - [ ] Clients View Styling Updates
-  - [ ] Client Groups View Styling Updates
+  - [x] Clients View Styling Updates
+  - [x] Client Groups View Styling Updates
   - [ ] Link Clients Controller and View in Dashboard
   - [ ] Link Client Groups Controller and View in Dashboard
   - [ ] Create Dashboard process to setup a Client (according to Project View Hierarchy)
