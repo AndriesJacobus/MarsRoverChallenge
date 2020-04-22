@@ -25,15 +25,27 @@ class DashboardCard extends React.Component {
               variant="h5"
               component="h2"
               style={{
-                  fontSize: 30,
+                  fontSize: 25,
                   paddingTop: 100,
-                  color: "#42A5F5",
+                  color: "black",
                   textShadow: "1px 1px white",
                   textAlign: "center",
               }}>
 
-              {this.props.title}
+              <span
+                style={{
+                  paddingTop: 5,
+                  paddingBottom: 3,
+                  paddingLeft: 8,
+                  paddingRight: 8,
+                  backgroundColor: 'rgba(255, 255, 255, 0.6)',
+                  borderRadius: 10,
+              }}>
+
+                {this.props.title}
+              </span>
             </Typography>
+            
           </CardMedia>
           <CardContent style={{height: 150}}>
             <Typography variant="body2" color="textSecondary" component="p">

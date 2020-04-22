@@ -137,8 +137,8 @@ The functional requirements of the MVP Phase One include:
   - [x] Create new Controller and View: Client Groups (= sifg Group like MyTestGroup)
   - [x] Clients View Styling Updates
   - [x] Client Groups View Styling Updates
-  - [ ] Link Clients Controller and View in Dashboard
-  - [ ] Link Client Groups Controller and View in Dashboard
+  - [x] Link Clients Controller and View in Dashboard
+  - [x] Link Client Groups Controller and View in Dashboard
   - [ ] Create Dashboard process to setup a Client (according to Project View Hierarchy)
     - [ ] Create Client
     - [ ] Create/Link Client Admin

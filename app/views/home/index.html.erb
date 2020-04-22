@@ -55,6 +55,45 @@
       </div>
 
       <div class="col s4">
+        <%= link_to clients_path do %>
+          <%= react_component("DashboardCard",
+            {
+              title:
+                "Clients",
+              content:
+                "Clients use the Wi-i platform to manage their devices that
+                connect up to the sigfox back-end. Equivalent to sigfox's 'DeviceType'.",
+              resource:
+                asset_path("clients.jpg"),
+              link:
+                clients_path,
+              linkText:
+                "Go to Clients",
+            })
+          %>
+        <% end %>
+      </div>
+
+      <div class="col s4">
+        <%= link_to client_groups_path do %>
+          <%= react_component("DashboardCard",
+            {
+              title:
+                "Client Groups",
+              content:
+                "Groups that devices get organised into. Equivalent to sigfox's 'Group'.",
+              resource:
+                asset_path("client_groups.jpg"),
+              link:
+                client_groups_path,
+              linkText:
+                "Go to Clients",
+            })
+          %>
+        <% end %>
+      </div>
+
+      <div class="col s4">
         <%= link_to devices_path do %>
           <%= react_component("DashboardCard",
             {
@@ -76,20 +115,20 @@
       </div>
 
       <div class="col s4">
-        <%= link_to messages_path do %>
+        <%= link_to map_groups_path do %>
           <%= react_component("DashboardCard",
             {
               title:
-                "Messages",
+                "Map Groups",
               content:
-                "Messages are sent from the device to the SigFox backend as events occur.
-                These messages are then passed on to the the Wi-I Cloud Server, and displayed here.",
+                "Devices are arranged on a map via map groups. A map group is
+                a group of devices coupled together to form a section of a perimeter.",
               resource:
-                asset_path("messages.jpg"),
+                asset_path("map_groups.jpg"),
               link:
-                messages_path,
+                map_groups_path,
               linkText:
-                "Go to Messages",
+                "Go to Map Groups",
             })
           %>
         <% end %>
@@ -110,26 +149,6 @@
                 api_keys_path,
               linkText:
                 "Go to API Keys",
-            })
-          %>
-        <% end %>
-      </div>
-
-      <div class="col s4">
-        <%= link_to map_groups_path do %>
-          <%= react_component("DashboardCard",
-            {
-              title:
-                "Map Groups",
-              content:
-                "Devices are arranged on a map via map groups. A map group is
-                a group of devices coupled together to form a section of a perimeter.",
-              resource:
-                asset_path("map_groups.jpg"),
-              link:
-                map_groups_path,
-              linkText:
-                "Go to Map Groups",
             })
           %>
         <% end %>
