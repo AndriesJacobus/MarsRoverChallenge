@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   resources :devices
   resources :messages
   resources :api_keys
+
   root 'home#index'
   
   resources :users
@@ -12,6 +13,8 @@ Rails.application.routes.draw do
 
   get '/get_device_info', to: 'devices#get_device_info', as: 'get_device_info'
   post '/set_device_info', to: 'devices#set_device_info', as: 'set_device_info'
+
+  get '/client_groups/:id/map_view', to: 'client_groups#map_view', as: 'map_view'
   
   get 'signup', to: 'users#new', as: 'signup'
   get 'login', to: 'sessions#new', as: 'login'

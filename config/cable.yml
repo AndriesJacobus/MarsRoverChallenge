@@ -7,4 +7,4 @@ test:
 production:
   adapter: redis
   url: redis://localhost:6379/1
-  channel_prefix: BReview_production
+  channel_prefix: Wi_I_Cloud_production

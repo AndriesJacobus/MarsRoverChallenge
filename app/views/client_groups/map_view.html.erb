@@ -1,0 +1,22 @@
+<h3><%= @client_group.Name %> MapView</h3>
+<br/>
+
+<% @devices.each do |device| %>
+    <%= device.Name %>
+
+    <br/>
+
+    <%= device.SigfoxID %>
+
+    <br/>
+
+    <%= device.SigfoxName %>
+
+    <br/>
+    <br/>
+<% end %>
+
+<br/>
+<br/>
+
+<%= react_component("CustomMap") %>

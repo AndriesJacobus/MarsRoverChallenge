@@ -22,6 +22,25 @@ class ClientGroupsController < ApplicationController
   def show
   end
 
+  # GET /client_groups/1/map_view
+  def map_view
+    # Only Admins can view index
+    if current_user
+      @client_group = ClientGroup.find(params[:id])
+
+      if current_user.usertype == "Sysadmin"
+        @devices = Device.all
+      elsif current_user
+        # @devices = Devices.where(client_group: params[:id])
+        @devices = Device.all
+      else
+        redirect_to root_path, flash: {warning: 'Please log in as an Admin before viewing this page' }
+      end
+    else
+      redirect_to root_path, flash: {warning: 'Please log in as an Admin before viewing this page' }
+    end
+  end
+
   # GET /client_groups/new
   def new
     @client_group = ClientGroup.new
@@ -79,6 +98,6 @@ class ClientGroupsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def client_group_params
-      params.require(:client_group).permit(:Name, :SigfoxGroupID, :SigfoxGroupName)
+      params.require(:client_group).permit(:id, :Name, :SigfoxGroupID, :SigfoxGroupName)
     end
 end

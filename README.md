@@ -1,4 +1,4 @@
-# Wi-I-Cloud
+# Wi_I_Cloud
 Custom cloud front-end to connect to the Teqcon Sigfox back-end and manage IoT devices for security perimeters.
 Currently we are busy with the first iteration of the project - the **MVP Phase One**.
 
@@ -100,7 +100,7 @@ The functional requirements of the MVP Phase One include:
      - Static map
      - Graphical representation of layout of perimeter
      - Editable
-     - Indication of device events/states using colour, icons
+     - Indication of device events/states using colour & icons
      - Operator interaction
    - Business Rules
      - Events
