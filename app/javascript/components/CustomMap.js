@@ -1,12 +1,16 @@
 import React from 'react';
 import PropTypes from "prop-types"
-import { Map, GoogleApiWrapper, Marker } from 'google-maps-react';
+import { Map, GoogleApiWrapper, Marker, Polyline } from 'google-maps-react';
 
 class CustomMap extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      path: [
+        { lat: 47.6307081, lng: -122.1434325 },
+        { lat: 47.2052192687988, lng: -121.988426208496 }
+      ],
       stores: [
         { lat: 47.49855629475769, lng: -122.14184416996333 },
         { latitude: 47.359423, longitude: -122.021071 },
@@ -50,6 +54,7 @@ class CustomMap extends React.Component {
           initialCenter={{ lat: 47.444, lng: -122.176 }} >
 
           {this.displayMarkers()}
+          <Polyline path={this.state.path} options={{ strokeColor: "#FF0000 " }} />
         </Map>
       </div>
     );
