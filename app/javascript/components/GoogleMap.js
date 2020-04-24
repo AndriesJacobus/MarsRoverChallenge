@@ -122,27 +122,72 @@ class GoogleMap extends React.Component {
             Map Actions:
           </span>
 
-          {
-            (this.state.showInfo) ? (
-              <div style={deleteMarkerStyle}>
-                <a
-                  className="waves-effect waves-light red btn"
-                  onClick={this.deleteMarker} >
+          <div style={{lex: 1, flexDirection: 'row'}}>
+            {
+              (this.state.showInfo) ? (
+                <div style={deleteMarkerStyle}>
+                  <a
+                    className="waves-effect waves-light primary btn" >
 
-                  <i className="material-icons right">delete</i>
-                  Delete Marker
-                </a>
-              </div>
-            ) :
-              <div style={deleteMarkerStyle}>
-                <div
-                  className="btn disabled" style={{borderStyle: 'dotted', paddingBottom: 5, borderWidth: 1,}}>
-
-                  <i className="material-icons right">delete</i>
-                  Delete Marker
+                    <i className="material-icons right">edit</i>
+                    Draw Perimeter
+                  </a>
                 </div>
-              </div>
-          }
+              ) :
+                <div style={deleteMarkerStyle}>
+                  <div
+                    className="btn disabled" style={disabledActionStyle}>
+
+                    <i className="material-icons right">edit</i>
+                    Draw Perimeter
+                  </div>
+                </div>
+            }
+            
+            {
+              (this.state.showInfo) ? (
+                <div style={deleteMarkerStyle}>
+                  <a
+                    className="waves-effect waves-light red btn" >
+
+                    <i className="material-icons right">delete</i>
+                    Delete Perimeter
+                  </a>
+                </div>
+              ) :
+                <div style={deleteMarkerStyle}>
+                  <div
+                    className="btn disabled" style={disabledActionStyle}>
+
+                    <i className="material-icons right">delete</i>
+                    Delete Perimeter
+                  </div>
+                </div>
+            }
+
+            {
+              (this.state.showInfo) ? (
+                <div style={deleteMarkerStyle}>
+                  <a
+                    className="waves-effect waves-light red btn"
+                    onClick={this.deleteMarker} >
+
+                    <i className="material-icons right">delete</i>
+                    Delete Marker
+                  </a>
+                </div>
+              ) :
+                <div style={deleteMarkerStyle}>
+                  <div
+                    className="btn disabled" style={disabledActionStyle}>
+
+                    <i className="material-icons right">delete</i>
+                    Delete Marker
+                  </div>
+                </div>
+            }
+          </div>
+          
 
         </div>
         
@@ -222,6 +267,13 @@ const bannerTextStyle = {
 };
 const deleteMarkerStyle = {
   marginTop: 15,
+  marginRight: 10,
+  display: 'inline-block',
+};
+const disabledActionStyle = {
+  borderStyle: 'dotted',
+  paddingBottom: 5,
+  borderWidth: 1,
 };
 const elementsStyle = {
   position: 'relative',
