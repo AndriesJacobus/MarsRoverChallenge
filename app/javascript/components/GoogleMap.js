@@ -134,6 +134,7 @@ class GoogleMap extends React.Component {
           </span>
 
           <div style={{ lex: 1, flexDirection: 'row' }}>
+            
             <div style={deleteMarkerStyle}>
               <a
                 className="waves-effect waves-light primary btn" >
@@ -223,7 +224,7 @@ class GoogleMap extends React.Component {
 
           </InfoWindow>
 
-          <Polyline path={this.state.path} options={{ strokeColor: "#FF0000 " }} />
+          <Polyline path={this.state.path} options={{ strokeColor: "#42a5f5", strokeOpacity: 0.5, strokeWeight: 10, }} />
 
         </Map>
 
