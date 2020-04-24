@@ -117,7 +117,7 @@ class GoogleMap extends React.Component {
 
   deleteMarker(event) {
     event.preventDefault();
-    
+
     this.state.markers.splice(this.state.markerInfo.markerIndex, 1);
     this.hideInfo();
   };
@@ -133,28 +133,16 @@ class GoogleMap extends React.Component {
             Map Actions:
           </span>
 
-          <div style={{lex: 1, flexDirection: 'row'}}>
-            {
-              (this.state.showInfo) ? (
-                <div style={deleteMarkerStyle}>
-                  <a
-                    className="waves-effect waves-light primary btn" >
+          <div style={{ lex: 1, flexDirection: 'row' }}>
+            <div style={deleteMarkerStyle}>
+              <a
+                className="waves-effect waves-light primary btn" >
 
-                    <i className="material-icons right">edit</i>
+                <i className="material-icons right">edit</i>
                     Draw Perimeter
                   </a>
-                </div>
-              ) :
-                <div style={deleteMarkerStyle}>
-                  <div
-                    className="btn disabled" style={disabledActionStyle}>
+            </div>
 
-                    <i className="material-icons right">edit</i>
-                    Draw Perimeter
-                  </div>
-                </div>
-            }
-            
             {
               (this.state.showInfo) ? (
                 <div style={deleteMarkerStyle}>
@@ -198,10 +186,10 @@ class GoogleMap extends React.Component {
                 </div>
             }
           </div>
-          
+
 
         </div>
-        
+
         <Map
           className="map"
           google={this.props.google}
@@ -209,7 +197,7 @@ class GoogleMap extends React.Component {
           style={mapStyles}
           initialCenter={{ lat: 47.444, lng: -122.176 }}
           mapTypeControl={false}
-          streetViewControl= {false}
+          streetViewControl={false}
           // draggable={false}
           onClick={this.onClick} >
 
@@ -238,14 +226,14 @@ class GoogleMap extends React.Component {
           <Polyline path={this.state.path} options={{ strokeColor: "#FF0000 " }} />
 
         </Map>
-        
+
         <div style={elementsStyle}>
 
           <span style={bannerTextStyle}>
             Map Elements:
           </span>
 
-          <div style={{margin: 15,}} />
+          <div style={{ margin: 15, }} />
 
           <CustomTreeView />
         </div>
