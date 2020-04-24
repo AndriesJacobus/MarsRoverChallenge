@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import { Map, GoogleApiWrapper, Marker, Polyline, InfoWindow } from 'google-maps-react';
 import CustomTreeView from './CustomTreeView';
@@ -11,6 +12,9 @@ class GoogleMap extends React.Component {
     super(props);
 
     this.state = {
+      perimeterIndex: null,
+      showPerDel: false,
+
       path: [
         { lat: 47.6307081, lng: -122.1434325 },
         { lat: 47.2052192687988, lng: -121.988426208496 }
@@ -40,17 +44,66 @@ class GoogleMap extends React.Component {
           lng: -122.1434325
         },
       },
+
+      drawPerimeter: false,
+      perimeters: [
+        {
+          path: [
+            { lat: 47.6307081, lng: -122.1434325 },
+            { lat: 47.2052192687988, lng: -121.988426208496 }
+          ],
+        },
+      ],
+      newPerimeterStart: null,
+      newPerimeterEnd: null,
     }
 
-    this.infoW = React.createRef();
-
+    this.domNode = null;
     this.onClick = this.onClick.bind(this);
     this.hideInfo = this.hideInfo.bind(this);
     this.onMarkerDragEnd = this.onMarkerDragEnd.bind(this);
     this.deleteMarker = this.deleteMarker.bind(this);
+    this.toggleDrawPerimeter = this.toggleDrawPerimeter.bind(this);
+    this.deletePerimeter = this.deletePerimeter.bind(this);
+  }
+
+  onComponentDidMount() {
   }
 
   onClick(t, map, coord) {
+    if (this.state.drawPerimeter) {
+      const { latLng } = coord;
+      const _lat = latLng.lat();
+      const _lng = latLng.lng();
+
+      // Is this the start or end of the perimeter?
+      if (this.state.newPerimeterStart == null) {
+        // Start of perimeter
+
+        this.setState({
+          newPerimeterStart: {
+            lat: _lat,
+            lng: _lng,
+          }
+        });
+      } else {
+        // End of perimeter
+
+        this.setState({
+          newPerimeterEnd: {
+            lat: _lat,
+            lng: _lng,
+          }
+        });
+
+        this.pushNewPerimeterAndClear();
+      }
+    } else {
+      this.placeMarker(coord);
+    }
+  };
+
+  placeMarker(coord) {
     const { latLng } = coord;
     const lat = latLng.lat();
     const lng = latLng.lng();
@@ -66,6 +119,11 @@ class GoogleMap extends React.Component {
         }
       ],
     });
+
+    this.setState({
+      showPerDel: false,
+      perimeterIndex: null,
+    });
   };
 
   drawMarker = (marker, index) => {
@@ -79,6 +137,16 @@ class GoogleMap extends React.Component {
       onClick={() => this.showInfo(marker, index)}
     />
   };
+
+  drawPerimeter = (perimeter, index) => {
+    return <Polyline
+      key={index}
+      id={index}
+      path={perimeter.path}
+      options={{ strokeColor: "#42a5f5", strokeOpacity: 0.5, strokeWeight: 10, }}
+      onClick={() => this.setPerIndex(index)}
+    />
+  }
 
   onMarkerDragEnd(coord, index) {
     // Remove old entry
@@ -122,6 +190,52 @@ class GoogleMap extends React.Component {
     this.hideInfo();
   };
 
+  deletePerimeter(event) {
+    event.preventDefault();
+
+    this.state.perimeters.splice(this.state.perimeterIndex, 1);
+    this.setState({
+      showPerDel: false,
+      perimeterIndex: null,
+    });
+  };
+
+  toggleDrawPerimeter() {
+    this.setState({
+      drawPerimeter: !this.state.drawPerimeter,
+    });
+
+    if (!this.state.drawPerimeter) {
+      this.setState({
+        newPerimeterStart: null,
+        newPerimeterEnd: null,
+      });
+    }
+  }
+
+  pushNewPerimeterAndClear() {
+    this.setState({
+      perimeters: [
+        ...this.state.perimeters,
+        {
+          path: [
+            this.state.newPerimeterStart,
+            this.state.newPerimeterEnd,
+          ],
+        }
+      ],
+    });
+
+    this.toggleDrawPerimeter();
+  }
+
+  setPerIndex(index) {
+    this.setState({
+      showPerDel: true,
+      perimeterIndex: index,
+    });
+  }
+
   render() {
 
     return (
@@ -137,18 +251,26 @@ class GoogleMap extends React.Component {
             
             <div style={deleteMarkerStyle}>
               <a
-                className="waves-effect waves-light primary btn" >
+                className="waves-effect waves-light primary btn"
+                onClick={this.toggleDrawPerimeter} >
 
-                <i className="material-icons right">edit</i>
-                    Draw Perimeter
-                  </a>
+                {
+                  (this.state.drawPerimeter) ? (
+                    <i className="material-icons right">check</i>
+                  ) :
+                    <i className="material-icons right">add_circle</i>
+                }
+                
+                Draw Perimeter
+              </a>
             </div>
 
             {
-              (this.state.showInfo) ? (
+              (this.state.showPerDel) ? (
                 <div style={deleteMarkerStyle}>
                   <a
-                    className="waves-effect waves-light red btn" >
+                    className="waves-effect waves-light red btn"
+                    onClick={this.deletePerimeter} >
 
                     <i className="material-icons right">delete</i>
                     Delete Perimeter
@@ -188,10 +310,10 @@ class GoogleMap extends React.Component {
             }
           </div>
 
-
         </div>
 
         <Map
+          ref={node => this.domNode = node}
           className="map"
           google={this.props.google}
           zoom={8}
@@ -199,12 +321,17 @@ class GoogleMap extends React.Component {
           initialCenter={{ lat: 47.444, lng: -122.176 }}
           mapTypeControl={false}
           streetViewControl={false}
-          // draggable={false}
           onClick={this.onClick} >
 
           {
             this.state.markers.map((marker, index) => {
               return this.drawMarker(marker, index);
+            })
+          }
+
+          {
+            this.state.perimeters.map((perimeter, index) => {
+              return this.drawPerimeter(perimeter, index);
             })
           }
 
@@ -223,8 +350,6 @@ class GoogleMap extends React.Component {
             </div>
 
           </InfoWindow>
-
-          <Polyline path={this.state.path} options={{ strokeColor: "#42a5f5", strokeOpacity: 0.5, strokeWeight: 10, }} />
 
         </Map>
 
