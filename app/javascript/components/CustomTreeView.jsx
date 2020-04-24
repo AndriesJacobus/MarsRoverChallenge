@@ -7,21 +7,33 @@ import TreeItem from '@material-ui/lab/TreeItem';
 
 const data = {
   id: 'root',
-  name: 'Parent',
+  name: 'Client Group',
   children: [
     {
-      id: '1',
-      name: 'Child - 1',
-    },
-    {
       id: '3',
-      name: 'Child - 3',
+      name: 'Populated MapGroup (Perimeter)',
       children: [
         {
           id: '4',
-          name: 'Child - 4',
+          name: 'Device 1',
+        },
+        {
+          id: '5',
+          name: 'Device 2',
         },
       ],
+    },
+    {
+      id: '1',
+      name: 'Empty MapGroup (Perimeter)',
+    },
+    {
+      id: '11',
+      name: 'Device 3',
+    },
+    {
+      id: '12',
+      name: 'Device 4',
     },
   ],
 };

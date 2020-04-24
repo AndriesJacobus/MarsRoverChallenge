@@ -46,6 +46,7 @@ class GoogleMap extends React.Component {
 
     this.onClick = this.onClick.bind(this);
     this.hideInfo = this.hideInfo.bind(this);
+    this.onMarkerDragEnd = this.onMarkerDragEnd.bind(this);
     this.deleteMarker = this.deleteMarker.bind(this);
   }
 
@@ -73,9 +74,19 @@ class GoogleMap extends React.Component {
       id={index}
       title={marker.title}
       position={marker.position}
+      draggable={true}
+      onDragend={(t, map, coord) => this.onMarkerDragEnd(coord, index)}
       onClick={() => this.showInfo(marker, index)}
     />
   };
+
+  onMarkerDragEnd(coord, index) {
+    // Remove old entry
+    this.state.markers.splice(index, 1);
+
+    // Add updated entry
+    this.onClick("", "", coord);
+  }
 
   showInfo = (marker, index) => {
     // alert(JSON.stringify(marker.position));
