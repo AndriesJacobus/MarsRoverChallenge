@@ -5,30 +5,42 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TreeItem from '@material-ui/lab/TreeItem';
 
+const data = {
+  id: 'root',
+  name: 'Parent',
+  children: [
+    {
+      id: '1',
+      name: 'Child - 1',
+    },
+    {
+      id: '3',
+      name: 'Child - 3',
+      children: [
+        {
+          id: '4',
+          name: 'Child - 4',
+        },
+      ],
+    },
+  ],
+};
+
+const renderTree = (nodes) => (
+  <TreeItem key={nodes.id} nodeId={nodes.id} label={nodes.name}>
+    {Array.isArray(nodes.children) ? nodes.children.map((node) => renderTree(node)) : null}
+  </TreeItem>
+);
+
 const CustomTreeView = props => (
   <TreeView
     className={useStyles}
     defaultCollapseIcon={<ExpandMoreIcon />}
-    defaultExpandIcon={<ChevronRightIcon />} >
+    defaultExpanded={['root']}
+    defaultExpandIcon={<ChevronRightIcon />}
+    >
 
-    <TreeItem nodeId="1" label="Applications">
-      <TreeItem nodeId="2" label="Calendar" />
-      <TreeItem nodeId="3" label="Chrome" />
-      <TreeItem nodeId="4" label="Webstorm" />
-    </TreeItem>
-
-    <TreeItem nodeId="5" label="Documents">
-      <TreeItem nodeId="10" label="OSS" />
-
-      <TreeItem nodeId="6" label="Material-UI">
-        <TreeItem nodeId="7" label="src">
-          <TreeItem nodeId="8" label="index.js" />
-          <TreeItem nodeId="9" label="tree-view.js" />
-        </TreeItem>
-      </TreeItem>
-
-    </TreeItem>
-
+    {renderTree(data)}
   </TreeView>
 )
 
