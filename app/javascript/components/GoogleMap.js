@@ -65,9 +65,22 @@ class GoogleMap extends React.Component {
     this.deleteMarker = this.deleteMarker.bind(this);
     this.toggleDrawPerimeter = this.toggleDrawPerimeter.bind(this);
     this.deletePerimeter = this.deletePerimeter.bind(this);
+    this.handleKey = this.handleKey.bind(this);
   }
 
-  onComponentDidMount() {
+  componentDidMount(){
+  }
+
+  handleKey(e) {
+    if(e.keyCode == 46) {
+      if (this.state.showPerDel) {
+        // Delete perimeter
+        this.deletePerimeter(e);
+      } else if (this.state.showInfo) {
+        // Delete marker
+        this.deleteMarker(e);
+      }
+    }
   }
 
   onClick(t, map, coord) {
@@ -133,6 +146,10 @@ class GoogleMap extends React.Component {
       title={marker.title}
       position={marker.position}
       draggable={true}
+      icon={{
+        url: this.props.markerIconUrl,
+        scaledSize: new window.google.maps.Size(40,40),
+      }}
       onDragend={(t, map, coord) => this.onMarkerDragEnd(coord, index)}
       onClick={() => this.showInfo(marker, index)}
     />
@@ -143,6 +160,7 @@ class GoogleMap extends React.Component {
       key={index}
       id={index}
       path={perimeter.path}
+      editable={true}
       options={{ strokeColor: "#42a5f5", strokeOpacity: 0.5, strokeWeight: 10, }}
       onClick={() => this.setPerIndex(index)}
     />
@@ -167,6 +185,11 @@ class GoogleMap extends React.Component {
         position: marker.position,
       },
     });
+
+    this.setState({
+      showPerDel: false,
+      perimeterIndex: null,
+    });
   };
 
   hideInfo() {
@@ -184,7 +207,9 @@ class GoogleMap extends React.Component {
   };
 
   deleteMarker(event) {
-    event.preventDefault();
+    if (event) {
+      event.preventDefault();
+    }
 
     this.state.markers.splice(this.state.markerInfo.markerIndex, 1);
     this.hideInfo();
@@ -234,12 +259,20 @@ class GoogleMap extends React.Component {
       showPerDel: true,
       perimeterIndex: index,
     });
+
+    this.hideInfo();
   }
 
   render() {
+    const icon = {
+      path: 'M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z',
+      fillColor: 'lightblue',
+      fillOpacity: 1,
+      scale: 0.02,
+     };
 
     return (
-      <div className="wrapper">
+      <div className="wrapper" onKeyUp={this.handleKey}>
 
         <div style={actionStyle}>
 
@@ -335,6 +368,18 @@ class GoogleMap extends React.Component {
             })
           }
 
+          {
+            this.state.drawPerimeter && this.state.newPerimeterStart &&
+            <Marker
+              title={"Perimeter Start"}
+              position={this.state.newPerimeterStart}
+              icon={{
+                url: this.props.perimIconUrl,
+                scaledSize: new window.google.maps.Size(30,30),
+              }}
+            />
+          }
+
           <InfoWindow
             visible={this.state.showInfo}
             onCloseClick={this.hideInfo}
@@ -409,6 +454,11 @@ const elementsStyle = {
   padding: 20,
   marginLeft: 5,
   borderRadius: 5,
+};
+
+GoogleMap.propTypes = {
+  markerIconUrl: PropTypes.string,
+  perimIconUrl: PropTypes.string,
 };
 
 export default GoogleApiWrapper({
