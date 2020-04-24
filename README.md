@@ -180,7 +180,7 @@ The functional requirements of the MVP Phase One include:
   - [ ]  Heading filters
 
 - [ ] 3. Map View
-  - [ ]  Static map
+  - [x]  Static map (integrated a dynamic map)
   - [ ]  Graphical representation of layout of perimeter
     - [ ]  Groups allowing access to individual bridges and devices
   - [ ]  Editable
