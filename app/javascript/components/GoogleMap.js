@@ -121,7 +121,7 @@ class GoogleMap extends React.Component {
     }
   };
 
-  placeMarker(coord) {
+  placeMarker(coord, name = "") {
     const { latLng } = coord;
     const lat = latLng.lat();
     const lng = latLng.lng();
@@ -132,20 +132,21 @@ class GoogleMap extends React.Component {
         markers: [
           ...this.state.markers,
           {
-            title: this.state.deviceFromTree.name,
-            name: this.state.deviceFromTree.name,
+            title: name == "" ? this.state.deviceFromTree.name : name,
+            name: name == "" ? this.state.deviceFromTree.name : name,
             position: { lat, lng },
           }
         ],
       });
-    } else {
+    }
+    else if (name != "") {
       this.setState({
         showInfo: false,
         markers: [
           ...this.state.markers,
           {
-            title: "Test",
-            name: "Test",
+            title: name,
+            name: name,
             position: { lat, lng },
           }
         ],
@@ -155,6 +156,9 @@ class GoogleMap extends React.Component {
     this.setState({
       showPerDel: false,
       perimeterIndex: null,
+
+      deviceFromTreeSelected: false,
+      deviceFromTree: null,
     });
   };
 
@@ -169,17 +173,17 @@ class GoogleMap extends React.Component {
         url: this.props.markerIconUrl,
         scaledSize: new window.google.maps.Size(40,40),
       }}
-      onDragend={(t, map, coord) => this.onMarkerDragEnd(coord, index)}
+      onDragend={(t, map, coord) => this.onMarkerDragEnd(coord, marker.title, index)}
       onClick={() => this.showInfo(marker, index)}
     />
   }
 
-  onMarkerDragEnd(coord, index) {
+  onMarkerDragEnd(coord, name, index) {
     // Remove old entry
     this.state.markers.splice(index, 1);
 
     // Add updated entry
-    this.onClick("", "", coord);
+    this.placeMarker(coord, name);
   }
 
   drawPerimeter = (perimeter, index) => {
@@ -283,16 +287,19 @@ class GoogleMap extends React.Component {
     this.hideInfo();
   }
 
-  onDeviceClicked(e, item) {
+  onDeviceClicked(e, isDevice, item) {
     e.preventDefault();
     
     console.log(e);
     console.log(item);
 
-    this.setState({
-      deviceFromTreeSelected: true,
-      deviceFromTree: item,
-    });
+    if (isDevice) {
+      this.setState({
+        deviceFromTreeSelected: true,
+        deviceFromTree: item,
+      });
+    }
+    
   }
 
   render() {

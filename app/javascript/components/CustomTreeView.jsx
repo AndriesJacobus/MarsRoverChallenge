@@ -16,10 +16,12 @@ const data = {
         {
           id: '4',
           name: 'Device 1',
+          isDevice: true,
         },
         {
           id: '5',
           name: 'Device 2',
+          isDevice: true,
         },
       ],
     },
@@ -30,16 +32,18 @@ const data = {
     {
       id: '11',
       name: 'Device 3',
+      isDevice: true,
     },
     {
       id: '12',
       name: 'Device 4',
+      isDevice: true,
     },
   ],
 };
 
 const renderTree = (nodes, props) => (
-  <TreeItem key={nodes.id} nodeId={nodes.id} label={nodes.name} onClick={(e) => props.onDeviceClicked(e, nodes)}>
+  <TreeItem key={nodes.id} nodeId={nodes.id} label={nodes.name} onClick={(e) => props.onDeviceClicked(e, nodes.isDevice, nodes)}>
     {Array.isArray(nodes.children) ? nodes.children.map((node) => renderTree(node, props)) : null}
   </TreeItem>
 );
