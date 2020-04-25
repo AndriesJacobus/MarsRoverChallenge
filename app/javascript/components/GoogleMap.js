@@ -153,17 +153,6 @@ class GoogleMap extends React.Component {
       onDragend={(t, map, coord) => this.onMarkerDragEnd(coord, index)}
       onClick={() => this.showInfo(marker, index)}
     />
-  };
-
-  drawPerimeter = (perimeter, index) => {
-    return <Polyline
-      key={index}
-      id={index}
-      path={perimeter.path}
-      editable={true}
-      options={{ strokeColor: "#42a5f5", strokeOpacity: 0.5, strokeWeight: 10, }}
-      onClick={() => this.setPerIndex(index)}
-    />
   }
 
   onMarkerDragEnd(coord, index) {
@@ -172,6 +161,18 @@ class GoogleMap extends React.Component {
 
     // Add updated entry
     this.onClick("", "", coord);
+  }
+
+  drawPerimeter = (perimeter, index) => {
+    return <Polyline
+      key={index}
+      id={index}
+      path={perimeter.path}
+      editable={false}
+      draggable={false}
+      options={{ strokeColor: "#42a5f5", strokeOpacity: 0.5, strokeWeight: 10, }}
+      onClick={() => this.setPerIndex(index)}
+    />
   }
 
   showInfo = (marker, index) => {
@@ -289,7 +290,7 @@ class GoogleMap extends React.Component {
 
                 {
                   (this.state.drawPerimeter) ? (
-                    <i className="material-icons right">check</i>
+                    <i className="material-icons right">cancel</i>
                   ) :
                     <i className="material-icons right">add_circle</i>
                 }
