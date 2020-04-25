@@ -56,6 +56,9 @@ class GoogleMap extends React.Component {
       ],
       newPerimeterStart: null,
       newPerimeterEnd: null,
+
+      deviceFromTreeSelected: false,
+      deviceFromTree: null,
     }
 
     this.domNode = null;
@@ -123,17 +126,31 @@ class GoogleMap extends React.Component {
     const lat = latLng.lat();
     const lng = latLng.lng();
 
-    this.setState({
-      showInfo: false,
-      markers: [
-        ...this.state.markers,
-        {
-          title: "T",
-          name: "T",
-          position: { lat, lng },
-        }
-      ],
-    });
+    if (this.state.deviceFromTreeSelected) {
+      this.setState({
+        showInfo: false,
+        markers: [
+          ...this.state.markers,
+          {
+            title: this.state.deviceFromTree.name,
+            name: this.state.deviceFromTree.name,
+            position: { lat, lng },
+          }
+        ],
+      });
+    } else {
+      this.setState({
+        showInfo: false,
+        markers: [
+          ...this.state.markers,
+          {
+            title: "Test",
+            name: "Test",
+            position: { lat, lng },
+          }
+        ],
+      });
+    }
 
     this.setState({
       showPerDel: false,
@@ -266,11 +283,16 @@ class GoogleMap extends React.Component {
     this.hideInfo();
   }
 
-  onDeviceClicked(e, id) {
+  onDeviceClicked(e, item) {
     e.preventDefault();
     
     console.log(e);
-    console.log(id);
+    console.log(item);
+
+    this.setState({
+      deviceFromTreeSelected: true,
+      deviceFromTree: item,
+    });
   }
 
   render() {
