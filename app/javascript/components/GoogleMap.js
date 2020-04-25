@@ -13,22 +13,8 @@ class GoogleMap extends React.Component {
     super(props);
 
     this.state = {
-      perimeterIndex: null,
-      showPerDel: false,
 
-      path: [
-        { lat: 47.6307081, lng: -122.1434325 },
-        { lat: 47.2052192687988, lng: -121.988426208496 }
-      ],
-      stores: [
-        { lat: 47.49855629475769, lng: -122.14184416996333 },
-        { latitude: 47.359423, longitude: -122.021071 },
-        { latitude: 47.2052192687988, longitude: -121.988426208496 },
-        { latitude: 47.6307081, longitude: -122.1434325 },
-        { latitude: 47.3084488, longitude: -122.2140121 },
-        { latitude: 47.5524695, longitude: -122.0425407 }
-      ],
-
+      // Marker Data
       markers: [
         {
           title: "Device 3AB6DA",
@@ -36,6 +22,7 @@ class GoogleMap extends React.Component {
         }
       ],
 
+      // Marker InfoWindow Data
       showInfo: false,
       markerInfo: {
         markerIndex: null,
@@ -46,18 +33,32 @@ class GoogleMap extends React.Component {
         },
       },
 
+      // Perim Data
       drawPerimeter: false,
       perimeters: [
         {
+          name: "Perimeter 1",
           path: [
             { lat: 47.6307081, lng: -122.1434325 },
             { lat: 47.2052192687988, lng: -121.988426208496 }
           ],
         },
       ],
+
+      // Data for adding new Perim 
       newPerimeterStart: null,
       newPerimeterEnd: null,
 
+      // Delete Perim data
+      perimeterIndex: null,
+      showPerDel: false,
+
+      // Perim InfoWindow Data
+      perInfoTitle: "Perimeter",
+      perInfoLat: 47.6307081,
+      perInfoLng: -122.1434325,
+
+      // Data for adding new marker form treeview
       deviceFromTreeSelected: false,
       deviceFromTree: null,
     }
@@ -72,6 +73,7 @@ class GoogleMap extends React.Component {
     this.handleKey = this.handleKey.bind(this);
     
     this.onDeviceClicked = this.onDeviceClicked.bind(this);
+    this.hidePerimInfo = this.hidePerimInfo.bind(this);
   }
 
   componentDidMount(){
@@ -170,6 +172,9 @@ class GoogleMap extends React.Component {
       showPerDel: false,
       perimeterIndex: null,
 
+      perInfoLat: 47.6307081,
+      perInfoLng: -122.1434325,
+
       deviceFromTreeSelected: false,
       deviceFromTree: null,
     });
@@ -225,6 +230,10 @@ class GoogleMap extends React.Component {
 
     this.setState({
       showPerDel: false,
+
+      perInfoLat: 47.6307081,
+      perInfoLng: -122.1434325,
+
       perimeterIndex: null,
     });
   };
@@ -240,6 +249,9 @@ class GoogleMap extends React.Component {
           lng: -122.1434325
         },
       },
+
+      deviceFromTreeSelected: false,
+      deviceFromTree: null,
     });
   };
 
@@ -263,6 +275,9 @@ class GoogleMap extends React.Component {
   };
 
   toggleDrawPerimeter() {
+    // Hide infowindow
+    this.hidePerimInfo();
+
     this.setState({
       drawPerimeter: !this.state.drawPerimeter,
     });
@@ -276,10 +291,14 @@ class GoogleMap extends React.Component {
   }
 
   pushNewPerimeterAndClear() {
+    // Get per name
+    var perName = this.generatePerName();
+
     this.setState({
       perimeters: [
         ...this.state.perimeters,
         {
+          name: perName,
           path: [
             this.state.newPerimeterStart,
             this.state.newPerimeterEnd,
@@ -291,13 +310,67 @@ class GoogleMap extends React.Component {
     this.toggleDrawPerimeter();
   }
 
+  generatePerName(){
+    let perI = 1;
+    let visited = [];
+
+    this.state.perimeters.forEach(perimeter => {
+      let curr = parseInt(perimeter.name.split(" ")[1]);
+      visited.push(curr);
+    });
+
+    visited.sort(function(a, b){return a-b});
+
+    if (perI >= visited[0]) {
+      for (let i = 0; i < visited.length; i++) {
+
+        if (visited[i + 1]) {
+          if (visited[i + 1] != visited[i] + 1) {
+            perI = visited[i] + 1;
+            break;
+          }
+        } else {
+          perI = visited[i] + 1;
+        }
+      }
+    }
+    
+    return "Perimeter " + perI;
+  }
+
   setPerIndex(index) {
     this.setState({
-      showPerDel: true,
       perimeterIndex: index,
+      perInfoTitle: this.state.perimeters[index].name,
+      showPerDel: true,
+
+      perInfoLat: this.getMidpoint(
+        this.state.perimeters[index].path[0].lat,
+        this.state.perimeters[index].path[1].lat),
+      perInfoLng: this.getMidpoint(
+        this.state.perimeters[index].path[0].lng,
+        this.state.perimeters[index].path[1].lng),
     });
 
     this.hideInfo();
+  }
+
+  hidePerimInfo() {
+    this.setState({
+      showPerDel: false,
+      perimeterIndex: null,
+      perInfoTitle: "Perimeter",
+      
+      perInfoLat: 47.6307081,
+      perInfoLng: -122.1434325,
+
+      deviceFromTreeSelected: false,
+      deviceFromTree: null,
+    });
+  }
+
+  getMidpoint(p1, p2) {
+    return (p1 + p2) / 2;
   }
 
   onDeviceClicked(e, isDevice, item) {
@@ -318,13 +391,6 @@ class GoogleMap extends React.Component {
   }
 
   render() {
-    const icon = {
-      path: 'M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z',
-      fillColor: 'lightblue',
-      fillOpacity: 1,
-      scale: 0.02,
-     };
-
     return (
       <div className="wrapper" onKeyUp={this.handleKey}>
 
@@ -446,6 +512,22 @@ class GoogleMap extends React.Component {
 
             <div>
               <p style={infoTitle}>{this.state.markerInfo.title}</p>
+            </div>
+
+          </InfoWindow>
+
+          <InfoWindow
+            visible={this.state.showPerDel}
+            onCloseClick={this.hidePerimInfo}
+            onClose={this.hidePerimInfo}
+
+            position={{
+              lat: this.state.perInfoLat,
+              lng: this.state.perInfoLng,
+            }} >
+
+            <div>
+              <p style={infoTitle}>{this.state.perInfoTitle}</p>
             </div>
 
           </InfoWindow>
