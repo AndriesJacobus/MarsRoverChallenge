@@ -127,17 +127,24 @@ class GoogleMap extends React.Component {
     const lng = latLng.lng();
 
     if (this.state.deviceFromTreeSelected) {
-      this.setState({
-        showInfo: false,
-        markers: [
-          ...this.state.markers,
-          {
-            title: name == "" ? this.state.deviceFromTree.name : name,
-            name: name == "" ? this.state.deviceFromTree.name : name,
-            position: { lat, lng },
-          }
-        ],
-      });
+      // Todo: make sure device names are unique
+
+      var index = this.state.markers.findIndex(x => x.title == this.state.deviceFromTree.name);
+
+      if (index == -1) {
+        // Marker with device name not yet placed
+        this.setState({
+          showInfo: false,
+          markers: [
+            ...this.state.markers,
+            {
+              title: name == "" ? this.state.deviceFromTree.name : name,
+              name: name == "" ? this.state.deviceFromTree.name : name,
+              position: { lat, lng },
+            }
+          ],
+        });
+      }
     }
     else if (name != "") {
       this.setState({
