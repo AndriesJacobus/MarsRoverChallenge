@@ -38,9 +38,9 @@ const data = {
   ],
 };
 
-const renderTree = (nodes) => (
-  <TreeItem key={nodes.id} nodeId={nodes.id} label={nodes.name}>
-    {Array.isArray(nodes.children) ? nodes.children.map((node) => renderTree(node)) : null}
+const renderTree = (nodes, props) => (
+  <TreeItem key={nodes.id} nodeId={nodes.id} label={nodes.name} onClick={(e) => props.onDeviceClicked(e, nodes.id)}>
+    {Array.isArray(nodes.children) ? nodes.children.map((node) => renderTree(node, props)) : null}
   </TreeItem>
 );
 
@@ -52,7 +52,7 @@ const CustomTreeView = props => (
     defaultExpandIcon={<ChevronRightIcon />}
     >
 
-    {renderTree(data)}
+    {renderTree(data, props)}
   </TreeView>
 )
 

@@ -66,6 +66,8 @@ class GoogleMap extends React.Component {
     this.toggleDrawPerimeter = this.toggleDrawPerimeter.bind(this);
     this.deletePerimeter = this.deletePerimeter.bind(this);
     this.handleKey = this.handleKey.bind(this);
+    
+    this.onDeviceClicked = this.onDeviceClicked.bind(this);
   }
 
   componentDidMount(){
@@ -264,6 +266,13 @@ class GoogleMap extends React.Component {
     this.hideInfo();
   }
 
+  onDeviceClicked(e, id) {
+    e.preventDefault();
+    
+    console.log(e);
+    console.log(id);
+  }
+
   render() {
     const icon = {
       path: 'M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z',
@@ -407,7 +416,7 @@ class GoogleMap extends React.Component {
 
           <div style={{ margin: 15, }} />
 
-          <CustomTreeView />
+          <CustomTreeView onDeviceClicked={this.onDeviceClicked} />
         </div>
 
       </div>
