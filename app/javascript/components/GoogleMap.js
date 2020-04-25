@@ -64,6 +64,8 @@ class GoogleMap extends React.Component {
     }
 
     this.domNode = null;
+    this.tree = null,
+
     this.onClick = this.onClick.bind(this);
     this.hideInfo = this.hideInfo.bind(this);
     this.onMarkerDragEnd = this.onMarkerDragEnd.bind(this);
@@ -74,6 +76,7 @@ class GoogleMap extends React.Component {
     
     this.onDeviceClicked = this.onDeviceClicked.bind(this);
     this.hidePerimInfo = this.hidePerimInfo.bind(this);
+    this.triggerPerimAdd = this.triggerPerimAdd.bind(this);
   }
 
   componentDidMount(){
@@ -307,6 +310,7 @@ class GoogleMap extends React.Component {
       ],
     });
 
+    this.triggerPerimAdd(perName);
     this.toggleDrawPerimeter();
   }
 
@@ -360,7 +364,7 @@ class GoogleMap extends React.Component {
       showPerDel: false,
       perimeterIndex: null,
       perInfoTitle: "Perimeter",
-      
+
       perInfoLat: 47.6307081,
       perInfoLng: -122.1434325,
 
@@ -388,6 +392,14 @@ class GoogleMap extends React.Component {
         },
       });
     }
+  }
+
+  triggerPerimAdd(title = "Perimeter") {
+    this.tree.addNewNode({
+      treeIndex: 0,
+      title: title,
+      isDevice: false,
+    });
   }
 
   render() {
@@ -543,7 +555,10 @@ class GoogleMap extends React.Component {
           <div style={{ margin: 15, }} />
 
           {/* <CustomTreeView onDeviceClicked={this.onDeviceClicked} /> */}
-          <SortableTreeView onDeviceClicked={this.onDeviceClicked} />
+          <SortableTreeView
+            ref={tree => this.tree = tree}
+            onDeviceClicked={this.onDeviceClicked}
+          />
 
         </div>
 

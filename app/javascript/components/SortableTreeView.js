@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import SortableTree from 'react-sortable-tree';
 import 'react-sortable-tree/style.css';
+import {addNodeUnderParent} from 'react-sortable-tree';
 import FileExplorerTheme from 'react-sortable-tree-theme-file-explorer';
 
 class SortableTreeView extends Component {
@@ -49,6 +50,41 @@ class SortableTreeView extends Component {
     };
   }
 
+  updateTreeData(newData) {
+    this.setState({
+      treeData: newData
+    });
+  }
+
+  addNewNode(rowInfo) {
+    const NEW_NODE = {
+      title: rowInfo.title,
+      isDevice: rowInfo.isDevice,
+      isDirectory: false
+    };
+
+    const newTree = addNodeUnderParent({
+      treeData: this.state.treeData,
+      newNode: NEW_NODE,
+      expandParent: true,
+      parentKey: rowInfo ? rowInfo.treeIndex : undefined,
+      getNodeKey: ({ treeIndex }) => treeIndex,
+    });
+
+    this.updateTreeData(newTree.treeData);
+  }
+
+  removeNode(rowInfo) {
+    const { path } = rowInfo;
+    const newTree = removeNodeAtPath({
+      treeData: this.state.treeData,
+      path,
+      getNodeKey: ({ treeIndex }) => treeIndex,
+    });
+
+    this.updateTreeData(newTree);
+  }
+
   render() {
     return (
       <div style={{ height: 300, width: '20vw', }}>
@@ -60,10 +96,9 @@ class SortableTreeView extends Component {
           theme={FileExplorerTheme}
           maxDepth={4}
           generateNodeProps={rowInfo => ({
-            onClick: (event) => { 
-              console.log(rowInfo);
+            onClick: (event) => {
+              // console.log(rowInfo);
               this.props.onDeviceClicked(event, rowInfo.node.isDevice, rowInfo.node)
-              // console.log(event.target);
             }
           })}
         />
