@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import { Map, GoogleApiWrapper, Marker, Polyline, InfoWindow } from 'google-maps-react';
 import CustomTreeView from './CustomTreeView';
+import SortableTreeView from './SortableTreeView';
 
 React.useLayoutEffect = React.useEffect
 
@@ -158,6 +159,11 @@ class GoogleMap extends React.Component {
           }
         ],
       });
+    } else {
+      //  Hide infowindow
+      this.setState({
+        showInfo: false,
+      });
     }
 
     this.setState({
@@ -297,16 +303,18 @@ class GoogleMap extends React.Component {
   onDeviceClicked(e, isDevice, item) {
     e.preventDefault();
     
-    console.log(e);
-    console.log(item);
+    // console.log(e);
+    // console.log(item);
 
     if (isDevice) {
       this.setState({
         deviceFromTreeSelected: true,
-        deviceFromTree: item,
+        deviceFromTree: {
+          id: item.id,
+          name: item.title,
+        },
       });
     }
-    
   }
 
   render() {
@@ -452,7 +460,9 @@ class GoogleMap extends React.Component {
 
           <div style={{ margin: 15, }} />
 
-          <CustomTreeView onDeviceClicked={this.onDeviceClicked} />
+          {/* <CustomTreeView onDeviceClicked={this.onDeviceClicked} /> */}
+          <SortableTreeView onDeviceClicked={this.onDeviceClicked} />
+
         </div>
 
       </div>

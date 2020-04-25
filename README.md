@@ -121,7 +121,8 @@ The functional requirements of the MVP Phase One include:
    1. Client Admin
    2. Client Operator
    3. Client Group (sigf Group)
-      1. Devices
+      1. MapGroups (Perimeter)
+      2. Devices
 
 ## Extra Added Functional Requirements
 - [ ] Client Admin
@@ -181,11 +182,11 @@ The functional requirements of the MVP Phase One include:
 
 - [ ] 3. Map View
   - [x]  Static map (integrated a dynamic map)
-  - [ ]  Graphical representation of layout of perimeter
-    - [ ]  Groups allowing access to individual bridges and devices
-  - [ ]  Editable
-    - [ ]  Provide a list of configured groups and devices
-    - [ ]  Groups and devices can be placed on map
+  - [x]  Graphical representation of layout of perimeter
+    - [x]  Groups allowing access to individual bridges and devices
+  - [x]  Editable
+    - [x]  Provide a list of configured groups and devices
+    - [x]  Groups and devices can be placed on map
   - [ ]  Indication of device events/states using colour, icons
     - [ ]  Alarm
     - [ ]  Online/offline
@@ -204,17 +205,17 @@ The functional requirements of the MVP Phase One include:
       - [ ]  Maintenance
       - [ ]  Device Online/Offline
     - [ ]  List groups, devices currently configured on system
-    - [ ]  Actions
-      - [ ]  Notify
-        - [ ]  Allow notifications to be set on individual devices or group of devices
-        - [ ]  Group notification settings apply to devices in group as well
-        - [ ]  Notification options
-        - [ ]  Map view
-      - [ ]  Ignore
-        - [ ]  Prevent individual devices in a group from sending notifications
-        - [ ]  Same options as notify
+  - [ ]  Actions
+    - [ ]  Notify
+      - [ ]  Allow notifications to be set on individual devices or group of devices
+      - [ ]  Group notification settings apply to devices in group as well
+      - [ ]  Notification options
+      - [ ]  Map view
+    - [ ]  Ignore
+      - [ ]  Prevent individual devices in a group from sending notifications
+      - [ ]  Same options as notify
   - [ ]  New added devices configured with default rules
-    - [ ]  Notify on map view on alarms, maintenance, offline devices
+  - [ ]  Notify on map view on alarms, maintenance, offline devices
   
 - [ ] 5. Controller Deliverables
   - [ ]  Cloud server

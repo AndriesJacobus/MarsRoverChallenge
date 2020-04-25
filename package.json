@@ -9,6 +9,8 @@
     "@material-ui/lab": "^4.0.0-alpha.50",
     "@material-ui/styles": "^4.9.10",
     "@rails/webpacker": "4.2.2",
+    "@syncfusion/ej2-react-grids": "^18.1.45",
+    "@syncfusion/ej2-react-navigations": "^18.1.45",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
     "d3-array": "^2.4.0",
     "d3-request": "^1.0.6",
@@ -23,6 +25,8 @@
     "react-addons-update": "^15.6.2",
     "react-dom": "^16.13.1",
     "react-map-gl": "^5.2.5",
+    "react-sortable-tree": "^2.7.1",
+    "react-sortable-tree-theme-file-explorer": "^2.0.0",
     "react_ujs": "^2.6.1",
     "typeface-roboto": "0.0.75",
     "webpack": "^4.43.0"
