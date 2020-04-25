@@ -215,7 +215,7 @@ The functional requirements of the MVP Phase One include:
       - [ ]  Prevent individual devices in a group from sending notifications
       - [ ]  Same options as notify
   - [ ]  New added devices configured with default rules
-  - [ ]  Notify on map view on alarms, maintenance, offline devices
+  - [ ]  Notify via map view on alarms, maintenance, offline devices
   
 - [ ] 5. Controller Deliverables
   - [ ]  Cloud server
