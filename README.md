@@ -174,7 +174,7 @@ The functional requirements of the MVP Phase One include:
     - [X]  Rename devices
     - [ ]  Group devices
     - [ ]  Rename groups
-    - [ ]  Tree list view of devices, groups already configured
+    - [ ]  Tree list view of devices and groups already configured
   
 - [ ] 2. Log
   - [ ]  List view

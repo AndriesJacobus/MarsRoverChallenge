@@ -15,12 +15,13 @@ class GoogleMap extends React.Component {
     this.state = {
 
       // Marker Data
-      markers: [
-        {
-          title: "Device 3AB6DA",
-          position: { lat: 47.6307081, lng: -122.1434325 },
-        }
-      ],
+      // markers: [
+      //   {
+      //     title: "Device 3AB6DA",
+      //     position: { lat: 47.6307081, lng: -122.1434325 },
+      //   }
+      // ],
+      markers: [],
 
       // Marker InfoWindow Data
       showInfo: false,
@@ -35,15 +36,16 @@ class GoogleMap extends React.Component {
 
       // Perim Data
       drawPerimeter: false,
-      perimeters: [
-        {
-          name: "Perimeter 1",
-          path: [
-            { lat: 47.6307081, lng: -122.1434325 },
-            { lat: 47.2052192687988, lng: -121.988426208496 }
-          ],
-        },
-      ],
+      // perimeters: [
+      //   {
+      //     name: "Perimeter 1",
+      //     path: [
+      //       { lat: 47.6307081, lng: -122.1434325 },
+      //       { lat: 47.2052192687988, lng: -121.988426208496 }
+      //     ],
+      //   },
+      // ],
+      perimeters: [],
 
       // Data for adding new Perim 
       newPerimeterStart: null,
@@ -78,11 +80,16 @@ class GoogleMap extends React.Component {
     this.hidePerimInfo = this.hidePerimInfo.bind(this);
     this.triggerPerimAdd = this.triggerPerimAdd.bind(this);
     this.addInitialDevices = this.addInitialDevices.bind(this);
+    // this.addInitialPerimeters = this.addInitialPerimeters.bind(this);
   }
 
   componentDidMount(){
     // Load devices
     this.addInitialDevices();
+
+    // Todo: Load map_groups as initial perimeters
+    // this.addInitialPerimeters();
+    console.log(this.props.map_groups);
   }
 
   handleKey(e) {
@@ -437,6 +444,26 @@ class GoogleMap extends React.Component {
     // place on relevant loc on map (trigger onClick)
   }
 
+  addInitialPerimeters() {
+    // Build perimeters
+    let perimeters = [];
+
+    this.props.map_groups.forEach(map_group => {
+      perimeters.push({
+        // Todo: Add device state, alarm, etc
+        title: map_group.Name,
+        isDevice: false,
+        treeIndex: 0,
+      });
+    });
+
+    // Push devices
+    this.tree.addNewNodes(perimeters);
+
+    // Todo since all map_groups already have loc data in prop,
+    // place each map_group on relevant loc on map (trigger perimeter add)
+  }
+
   render() {
     return (
       <div className="wrapper" onKeyUp={this.handleKey}>
@@ -648,6 +675,7 @@ GoogleMap.propTypes = {
   markerIconUrl: PropTypes.string,
   perimIconUrl: PropTypes.string,
   devices: PropTypes.array,
+  map_groups: PropTypes.array,
 };
 
 export default GoogleApiWrapper({

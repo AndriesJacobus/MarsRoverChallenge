@@ -34,27 +34,6 @@
     <% if current_user.usertype == "Sysadmin" || current_user.usertype == "Client Admin" %>
 
       <div class="col s4">
-        <%= link_to users_path do %>
-          <%= react_component("DashboardCard",
-            {
-              title:
-                "Users",
-              content:
-                "Users each have their own privileges based on their user type.
-                Admin users, for example, have access to all functionalities while
-                Operators, only have limited access to views such as Logs and Device Maps.",
-              resource:
-                asset_path("users.jpg"),
-              link:
-                users_path,
-              linkText:
-                "Go to Users",
-            })
-          %>
-        <% end %>
-      </div>
-
-      <div class="col s4">
         <%= link_to clients_path do %>
           <%= react_component("DashboardCard",
             {
@@ -70,6 +49,27 @@
                 clients_path,
               linkText:
                 "Go to Clients",
+            })
+          %>
+        <% end %>
+      </div>
+
+      <div class="col s4">
+        <%= link_to users_path do %>
+          <%= react_component("DashboardCard",
+            {
+              title:
+                "Users",
+              content:
+                "Users each have their own privileges based on their user type.
+                Admin users, for example, have access to all functionalities while
+                Operators, only have limited access to views such as Logs and Device Maps.",
+              resource:
+                asset_path("users.jpg"),
+              link:
+                users_path,
+              linkText:
+                "Go to Users",
             })
           %>
         <% end %>
@@ -96,6 +96,26 @@
       </div>
 
       <div class="col s4">
+        <%= link_to map_groups_path do %>
+          <%= react_component("DashboardCard",
+            {
+              title:
+                "Map Groups",
+              content:
+                "Devices are arranged on a map via map groups. A map group is
+                a group of devices coupled together to form a section of a perimeter.",
+              resource:
+                asset_path("map_groups.jpg"),
+              link:
+                map_groups_path,
+              linkText:
+                "Go to Map Groups",
+            })
+          %>
+        <% end %>
+      </div>
+
+      <div class="col s4">
         <%= link_to devices_path do %>
           <%= react_component("DashboardCard",
             {
@@ -111,26 +131,6 @@
                 devices_path,
               linkText:
                 "Go to Devices",
-            })
-          %>
-        <% end %>
-      </div>
-
-      <div class="col s4">
-        <%= link_to map_groups_path do %>
-          <%= react_component("DashboardCard",
-            {
-              title:
-                "Map Groups",
-              content:
-                "Devices are arranged on a map via map groups. A map group is
-                a group of devices coupled together to form a section of a perimeter.",
-              resource:
-                asset_path("map_groups.jpg"),
-              link:
-                map_groups_path,
-              linkText:
-                "Go to Map Groups",
             })
           %>
         <% end %>
