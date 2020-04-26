@@ -15,32 +15,22 @@ class SortableTreeView extends Component {
           title: 'Client Group',
           children: [
             {
-              id: '3',
-              title: 'Perimeter Test',
-              children: [
-                {
-                  id: '4',
-                  title: 'Device 1',
-                  isDevice: true,
-                },
-                {
-                  id: '5',
-                  title: 'Device 2',
-                  isDevice: true,
-                },
-              ],
-            },
-            {
               id: '1',
-              title: 'Perimeter Test (Empty)',
+              title: 'Device 1',
+              isDevice: true,
             },
             {
-              id: '11',
+              id: '2',
+              title: 'Device 2',
+              isDevice: true,
+            },
+            {
+              id: '3',
               title: 'Device 3',
               isDevice: true,
             },
             {
-              id: '12',
+              id: '4',
               title: 'Device 4',
               isDevice: true,
             },
@@ -124,7 +114,9 @@ class SortableTreeView extends Component {
         treeData: newTree
       }, () => {
         // Lastly re-add children (if any)
-        this.addNewNodes(children);
+        if (children.length >= 1) {
+          this.addNewNodes(children);
+        }
       });
     }
   }

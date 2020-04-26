@@ -393,6 +393,8 @@ class GoogleMap extends React.Component {
           name: item.title,
         },
       });
+    } else {
+      // Todo: Show perimeter info
     }
   }
 
