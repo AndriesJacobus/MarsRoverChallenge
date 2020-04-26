@@ -270,6 +270,8 @@ class GoogleMap extends React.Component {
   deletePerimeter(event) {
     event.preventDefault();
 
+    this.triggerPerimRemove(this.state.perInfoTitle);
+
     this.state.perimeters.splice(this.state.perimeterIndex, 1);
     this.setState({
       showPerDel: false,
@@ -399,6 +401,12 @@ class GoogleMap extends React.Component {
       treeIndex: 0,
       title: title,
       isDevice: false,
+    });
+  }
+
+  triggerPerimRemove(title = "Perimeter") {
+    this.tree.removeNode({
+      title: title,
     });
   }
 

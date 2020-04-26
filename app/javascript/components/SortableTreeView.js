@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import SortableTree from 'react-sortable-tree';
 import 'react-sortable-tree/style.css';
-import {addNodeUnderParent} from 'react-sortable-tree';
+import {addNodeUnderParent, removeNodeAtPath, find, defaultSearchMethod} from 'react-sortable-tree';
 import FileExplorerTheme from 'react-sortable-tree-theme-file-explorer';
 
 class SortableTreeView extends Component {
@@ -16,7 +16,7 @@ class SortableTreeView extends Component {
           children: [
             {
               id: '3',
-              title: 'Perimeter 1',
+              title: 'Perimeter Test',
               children: [
                 {
                   id: '4',
@@ -32,7 +32,7 @@ class SortableTreeView extends Component {
             },
             {
               id: '1',
-              title: 'Perimeter 2 (Empty)',
+              title: 'Perimeter Test (Empty)',
             },
             {
               id: '11',
@@ -75,14 +75,31 @@ class SortableTreeView extends Component {
   }
 
   removeNode(rowInfo) {
-    const { path } = rowInfo;
-    const newTree = removeNodeAtPath({
-      treeData: this.state.treeData,
-      path,
-      getNodeKey: ({ treeIndex }) => treeIndex,
-    });
+    let m = [];
 
-    this.updateTreeData(newTree);
+    const nT = find({
+      treeData: this.state.treeData,
+      getNodeKey: ({ treeIndex }) => treeIndex,
+      searchQuery: rowInfo.title,
+      searchMethod: defaultSearchMethod,
+      searchFocusOffset: 1,
+      matches: [],
+    });
+    
+    m = nT.matches;
+    // console.log(m);
+
+    // Will delete the first match
+    if (m.length >= 1) {
+      const path = m[0].path;
+      const newTree = removeNodeAtPath({
+        treeData: this.state.treeData,
+        path,
+        getNodeKey: ({ treeIndex }) => treeIndex,
+      });
+  
+      this.updateTreeData(newTree);
+    }
   }
 
   render() {
@@ -97,7 +114,7 @@ class SortableTreeView extends Component {
           maxDepth={4}
           generateNodeProps={rowInfo => ({
             onClick: (event) => {
-              // console.log(rowInfo);
+              console.log(rowInfo);
               this.props.onDeviceClicked(event, rowInfo.node.isDevice, rowInfo.node)
             }
           })}
