@@ -29,15 +29,19 @@ class ClientGroupsController < ApplicationController
       @client_group = ClientGroup.find(params[:id])
 
       if current_user.usertype == "Sysadmin"
+        # Todo: filter - only show devices linked to current client_group
+        # @devices = Devices.where(client_group: params[:id])
         @devices = Device.all
       elsif current_user
+        # Todo: filter - only show devices linked to current client_group
+        # Todo: filter - only show devices linked to current client
         # @devices = Devices.where(client_group: params[:id])
         @devices = Device.all
       else
-        redirect_to root_path, flash: {warning: 'Please log in as an Admin before viewing this page' }
+        redirect_to root_path, flash: {warning: 'Please log in before viewing this page' }
       end
     else
-      redirect_to root_path, flash: {warning: 'Please log in as an Admin before viewing this page' }
+      redirect_to root_path, flash: {warning: 'Please log in before viewing this page' }
     end
   end
 

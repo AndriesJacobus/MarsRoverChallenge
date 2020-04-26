@@ -77,9 +77,12 @@ class GoogleMap extends React.Component {
     this.onDeviceClicked = this.onDeviceClicked.bind(this);
     this.hidePerimInfo = this.hidePerimInfo.bind(this);
     this.triggerPerimAdd = this.triggerPerimAdd.bind(this);
+    this.addInitialDevices = this.addInitialDevices.bind(this);
   }
 
   componentDidMount(){
+    // Load devices
+    this.addInitialDevices();
   }
 
   handleKey(e) {
@@ -133,6 +136,7 @@ class GoogleMap extends React.Component {
     const lng = latLng.lng();
 
     if (this.state.deviceFromTreeSelected) {
+      // First time placing marker
       // Todo: make sure device names are unique
 
       var index = this.state.markers.findIndex(x => x.title == this.state.deviceFromTree.name);
@@ -153,6 +157,7 @@ class GoogleMap extends React.Component {
       }
     }
     else if (name != "") {
+      // Marker dragged - Redraw
       this.setState({
         showInfo: false,
         markers: [
@@ -165,7 +170,7 @@ class GoogleMap extends React.Component {
         ],
       });
     } else {
-      //  Hide infowindow
+      //  Click on map - Hide infowindow
       this.setState({
         showInfo: false,
       });
@@ -412,6 +417,26 @@ class GoogleMap extends React.Component {
     });
   }
 
+  addInitialDevices() {
+    // Build devices
+    let devices = [];
+
+    this.props.devices.forEach(device => {
+      devices.push({
+        // Todo: Add device state, alarm, etc
+        title: device.Name,
+        isDevice: true,
+        treeIndex: 0,
+      });
+    });
+
+    // Push devices
+    this.tree.addNewNodes(devices);
+
+    // Todo: if devices have been placed (already have loc data in prop),
+    // place on relevant loc on map (trigger onClick)
+  }
+
   render() {
     return (
       <div className="wrapper" onKeyUp={this.handleKey}>
@@ -622,6 +647,7 @@ const elementsStyle = {
 GoogleMap.propTypes = {
   markerIconUrl: PropTypes.string,
   perimIconUrl: PropTypes.string,
+  devices: PropTypes.array,
 };
 
 export default GoogleApiWrapper({

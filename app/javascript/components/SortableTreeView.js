@@ -13,28 +13,28 @@ class SortableTreeView extends Component {
         {
           id: 'root',
           title: 'Client Group',
-          children: [
-            {
-              id: '1',
-              title: 'Device 1',
-              isDevice: true,
-            },
-            {
-              id: '2',
-              title: 'Device 2',
-              isDevice: true,
-            },
-            {
-              id: '3',
-              title: 'Device 3',
-              isDevice: true,
-            },
-            {
-              id: '4',
-              title: 'Device 4',
-              isDevice: true,
-            },
-          ],
+          // children: [
+          //   {
+          //     id: '1',
+          //     title: 'Device 1',
+          //     isDevice: true,
+          //   },
+          //   {
+          //     id: '2',
+          //     title: 'Device 2',
+          //     isDevice: true,
+          //   },
+          //   {
+          //     id: '3',
+          //     title: 'Device 3',
+          //     isDevice: true,
+          //   },
+          //   {
+          //     id: '4',
+          //     title: 'Device 4',
+          //     isDevice: true,
+          //   },
+          // ],
         }
       ],
     };
@@ -122,28 +122,30 @@ class SortableTreeView extends Component {
   }
   
   addNewNodes(nodes, index = 0) {
-    const NEW_NODE = {
-      title: nodes[index].title,
-      isDevice: nodes[index].isDevice,
-      isDirectory: false
-    };
-
-    const newTree = addNodeUnderParent({
-      treeData: this.state.treeData,
-      newNode: NEW_NODE,
-      expandParent: true,
-      parentKey: nodes[index] ? nodes[index].treeIndex : undefined,
-      getNodeKey: ({ treeIndex }) => treeIndex,
-    });
-
-    // this.updateTreeData(newTree.treeData);
-    this.setState({
-      treeData: newTree.treeData
-    }, () => {
-      if (nodes[index + 1]) {
-        this.addNewNodes(nodes, index + 1);
-      }
-    });
+    if (nodes && nodes.length >= 1) {
+      const NEW_NODE = {
+        title: nodes[index].title,
+        isDevice: nodes[index].isDevice,
+        isDirectory: false
+      };
+  
+      const newTree = addNodeUnderParent({
+        treeData: this.state.treeData,
+        newNode: NEW_NODE,
+        expandParent: true,
+        parentKey: nodes[index] ? nodes[index].treeIndex : undefined,
+        getNodeKey: ({ treeIndex }) => treeIndex,
+      });
+  
+      // this.updateTreeData(newTree.treeData);
+      this.setState({
+        treeData: newTree.treeData
+      }, () => {
+        if (nodes[index + 1]) {
+          this.addNewNodes(nodes, index + 1);
+        }
+      });
+    }
   }
 
   render() {
