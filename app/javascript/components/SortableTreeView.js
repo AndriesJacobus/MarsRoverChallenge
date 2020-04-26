@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import SortableTree from 'react-sortable-tree';
 import 'react-sortable-tree/style.css';
-import {addNodeUnderParent, removeNodeAtPath, find, defaultSearchMethod} from 'react-sortable-tree';
+import { addNodeUnderParent, removeNodeAtPath, find, defaultSearchMethod } from 'react-sortable-tree';
 import FileExplorerTheme from 'react-sortable-tree-theme-file-explorer';
 
 class SortableTreeView extends Component {
@@ -71,11 +71,14 @@ class SortableTreeView extends Component {
       getNodeKey: ({ treeIndex }) => treeIndex,
     });
 
-    this.updateTreeData(newTree.treeData);
+    // this.updateTreeData(newTree.treeData);
+    this.setState({
+      treeData: newTree.treeData
+    });
   }
 
   removeNode(rowInfo) {
-    let m = [];
+    let matches = [];
 
     const nT = find({
       treeData: this.state.treeData,
@@ -85,21 +88,70 @@ class SortableTreeView extends Component {
       searchFocusOffset: 1,
       matches: [],
     });
-    
-    m = nT.matches;
-    // console.log(m);
+
+    matches = nT.matches;
+    // console.log(matches);
 
     // Will delete the first match
-    if (m.length >= 1) {
-      const path = m[0].path;
+    if (matches.length >= 1) {
+      // First save children (if any)
+      let children = [];
+
+      // Perform deep copy
+      if (matches[0].node.children) {
+        matches[0].node.children.forEach(child => {
+          children.push({
+            id: child.id,
+            title: child.title,
+            isDevice: child.isDevice,
+            treeIndex: 0,
+          });
+        });
+      }
+
+      // console.log(children);
+
+      // Delete node
+      const path = matches[0].path;
       const newTree = removeNodeAtPath({
         treeData: this.state.treeData,
         path,
         getNodeKey: ({ treeIndex }) => treeIndex,
+        ignoreCollapsed: true,
       });
-  
-      this.updateTreeData(newTree);
+
+      this.setState({
+        treeData: newTree
+      }, () => {
+        // Lastly re-add children (if any)
+        this.addNewNodes(children);
+      });
     }
+  }
+  
+  addNewNodes(nodes, index = 0) {
+    const NEW_NODE = {
+      title: nodes[index].title,
+      isDevice: nodes[index].isDevice,
+      isDirectory: false
+    };
+
+    const newTree = addNodeUnderParent({
+      treeData: this.state.treeData,
+      newNode: NEW_NODE,
+      expandParent: true,
+      parentKey: nodes[index] ? nodes[index].treeIndex : undefined,
+      getNodeKey: ({ treeIndex }) => treeIndex,
+    });
+
+    // this.updateTreeData(newTree.treeData);
+    this.setState({
+      treeData: newTree.treeData
+    }, () => {
+      if (nodes[index + 1]) {
+        this.addNewNodes(nodes, index + 1);
+      }
+    });
   }
 
   render() {
@@ -111,10 +163,10 @@ class SortableTreeView extends Component {
           scaffoldBlockPxWidth={20}
           // getNodeKey={({ node }) => console.log(node)}
           theme={FileExplorerTheme}
-          maxDepth={4}
+          maxDepth={3}
           generateNodeProps={rowInfo => ({
             onClick: (event) => {
-              console.log(rowInfo);
+              // console.log(rowInfo);
               this.props.onDeviceClicked(event, rowInfo.node.isDevice, rowInfo.node)
             }
           })}
