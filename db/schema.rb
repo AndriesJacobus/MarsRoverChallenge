@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200422013232) do
+ActiveRecord::Schema.define(version: 20200426235209) do
 
   create_table "api_keys", force: :cascade do |t|
     t.string "username"
@@ -51,13 +51,14 @@ ActiveRecord::Schema.define(version: 20200422013232) do
     t.string "SigfoxCreatedByID"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "map_group_id"
+    t.index ["map_group_id"], name: "index_devices_on_map_group_id"
   end
 
   create_table "map_groups", force: :cascade do |t|
     t.string "Name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "devices_added"
   end
 
   create_table "messages", force: :cascade do |t|

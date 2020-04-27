@@ -37,6 +37,7 @@ class DevicesController < ApplicationController
   # POST /devices
   # POST /devices.json
   def create
+    # Todo: make sure device names are unique
     @device = Device.new(device_params)
 
     respond_to do |format|
@@ -53,6 +54,7 @@ class DevicesController < ApplicationController
   # PATCH/PUT /devices/1
   # PATCH/PUT /devices/1.json
   def update
+    # Todo: make sure device names are unique
     respond_to do |format|
       if @device.update(device_params)
         format.html { redirect_to @device, flash: {success: 'Device was successfully updated' } }
@@ -127,7 +129,7 @@ class DevicesController < ApplicationController
     }
 
     puts res.body
-    res.body
+    res.body.as_json
   end
 
   def get_device_info

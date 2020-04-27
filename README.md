@@ -14,7 +14,7 @@ You need to have the following installed to run the project:
 ### Build and run
 To build and run the code:
 
-`npm install`
+`npm install --save` or `yarn install`
 
 `rails server`
 
@@ -155,6 +155,9 @@ The functional requirements of the MVP Phase One include:
 - [ ] User Create Update
   - [ ] Only Sysadmins can create Client Admins
   - [ ] Only Sysadmins and Client Admins can create Operators
+- [ ] Device create via Message callback:
+  - [ ] if message comes in from device with sigfox ID not registered on wi-i, create new device and link message to device
+  - [ ] enable users to merge current devices with automatically created devices (copy over device name, client, client_group, map_group) 
 
 ## Progress
 - [ ] 1. Configuration
@@ -215,7 +218,7 @@ The functional requirements of the MVP Phase One include:
       - [ ]  Prevent individual devices in a group from sending notifications
       - [ ]  Same options as notify
   - [ ]  New added devices configured with default rules
-  - [ ]  Notify via map view on alarms, maintenance, offline devices
+    - [ ]  Notify via map view on alarms, maintenance, offline devices
   
 - [ ] 5. Controller Deliverables
   - [ ]  Cloud server

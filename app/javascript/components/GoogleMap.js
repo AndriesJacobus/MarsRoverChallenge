@@ -405,6 +405,9 @@ class GoogleMap extends React.Component {
           name: item.title,
         },
       });
+
+      // Find marker and show
+      
     } else {
       // Todo: Show perimeter info
     }
