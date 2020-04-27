@@ -13,28 +13,6 @@ class SortableTreeView extends Component {
         {
           id: 'root',
           title: 'Client Group',
-          // children: [
-          //   {
-          //     id: '1',
-          //     title: 'Device 1',
-          //     isDevice: true,
-          //   },
-          //   {
-          //     id: '2',
-          //     title: 'Device 2',
-          //     isDevice: true,
-          //   },
-          //   {
-          //     id: '3',
-          //     title: 'Device 3',
-          //     isDevice: true,
-          //   },
-          //   {
-          //     id: '4',
-          //     title: 'Device 4',
-          //     isDevice: true,
-          //   },
-          // ],
         }
       ],
     };
@@ -123,11 +101,29 @@ class SortableTreeView extends Component {
   
   addNewNodes(nodes, index = 0) {
     if (nodes && nodes.length >= 1) {
-      const NEW_NODE = {
-        title: nodes[index].title,
-        isDevice: nodes[index].isDevice,
-        isDirectory: false
-      };
+
+      let NEW_NODE;
+
+      if (nodes[index].isDevice) {
+        // Is device
+
+        NEW_NODE = {
+          id: nodes[index].id,
+          title: nodes[index].title,
+          isDevice: nodes[index].isDevice,
+          isDirectory: false
+        };
+      } else {
+        // Is perimeter
+        // Todo: add children (if present)
+
+        NEW_NODE = {
+          title: nodes[index].title,
+          isDevice: nodes[index].isDevice,
+          isDirectory: (nodes[index].children.length >= 1),
+          children: nodes[index].children,
+        };
+      }
   
       const newTree = addNodeUnderParent({
         treeData: this.state.treeData,
@@ -158,6 +154,14 @@ class SortableTreeView extends Component {
           // getNodeKey={({ node }) => console.log(node)}
           theme={FileExplorerTheme}
           maxDepth={3}
+          onMoveNode={(event) => {
+            console.log(event);
+
+            if (event.node.isDevice) {
+              // Only listen for Device drags
+              this.props.onDeviceDragged(event.node, event.nextParentNode)
+            }
+          }}
           generateNodeProps={rowInfo => ({
             onClick: (event) => {
               // console.log(rowInfo);

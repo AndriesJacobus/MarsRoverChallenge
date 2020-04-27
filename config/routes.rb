@@ -16,6 +16,7 @@ Rails.application.routes.draw do
 
   get '/client_groups/:id/map_view', to: 'client_groups#map_view', as: 'map_view'
   post '/client_groups/:id/add_map_group', to: 'client_groups#add_map_group', as: 'add_map_group'
+  post '/client_groups/:id/add_device_to_map_group', to: 'client_groups#add_device_to_map_group', as: 'add_device_to_map_group'
   
   get 'signup', to: 'users#new', as: 'signup'
   get 'login', to: 'sessions#new', as: 'login'

@@ -79,19 +79,15 @@ class GoogleMap extends React.Component {
     this.onDeviceClicked = this.onDeviceClicked.bind(this);
     this.hidePerimInfo = this.hidePerimInfo.bind(this);
     this.triggerPerimAdd = this.triggerPerimAdd.bind(this);
-    this.addInitialDevices = this.addInitialDevices.bind(this);
 
+    this.addInitialDevicesAndPerimeters = this.addInitialDevicesAndPerimeters.bind(this);
     this.publishNewPerim = this.publishNewPerim.bind(this);
-    // this.addInitialPerimeters = this.addInitialPerimeters.bind(this);
+    this.onDeviceDragged = this.onDeviceDragged.bind(this);
   }
 
   componentDidMount(){
     // Load devices
-    this.addInitialDevices();
-
-    // Todo: Load map_groups as initial perimeters
-    // this.addInitialPerimeters();
-    console.log(this.props.map_groups);
+    this.addInitialDevicesAndPerimeters();
   }
 
   handleKey(e) {
@@ -139,7 +135,7 @@ class GoogleMap extends React.Component {
     }
   };
 
-  placeMarker(coord, name = "") {
+  placeMarker(coord, id = 0, name = "") {
     const { latLng } = coord;
     const lat = latLng.lat();
     const lng = latLng.lng();
@@ -157,6 +153,7 @@ class GoogleMap extends React.Component {
           markers: [
             ...this.state.markers,
             {
+              id: id,
               title: name == "" ? this.state.deviceFromTree.name : name,
               name: name == "" ? this.state.deviceFromTree.name : name,
               position: { lat, lng },
@@ -172,6 +169,7 @@ class GoogleMap extends React.Component {
         markers: [
           ...this.state.markers,
           {
+            id: id,
             title: name,
             name: name,
             position: { lat, lng },
@@ -208,17 +206,17 @@ class GoogleMap extends React.Component {
         url: this.props.markerIconUrl,
         scaledSize: new window.google.maps.Size(40,40),
       }}
-      onDragend={(t, map, coord) => this.onMarkerDragEnd(coord, marker.title, index)}
+      onDragend={(t, map, coord) => this.onMarkerDragEnd(coord, marker.id, marker.title, index)}
       onClick={() => this.showInfo(marker, index)}
     />
   }
 
-  onMarkerDragEnd(coord, name, index) {
+  onMarkerDragEnd(coord, id, name, index) {
     // Remove old entry
     this.state.markers.splice(index, 1);
 
     // Add updated entry
-    this.placeMarker(coord, name);
+    this.placeMarker(coord, id, name);
   }
 
   drawPerimeter = (perimeter, index) => {
@@ -291,6 +289,8 @@ class GoogleMap extends React.Component {
       showPerDel: false,
       perimeterIndex: null,
     });
+
+    // Todo: add perimeter delete
   };
 
   toggleDrawPerimeter() {
@@ -332,24 +332,6 @@ class GoogleMap extends React.Component {
     this.publishNewPerim(perName);
   }
 
-  publishNewPerim(name) {
-    let body = JSON.stringify({
-      MapGroupName: name,
-    });
-
-    fetch('/client_groups/' + this.props.curr_client_group + '/add_map_group', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-Token': this.props.auth_token,
-      },
-      body: body,
-    }).then(response => response.json())
-    .then(response => {
-        console.log(response);
-    });
-  }
-
   generatePerName(){
     let perI = 1;
     let visited = [];
@@ -376,6 +358,24 @@ class GoogleMap extends React.Component {
     }
     
     return "Perimeter " + perI;
+  }
+
+  publishNewPerim(name) {
+    let body = JSON.stringify({
+      MapGroupName: name,
+    });
+
+    fetch('/client_groups/' + this.props.curr_client_group + '/add_map_group', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': this.props.auth_token,
+      },
+      body: body,
+    }).then(response => response.json())
+    .then(response => {
+        console.log(response);
+    });
   }
 
   setPerIndex(index) {
@@ -449,44 +449,91 @@ class GoogleMap extends React.Component {
     });
   }
 
-  addInitialDevices() {
-    // Build devices
-    let devices = [];
+  addInitialDevicesAndPerimeters() {
+    // Build devicesAndPerimeters
+    let devicesAndPerimeters = [];
+
+    console.log(this.props.map_groups);
+    // console.log(this.props.devices);
 
     this.props.devices.forEach(device => {
-      devices.push({
+      devicesAndPerimeters.push({
         // Todo: Add device state, alarm, etc
+        id: device.id,
         title: device.Name,
         isDevice: true,
         treeIndex: 0,
       });
     });
 
-    // Push devices
-    this.tree.addNewNodes(devices);
-
     // Todo: if devices have been placed (already have loc data in prop),
     // place on relevant loc on map (trigger onClick)
-  }
-
-  addInitialPerimeters() {
-    // Build perimeters
-    let perimeters = [];
 
     this.props.map_groups.forEach(map_group => {
-      perimeters.push({
-        // Todo: Add device state, alarm, etc
-        title: map_group.Name,
-        isDevice: false,
-        treeIndex: 0,
-      });
-    });
+      if (map_group.devices.length >= 1) {
 
-    // Push devices
-    this.tree.addNewNodes(perimeters);
+        devicesAndPerimeters.push({
+          title: map_group.Name,
+          isDevice: false,
+          treeIndex: 0,
+          children: [],
+        });
+
+        // Add perimeter children
+        let perimChildrenRef = devicesAndPerimeters[devicesAndPerimeters.length - 1].children;
+
+        map_group.devices.forEach((device) => {
+          perimChildrenRef.push({
+            id: device.id,
+            title: device.Name,
+            isDevice: true,
+          });
+        });
+
+      } else {
+
+        devicesAndPerimeters.push({
+
+          title: map_group.Name,
+          isDevice: false,
+          treeIndex: 0,
+          children: [],
+        });
+
+      }
+    });
 
     // Todo since all map_groups already have loc data in prop,
     // place each map_group on relevant loc on map (trigger perimeter add)
+
+    // Push devices and perims
+    this.tree.addNewNodes(devicesAndPerimeters);
+  }
+
+  onDeviceDragged(device, perimeter) {
+    if (perimeter.id == 'root') {
+      // Todo: Publish to delete device from perimeter
+
+    } else {
+      // Device added to perimeter
+
+      let body = JSON.stringify({
+        MapGroupName: perimeter.title,
+        DeviceId: device.id,
+      });
+  
+      fetch('/client_groups/' + this.props.curr_client_group + '/add_device_to_map_group', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': this.props.auth_token,
+        },
+        body: body,
+      }).then(response => response.json())
+      .then(response => {
+          console.log(response);
+      });
+    }
   }
 
   render() {
@@ -645,6 +692,7 @@ class GoogleMap extends React.Component {
           <SortableTreeView
             ref={tree => this.tree = tree}
             onDeviceClicked={this.onDeviceClicked}
+            onDeviceDragged={this.onDeviceDragged}
           />
 
         </div>
@@ -656,7 +704,7 @@ class GoogleMap extends React.Component {
 
 const mapStyles = {
   width: "60vw",
-  height: '50%',
+  height: '60%',
   marginLeft: '10%',
 };
 const infoTitle = {
@@ -689,7 +737,7 @@ const elementsStyle = {
   position: 'relative',
   width: '24.6vw',
   left: '60vw',
-  height: '50vh',
+  height: '60vh',
   backgroundColor: '#E1F2FE',
   padding: 20,
   marginLeft: 5,

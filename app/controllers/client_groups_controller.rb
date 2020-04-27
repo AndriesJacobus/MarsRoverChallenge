@@ -88,6 +88,47 @@ class ClientGroupsController < ApplicationController
     end
   end
 
+  # POST /client_groups/1/add_device_to_map_group
+  def add_device_to_map_group
+    if current_user
+
+      @client_group = ClientGroup.find(params[:id])
+      
+      # Get map group with current client_group and correct MapGroupName
+      @map_group = @client_group.map_groups.where(Name: params[:MapGroupName]).take
+
+      if @map_group
+        
+        # Get device with given DeviceId
+        @device = Device.find(params[:DeviceId])
+
+        @map_group.devices << @device
+
+        # Todo: remove device from all other map_groups
+
+        message = "Device '#{@device.Name}' " + 
+                  "with id #{params[:DeviceId]} " +
+                  "successfully added to perimeter map_group '#{@map_group.Name}'"
+
+        respond_to do |format|
+          msg = { :status => "ok", :message => message }
+          format.json  { render :json => msg }
+        end
+
+      else
+
+        respond_to do |format|
+          msg = { :status => "so not ok", :message => @map_group.errors }
+          format.json  { render :json => msg }
+        end
+
+      end
+
+    else
+      redirect_to root_path, flash: {warning: 'Please log in before viewing this page' }
+    end
+  end
+
   # GET /client_groups/new
   def new
     @client_group = ClientGroup.new
@@ -145,6 +186,6 @@ class ClientGroupsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def client_group_params
-      params.require(:client_group).permit(:id, :Name, :SigfoxGroupID, :SigfoxGroupName, :MapGroupName)
+      params.require(:client_group).permit(:id, :Name, :SigfoxGroupID, :SigfoxGroupName, :MapGroupName, :DeviceId)
     end
 end
