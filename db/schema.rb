@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200426235209) do
+ActiveRecord::Schema.define(version: 20200427000759) do
 
   create_table "api_keys", force: :cascade do |t|
     t.string "username"
@@ -67,6 +67,8 @@ ActiveRecord::Schema.define(version: 20200426235209) do
     t.integer "LQI"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "device_id"
+    t.index ["device_id"], name: "index_messages_on_device_id"
   end
 
   create_table "users", force: :cascade do |t|

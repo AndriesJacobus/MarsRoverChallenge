@@ -84,7 +84,7 @@ class DevicesController < ApplicationController
     if resp["message"]
       err = 'Device data could not be retrieved because SigFox request limit reached'
 
-      if resp["message"] == "Invalid value or type" || resp["message"] == "The requested resource was not found." 
+      if resp["message"] == "Invalid value or type" || resp[0]["message"] == "The requested resource was not found." 
         err = 'Device data could not be retrieved because the device with the SigFoxId of ' + params[:SigfoxID] + ' could not be found'
       end
 
@@ -98,14 +98,15 @@ class DevicesController < ApplicationController
         format.json { head :no_content }
       end
     else
-      current_device.update_attribute(:SigfoxName, resp["name"])
-      current_device.update_attribute(:SigfoxDeviceTypeID, resp["deviceType"]["id"])
-      # current_device.update_attribute(:SigfoxDeviceTypeName )
-      current_device.update_attribute(:SigfoxGroupID, resp["group"]["id"])
-      # current_device.update_attribute(:SigfoxGroupName )
-      current_device.update_attribute(:SigfoxActivationTime, resp["activationTime"])
-      current_device.update_attribute(:SigfoxCreationTime, resp["creationTime"])
-      current_device.update_attribute(:SigfoxCreatedByID, resp["createdBy"])
+      current_device.update_attributes(
+        :SigfoxName => resp["name"],
+        :SigfoxDeviceTypeID => resp["deviceType"]["id"],
+        :SigfoxGroupID => resp["group"]["id"],
+        :SigfoxActivationTime => resp["activationTime"],
+        :SigfoxCreationTime => resp["creationTime"],
+        :SigfoxCreatedByID => resp["createdBy"]
+      )
+      puts current_device.errors
   
       respond_to do |format|
         if current_device.save
@@ -128,7 +129,7 @@ class DevicesController < ApplicationController
       http.request(req)
     }
 
-    puts res.body
+    puts res.body.as_json
     res.body.as_json
   end
 
