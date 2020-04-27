@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200427005351) do
+ActiveRecord::Schema.define(version: 20200427005853) do
 
   create_table "api_keys", force: :cascade do |t|
     t.string "username"
@@ -85,6 +85,8 @@ ActiveRecord::Schema.define(version: 20200427005351) do
     t.string "name"
     t.string "surname"
     t.string "usertype", default: "Operator"
+    t.integer "client_id"
+    t.index ["client_id"], name: "index_users_on_client_id"
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
