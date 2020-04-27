@@ -21,7 +21,7 @@
           <td><%= link_to 'Show', client_group, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
           <td><%= link_to 'MapView', map_view_path(client_group.id), method: :get, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
           <td><%= link_to 'Edit', edit_client_group_path(client_group), class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
-          <td><%= link_to 'Destroy', client_group, method: :delete, data: { confirm: 'Are you sure?' }, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
+          <td><%= link_to 'Delete', client_group, method: :delete, data: { confirm: 'Are you sure?' }, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
         </tr>
       <% end %>
     </tbody>

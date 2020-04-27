@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200427000759) do
+ActiveRecord::Schema.define(version: 20200427004654) do
 
   create_table "api_keys", force: :cascade do |t|
     t.string "username"
@@ -52,6 +52,8 @@ ActiveRecord::Schema.define(version: 20200427000759) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "map_group_id"
+    t.integer "client_group_id"
+    t.index ["client_group_id"], name: "index_devices_on_client_group_id"
     t.index ["map_group_id"], name: "index_devices_on_map_group_id"
   end
 
@@ -59,6 +61,8 @@ ActiveRecord::Schema.define(version: 20200427000759) do
     t.string "Name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "client_group_id"
+    t.index ["client_group_id"], name: "index_map_groups_on_client_group_id"
   end
 
   create_table "messages", force: :cascade do |t|
