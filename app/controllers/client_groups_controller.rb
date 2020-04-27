@@ -33,8 +33,8 @@ class ClientGroupsController < ApplicationController
         #                 eg: @devices = Devices.where(client_group: params[:id])
         # Todo: filter - only show map_groups linked to current client_group
 
-        @devices = Device.all
-        @map_groups= MapGroup.all
+        @devices = Device.where(map_group: nil).all
+        @map_groups= @client_group.map_groups.all
 
       elsif current_user
         # Todo: filter - only show devices linked to current client_group
@@ -42,8 +42,8 @@ class ClientGroupsController < ApplicationController
         # Todo: filter - only show map_groups linked to current client_group
         # Todo: filter - only show devices linked to current client
 
-        @devices = Device.all
-        @map_groups= MapGroup.all
+        @devices = Device.where(map_group: nil).all
+        @map_groups= @client_group.map_groups.all
 
       else
         redirect_to root_path, flash: {warning: 'Please log in before viewing this page' }
@@ -98,7 +98,7 @@ class ClientGroupsController < ApplicationController
       @map_group = @client_group.map_groups.where(Name: params[:MapGroupName]).take
 
       if @map_group
-        
+
         # Get device with given DeviceId
         @device = Device.find(params[:DeviceId])
 
