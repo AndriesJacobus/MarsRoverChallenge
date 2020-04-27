@@ -24,8 +24,8 @@ class ClientGroupsController < ApplicationController
 
   # GET /client_groups/1/map_view
   def map_view
-    # Only Admins can view index
     if current_user
+
       @client_group = ClientGroup.find(params[:id])
 
       if current_user.usertype == "Sysadmin"
@@ -35,6 +35,7 @@ class ClientGroupsController < ApplicationController
 
         @devices = Device.all
         @map_groups= MapGroup.all
+
       elsif current_user
         # Todo: filter - only show devices linked to current client_group
         #                 eg: @devices = Devices.where(client_group: params[:id])
@@ -43,6 +44,42 @@ class ClientGroupsController < ApplicationController
 
         @devices = Device.all
         @map_groups= MapGroup.all
+
+      else
+        redirect_to root_path, flash: {warning: 'Please log in before viewing this page' }
+      end
+    else
+      redirect_to root_path, flash: {warning: 'Please log in before viewing this page' }
+    end
+  end
+
+  # POST /client_groups/1/add_map_group
+  def add_map_group
+    if current_user
+
+      @client_group = ClientGroup.find(params[:id])
+      @map_group = MapGroup.create(:Name => params[:MapGroupName])
+
+      if current_user.usertype == "Sysadmin"
+
+        @client_group.map_groups << @map_group
+
+        respond_to do |format|
+          msg = { :status => "ok", :message => "Perimeter map_group successfully added to client_group" }
+          format.json  { render :json => msg }
+        end
+
+      elsif current_user
+        # Todo: change so that only users who belong to the same client as the
+        # client_group can add map_groups
+
+        @client_group.map_groups << @map_group
+
+        respond_to do |format|
+          msg = { :status => "ok", :message => "Perimeter map_group successfully added to client_group" }
+          format.json  { render :json => msg }
+        end
+
       else
         redirect_to root_path, flash: {warning: 'Please log in before viewing this page' }
       end
@@ -108,6 +145,6 @@ class ClientGroupsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def client_group_params
-      params.require(:client_group).permit(:id, :Name, :SigfoxGroupID, :SigfoxGroupName)
+      params.require(:client_group).permit(:id, :Name, :SigfoxGroupID, :SigfoxGroupName, :MapGroupName)
     end
 end

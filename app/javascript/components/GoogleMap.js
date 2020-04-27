@@ -80,6 +80,8 @@ class GoogleMap extends React.Component {
     this.hidePerimInfo = this.hidePerimInfo.bind(this);
     this.triggerPerimAdd = this.triggerPerimAdd.bind(this);
     this.addInitialDevices = this.addInitialDevices.bind(this);
+
+    this.publishNewPerim = this.publishNewPerim.bind(this);
     // this.addInitialPerimeters = this.addInitialPerimeters.bind(this);
   }
 
@@ -326,6 +328,26 @@ class GoogleMap extends React.Component {
 
     this.triggerPerimAdd(perName);
     this.toggleDrawPerimeter();
+
+    this.publishNewPerim(perName);
+  }
+
+  publishNewPerim(name) {
+    let body = JSON.stringify({
+      MapGroupName: name,
+    });
+
+    fetch('/client_groups/' + this.props.curr_client_group + '/add_map_group', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': this.props.auth_token,
+      },
+      body: body,
+    }).then(response => response.json())
+    .then(response => {
+        console.log(response);
+    });
   }
 
   generatePerName(){
@@ -677,6 +699,7 @@ const elementsStyle = {
 GoogleMap.propTypes = {
   markerIconUrl: PropTypes.string,
   perimIconUrl: PropTypes.string,
+  curr_client_group: PropTypes.number,
   devices: PropTypes.array,
   map_groups: PropTypes.array,
 };
