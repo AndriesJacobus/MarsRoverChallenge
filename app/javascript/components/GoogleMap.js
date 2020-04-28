@@ -507,35 +507,43 @@ class GoogleMap extends React.Component {
 
       }
 
+    });
+
+    // Todo since all map_groups already have loc data in prop,
+    // place each map_group on relevant loc on map (trigger perimeter add)
+    this.placePerimsFromProps();
+
+    // Push devices and perims
+    this.tree.addNewNodes(devicesAndPerimeters);
+  }
+
+  placePerimsFromProps(i = 0) {
+    if (this.props.map_groups && this.props.map_groups[i]) {
+      let currPerim = this.props.map_groups[i];
+
       // Add perim to map
       this.setState({
         perimeters: [
           ...this.state.perimeters,
           {
-            name: map_group.Name,
+            name: currPerim.Name,
             path: [
               {
-                lat: map_group.startLat,
-                lng: map_group.startLon,
+                lat: currPerim.startLat,
+                lng: currPerim.startLon,
               },
               {
-                lat: map_group.endLat,
-                lng: map_group.endLon,
+                lat: currPerim.endLat,
+                lng: currPerim.endLon,
               }
             ],
           }
         ],
       }, () => {
-        console.log(map_group.Name);
+        console.log(currPerim.Name);
+        this.placePerimsFromProps(i + 1);
       });
-
-    });
-
-    // Todo since all map_groups already have loc data in prop,
-    // place each map_group on relevant loc on map (trigger perimeter add)
-
-    // Push devices and perims
-    this.tree.addNewNodes(devicesAndPerimeters);
+    }
   }
 
   onDeviceDragged(device, perimeter) {
