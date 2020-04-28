@@ -26,6 +26,7 @@ class GoogleMap extends React.Component {
       // Marker InfoWindow Data
       showInfo: false,
       markerInfo: {
+        id: null,
         markerIndex: null,
         title: "",
         position: {
@@ -240,6 +241,7 @@ class GoogleMap extends React.Component {
     this.setState({
       showInfo: true,
       markerInfo: {
+        id: marker.id,
         markerIndex: index,
         title: marker.title,
         name: marker.name,
@@ -261,6 +263,7 @@ class GoogleMap extends React.Component {
     this.setState({
       showInfo: false,
       markerInfo: {
+        id: null,
         markerIndex: null,
         title: "",
         position: {
@@ -279,6 +282,16 @@ class GoogleMap extends React.Component {
       event.preventDefault();
     }
 
+    // Erase marker coordinates in db
+    this.publishMarkerLoc({
+      id: this.state.markerInfo.id,
+      position: {
+        lat: null,
+        lng: null,
+      }
+    });
+
+    // Remove marker from map
     this.state.markers.splice(this.state.markerInfo.markerIndex, 1);
     this.hideInfo();
   };
@@ -502,8 +515,8 @@ class GoogleMap extends React.Component {
     // Build devicesAndPerimeters
     let devicesAndPerimeters = [];
 
-    console.log(this.props.devices);
-    console.log(this.props.map_groups);
+    // console.log(this.props.devices);
+    // console.log(this.props.map_groups);
 
     this.props.devices.forEach(device => {
       if (!device.map_group_id) {
@@ -617,11 +630,11 @@ class GoogleMap extends React.Component {
             }
           ],
         }, () => {
-          console.log(currDevice.Name);
+          // console.log("Added to map: " + currDevice.Name);
           this.placeDevicesFromProps(i + 1);
         });
       } else {
-        console.log("Not: " + currDevice.Name);
+        // console.log("Only added to tree: " + currDevice.Name);
         this.placeDevicesFromProps(i + 1);
       }
     }
