@@ -29,7 +29,7 @@ module API
         end
         post do
           begin
-            Message.create!(declared(params)[:callback_data])
+            Message.create!(permitted_params[:callback_data])
             status 200 # Saved OK
           rescue ActiveRecord::RecordNotFound => e
             status 404 # Not found
