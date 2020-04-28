@@ -33,7 +33,8 @@ class ClientGroupsController < ApplicationController
         #                 eg: @devices = Devices.where(client_group: params[:id])
         # Todo: filter - only show map_groups linked to current client_group
 
-        @devices = Device.where(map_group: nil).all
+        # @devices = Device.where(map_group: nil).all
+        @devices = Device.all
         @map_groups= @client_group.map_groups.all
 
       elsif current_user
@@ -42,7 +43,8 @@ class ClientGroupsController < ApplicationController
         # Todo: filter - only show map_groups linked to current client_group
         # Todo: filter - only show devices linked to current client
 
-        @devices = Device.where(map_group: nil).all
+        # @devices = Device.where(map_group: nil).all
+        @devices = Device.all
         @map_groups= @client_group.map_groups.all
 
       else
@@ -124,12 +126,58 @@ class ClientGroupsController < ApplicationController
       else
 
         respond_to do |format|
-          msg = { :status => "so not ok", :message => @map_group.errors }
+          msg = { :status => "not_found", :message => @map_group.errors }
           format.json  { render :json => msg }
         end
 
       end
 
+    else
+      redirect_to root_path, flash: {warning: 'Please log in before viewing this page' }
+    end
+  end
+
+  # POST /client_groups/1/update_marker_loc
+  def update_marker_loc
+    if current_user
+
+      puts params[:DeviceId]
+      @device = Device.find(params[:DeviceId])
+      puts @device
+
+      if @device
+
+        Device.where(id: params[:DeviceId]).update_all({
+          :Latitude => params[:DeviceLat],
+          :Longitude => params[:DeviceLng]
+        })
+
+        # Todo: remove device from all other map_groups
+
+        message = "Device '#{@device.Name}' " + 
+                  "with id #{params[:DeviceId]} " +
+                  "successfully updated location to [#{params[:DeviceLat]}, #{params[:DeviceLng]}]"
+
+        if @device.save
+          respond_to do |format|
+            msg = { :status => "ok", :message => message }
+            format.json  { render :json => msg }
+          end
+        else
+          respond_to do |format|
+            msg = { :status => "bad_request", :message => @device.errors }
+            format.json  { render :json => msg }
+          end
+        end
+        
+      else
+
+        respond_to do |format|
+          msg = { :status => "not_found", :message => @device.errors }
+          format.json  { render :json => msg }
+        end
+
+      end
     else
       redirect_to root_path, flash: {warning: 'Please log in before viewing this page' }
     end
@@ -205,7 +253,9 @@ class ClientGroupsController < ApplicationController
         :MapGroupStartLat,
         :MapGroupEndLon,
         :MapGroupEndLat,
-        :DeviceId
+        :DeviceId,
+        :DeviceLat,
+        :DeviceLng,
       )
     end
 end

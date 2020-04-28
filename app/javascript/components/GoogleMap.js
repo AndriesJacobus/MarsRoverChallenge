@@ -153,12 +153,14 @@ class GoogleMap extends React.Component {
           markers: [
             ...this.state.markers,
             {
-              id: id,
+              id: this.state.deviceFromTree.id,
               title: name == "" ? this.state.deviceFromTree.name : name,
               name: name == "" ? this.state.deviceFromTree.name : name,
               position: { lat, lng },
             }
           ],
+        }, () => {
+          this.publishMarkerLoc(this.state.markers[this.state.markers.length - 1]);
         });
       }
     }
@@ -175,6 +177,8 @@ class GoogleMap extends React.Component {
             position: { lat, lng },
           }
         ],
+      }, () => {
+        this.publishMarkerLoc(this.state.markers[this.state.markers.length - 1]);
       });
     } else {
       //  Click on map - Hide infowindow
@@ -278,6 +282,26 @@ class GoogleMap extends React.Component {
     this.state.markers.splice(this.state.markerInfo.markerIndex, 1);
     this.hideInfo();
   };
+
+  publishMarkerLoc(marker) {
+    let body = JSON.stringify({
+      DeviceId: marker.id,
+      DeviceLat: marker.position.lat,
+      DeviceLng: marker.position.lng,
+    });
+
+    fetch('/client_groups/' + this.props.curr_client_group + '/update_marker_loc', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': this.props.auth_token,
+      },
+      body: body,
+    }).then(response => response.json())
+    .then(response => {
+        console.log(response);
+    });
+  }
 
   deletePerimeter(event) {
     event.preventDefault();
@@ -457,21 +481,27 @@ class GoogleMap extends React.Component {
     // Build devicesAndPerimeters
     let devicesAndPerimeters = [];
 
+    console.log(this.props.devices);
     console.log(this.props.map_groups);
-    // console.log(this.props.devices);
 
     this.props.devices.forEach(device => {
-      devicesAndPerimeters.push({
-        // Todo: Add device state, alarm, etc
-        id: device.id,
-        title: device.Name,
-        isDevice: true,
-        treeIndex: 0,
-      });
+      if (!device.map_group_id) {
+        // Add to tree because the device is not
+        // yet associated with a perimeter
+
+        devicesAndPerimeters.push({
+          // Todo: Add device state, alarm, etc
+          id: device.id,
+          title: device.Name,
+          isDevice: true,
+          treeIndex: 0,
+        });
+      }
     });
 
     // Todo: if devices have been placed (already have loc data in prop),
     // place on relevant loc on map (trigger onClick)
+    this.placeDevicesFromProps();
 
     this.props.map_groups.forEach(map_group => {
 
@@ -540,9 +570,39 @@ class GoogleMap extends React.Component {
           }
         ],
       }, () => {
-        console.log(currPerim.Name);
+        // console.log(currPerim.Name);
         this.placePerimsFromProps(i + 1);
       });
+    }
+  }
+
+  placeDevicesFromProps(i = 0) {
+    if (this.props.devices && this.props.devices[i]) {
+      let currDevice = this.props.devices[i];
+
+      if (currDevice.Latitude && currDevice.Longitude) {
+        // Add perim to map
+        this.setState({
+          markers: [
+            ...this.state.markers,
+            {
+              id: currDevice.id,
+              title: currDevice.Name,
+              name: currDevice.Name,
+              position: {
+                lat: currDevice.Latitude,
+                lng: currDevice.Longitude,
+              },
+            }
+          ],
+        }, () => {
+          console.log(currDevice.Name);
+          this.placeDevicesFromProps(i + 1);
+        });
+      } else {
+        console.log("Not: " + currDevice.Name);
+        this.placeDevicesFromProps(i + 1);
+      }
     }
   }
 
