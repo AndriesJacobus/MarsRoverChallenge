@@ -53,6 +53,13 @@ gem 'toastr-rails'
 gem 'webpacker'
 gem 'react-rails'
 
+# Grape for API
+gem 'grape'
+gem 'rack-cors', :require => 'rack/cors'
+gem 'grape-active_model_serializers'
+gem 'grape-swagger'
+gem 'grape-swagger-rails'
+
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
