@@ -58,9 +58,13 @@ class ClientGroupsController < ApplicationController
     if current_user
 
       @client_group = ClientGroup.find(params[:id])
-      @map_group = MapGroup.create(:Name => params[:MapGroupName])
 
       if current_user.usertype == "Sysadmin"
+        @map_group = MapGroup.create(:Name => params[:MapGroupName],
+          :startLon => params[:MapGroupStartLon],
+          :startLat => params[:MapGroupStartLat],
+          :endLon => params[:MapGroupEndLon],
+          :endLat => params[:MapGroupEndLat] )
 
         @client_group.map_groups << @map_group
 
@@ -72,6 +76,8 @@ class ClientGroupsController < ApplicationController
       elsif current_user
         # Todo: change so that only users who belong to the same client as the
         # client_group can add map_groups
+
+        @map_group = MapGroup.create(:Name => params[:MapGroupName])
 
         @client_group.map_groups << @map_group
 
@@ -171,6 +177,9 @@ class ClientGroupsController < ApplicationController
   # DELETE /client_groups/1
   # DELETE /client_groups/1.json
   def destroy
+    @client_group.map_groups.delete_all
+    @client_group.devices.delete_all
+
     @client_group.destroy
     respond_to do |format|
       format.html { redirect_to client_groups_url, flash: {warning: 'Client Group was successfully deleted' }  }
@@ -186,6 +195,17 @@ class ClientGroupsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def client_group_params
-      params.require(:client_group).permit(:id, :Name, :SigfoxGroupID, :SigfoxGroupName, :MapGroupName, :DeviceId)
+      params.require(:client_group).permit(
+        :id,
+        :Name,
+        :SigfoxGroupID,       
+        :SigfoxGroupName,
+        :MapGroupName,
+        :MapGroupStartLon,
+        :MapGroupStartLat,
+        :MapGroupEndLon,
+        :MapGroupEndLat,
+        :DeviceId
+      )
     end
 end

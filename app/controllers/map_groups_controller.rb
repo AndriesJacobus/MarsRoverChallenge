@@ -64,6 +64,8 @@ class MapGroupsController < ApplicationController
   # DELETE /map_groups/1
   # DELETE /map_groups/1.json
   def destroy
+    @map_group.devices.delete_all
+    
     @map_group.destroy
     respond_to do |format|
       format.html { redirect_to map_groups_url, flash: {warning: 'Map group was successfully deleted' } }

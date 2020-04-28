@@ -64,6 +64,9 @@ class ClientsController < ApplicationController
   # DELETE /clients/1
   # DELETE /clients/1.json
   def destroy
+    @client.users.delete_all
+    @client.client_groups.delete_all
+
     @client.destroy
     respond_to do |format|
       format.html { redirect_to clients_url, flash: {warning: 'Client was successfully deleted' } }

@@ -6,6 +6,8 @@
     <thead>
       <tr>
         <th>Name</th>
+        <th>Start Coordinate</th>
+        <th>End Coordinate</th>
         <th colspan="3"></th>
       </tr>
     </thead>
@@ -14,6 +16,19 @@
       <% @map_groups.each do |map_group| %>
         <tr>
           <td><%= map_group.Name %></td>
+
+          <% if map_group.startLat || map_group.startLon %>
+            <td><%= map_group.startLat %>, <%= map_group.startLon %></td>
+          <% else %>
+            <td><i>No Data</i></td>
+          <% end %>
+
+          <% if map_group.endLat || map_group.endLon %>
+            <td><%= map_group.endLat %>, <%= map_group.endLon %></td>
+          <% else %>
+            <td><i>No Data</i></td>
+          <% end %>
+          
           <td><%= link_to 'Show', map_group, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
           <td><%= link_to 'Edit', edit_map_group_path(map_group), class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
           <td><%= link_to 'Delete', map_group, method: :delete, data: { confirm: 'Are you sure?' }, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>

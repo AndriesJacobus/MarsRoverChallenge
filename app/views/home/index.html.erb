@@ -137,13 +137,34 @@
       </div>
 
       <div class="col s4">
+        <%= link_to messages_path do %>
+          <%= react_component("DashboardCard",
+            {
+              title:
+                "Messages",
+              content:
+                "Messages are sent to the Wi-I-Cloud from devices via Sigfox callbacks.
+                These messages may include device alarm states, online/offline status,
+                and device keep-alives.",
+              resource:
+                asset_path("messages.jpg"),
+              link:
+                messages_path,
+              linkText:
+                "Go to API Keys",
+            })
+          %>
+        <% end %>
+      </div>
+
+      <div class="col s4">
         <%= link_to api_keys_path do %>
           <%= react_component("DashboardCard",
             {
               title:
                 "API Keys",
               content:
-                "API Keys manage the connection to the sigfox backend and allows
+                "API Keys manage the connection to the Sigfox backend and allows
                 communication such that the Wi-I server can pull in information automatically.",
               resource:
                 asset_path("api_keys.jpg"),

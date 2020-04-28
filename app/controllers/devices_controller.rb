@@ -69,6 +69,8 @@ class DevicesController < ApplicationController
   # DELETE /devices/1
   # DELETE /devices/1.json
   def destroy
+    @device.messages.delete_all
+    
     @device.destroy
     respond_to do |format|
       format.html { redirect_to devices_url, flash: {warning: 'Device was successfully deleted' } }
@@ -98,6 +100,8 @@ class DevicesController < ApplicationController
         format.json { head :no_content }
       end
     else
+      puts resp["name"]
+
       current_device.update_attributes(
         :SigfoxName => resp["name"],
         :SigfoxDeviceTypeID => resp["deviceType"]["id"],
@@ -106,7 +110,7 @@ class DevicesController < ApplicationController
         :SigfoxCreationTime => resp["creationTime"],
         :SigfoxCreatedByID => resp["createdBy"]
       )
-      puts current_device.errors
+      puts current_device.errors.as_json
   
       respond_to do |format|
         if current_device.save

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200427005853) do
+ActiveRecord::Schema.define(version: 20200428035330) do
 
   create_table "api_keys", force: :cascade do |t|
     t.string "username"
@@ -64,6 +64,10 @@ ActiveRecord::Schema.define(version: 20200427005853) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "client_group_id"
+    t.float "startLon"
+    t.float "startLat"
+    t.float "endLon"
+    t.float "endLat"
     t.index ["client_group_id"], name: "index_map_groups_on_client_group_id"
   end
 

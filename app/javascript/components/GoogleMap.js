@@ -329,7 +329,7 @@ class GoogleMap extends React.Component {
     this.triggerPerimAdd(perName);
     this.toggleDrawPerimeter();
 
-    this.publishNewPerim(perName);
+    this.publishNewPerim(this.state.perimeters[this.state.perimeters.length - 1]);
   }
 
   generatePerName(){
@@ -360,9 +360,13 @@ class GoogleMap extends React.Component {
     return "Perimeter " + perI;
   }
 
-  publishNewPerim(name) {
+  publishNewPerim(perimeter) {
     let body = JSON.stringify({
-      MapGroupName: name,
+      MapGroupName: perimeter.name,
+      MapGroupStartLat: perimeter.path[0].lat,
+      MapGroupStartLon: perimeter.path[0].lng,
+      MapGroupEndLat: perimeter.path[1].lat,
+      MapGroupEndLon: perimeter.path[1].lng,
     });
 
     fetch('/client_groups/' + this.props.curr_client_group + '/add_map_group', {
@@ -470,6 +474,7 @@ class GoogleMap extends React.Component {
     // place on relevant loc on map (trigger onClick)
 
     this.props.map_groups.forEach(map_group => {
+
       if (map_group.devices.length >= 1) {
 
         devicesAndPerimeters.push({
@@ -501,6 +506,29 @@ class GoogleMap extends React.Component {
         });
 
       }
+
+      // Add perim to map
+      this.setState({
+        perimeters: [
+          ...this.state.perimeters,
+          {
+            name: map_group.Name,
+            path: [
+              {
+                lat: map_group.startLat,
+                lng: map_group.startLon,
+              },
+              {
+                lat: map_group.endLat,
+                lng: map_group.endLon,
+              }
+            ],
+          }
+        ],
+      }, () => {
+        console.log(map_group.Name);
+      });
+
     });
 
     // Todo since all map_groups already have loc data in prop,
