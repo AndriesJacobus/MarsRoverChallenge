@@ -306,16 +306,37 @@ class GoogleMap extends React.Component {
   deletePerimeter(event) {
     event.preventDefault();
 
+    // Delete perimeter from db
+    this.publishDeletePerimeter(this.state.perInfoTitle);
+
+    // Delete perimeter from tree
     this.triggerPerimRemove(this.state.perInfoTitle);
 
+    // Delete perimeter from map view 
     this.state.perimeters.splice(this.state.perimeterIndex, 1);
     this.setState({
       showPerDel: false,
       perimeterIndex: null,
     });
-
-    // Todo: add perimeter delete
   };
+
+  publishDeletePerimeter(perimeterTitle) {
+    let body = JSON.stringify({
+      MapGroupName: perimeterTitle,
+    });
+
+    fetch('/client_groups/' + this.props.curr_client_group + '/delete_map_group', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': this.props.auth_token,
+      },
+      body: body,
+    }).then(response => response.json())
+    .then(response => {
+        console.log(response);
+    });
+  }
 
   toggleDrawPerimeter() {
     // Hide infowindow

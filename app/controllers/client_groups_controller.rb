@@ -78,8 +78,12 @@ class ClientGroupsController < ApplicationController
       elsif current_user
         # Todo: change so that only users who belong to the same client as the
         # client_group can add map_groups
-
-        @map_group = MapGroup.create(:Name => params[:MapGroupName])
+        
+        @map_group = MapGroup.create(:Name => params[:MapGroupName],
+          :startLon => params[:MapGroupStartLon],
+          :startLat => params[:MapGroupStartLat],
+          :endLon => params[:MapGroupEndLon],
+          :endLat => params[:MapGroupEndLat] )
 
         @client_group.map_groups << @map_group
 
@@ -141,9 +145,7 @@ class ClientGroupsController < ApplicationController
   def update_marker_loc
     if current_user
 
-      puts params[:DeviceId]
       @device = Device.find(params[:DeviceId])
-      puts @device
 
       if @device
 
@@ -177,6 +179,48 @@ class ClientGroupsController < ApplicationController
           format.json  { render :json => msg }
         end
 
+      end
+    else
+      redirect_to root_path, flash: {warning: 'Please log in before viewing this page' }
+    end
+  end
+
+  # DELETE /client_groups/1/delete_map_group
+  def delete_map_group
+    if current_user
+
+      @client_group = ClientGroup.find(params[:id])
+
+      if current_user.usertype == "Sysadmin"
+      
+        # Get map group with current client_group and correct MapGroupName
+        @map_group = @client_group.map_groups.where(Name: params[:MapGroupName]).take
+
+        @map_group.devices.delete_all
+        @map_group.destroy
+
+        respond_to do |format|
+          msg = { :status => "ok", :message => "Perimeter map_group successfully deleted" }
+          format.json  { render :json => msg }
+        end
+
+      elsif current_user
+        # Todo: change so that only users who belong to the same client as the
+        # client_group can add map_groups
+      
+        # Get map group with current client_group and correct MapGroupName
+        @map_group = @client_group.map_groups.where(Name: params[:MapGroupName]).take
+
+        @map_group.devices.delete_all
+        @map_group.destroy
+
+        respond_to do |format|
+          msg = { :status => "ok", :message => "Perimeter map_group successfully deleted" }
+          format.json  { render :json => msg }
+        end
+
+      else
+        redirect_to root_path, flash: {warning: 'Please log in before viewing this page' }
       end
     else
       redirect_to root_path, flash: {warning: 'Please log in before viewing this page' }
