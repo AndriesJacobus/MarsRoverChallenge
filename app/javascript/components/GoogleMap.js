@@ -746,7 +746,7 @@ class GoogleMap extends React.Component {
           zoom={8}
           style={mapStyles}
           initialCenter={{ lat: 47.444, lng: -122.176 }}
-          mapTypeControl={false}
+          mapTypeControl={true}
           streetViewControl={false}
           onClick={this.onClick} >
 

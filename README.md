@@ -19,7 +19,7 @@ To build and run the code:
 `rails server`
 
 ## API Documentation
-To view the API docs, run the server and go to the `/docu`
+To view the API docs, run the server and go to the `/documentation`
 
 ## MVP Phase One Features
 The functional requirements of the MVP Phase One include: 
