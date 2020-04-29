@@ -42,7 +42,12 @@ module API
               if !@device.SigfoxDeviceTypeID || @device.SigfoxDeviceTypeID == ""
                 @device.update_attribute(:SigfoxDeviceTypeID, permitted_params[:callback_data][:sigfox_device_type_id])
               end
+            else
+              # Device does not yet exist, so create a new one
+              @device = Device.new(:Name => "#{permitted_params[:callback_data][:sigfox_defice_id]} Wi-I-Cloud", :SigfoxID => permitted_params[:callback_data][:sigfox_defice_id], :SigfoxDeviceTypeID => permitted_params[:callback_data][:sigfox_device_type_id])
+              @device.messages << @message
 
+              @device.save
             end
 
             status 200 # Saved OK
