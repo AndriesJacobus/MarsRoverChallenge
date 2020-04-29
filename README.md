@@ -156,7 +156,7 @@ The functional requirements of the MVP Phase One include:
   - [ ] Add deconstructed packet to Message
 - [ ] Device create via Message callback:
   - [ ] if message comes in from device with sigfox ID not registered on wi-i, create new device and link message to device
-  - [ ] enable users to merge current devices with automatically created devices (copy over device name, client, client_group, map_group) 
+  - [x] enable users to merge current devices with automatically created devices (copy over device name, client, client_group, map_group) 
 - [ ] User Create Update
   - [ ] Only Sysadmins can create Client Admins
   - [ ] Only Sysadmins and Client Admins can create Operators

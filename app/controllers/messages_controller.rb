@@ -36,6 +36,18 @@ class MessagesController < ApplicationController
   def create
     @message = Message.new(message_params)
 
+    # Look for device with sigfox id
+    @device = Device.where(SigfoxID: params[:sigfox_defice_id]).take
+    if @device
+      @device.messages << @message
+
+      # Update device with message info, if not present
+      if !@device.SigfoxDeviceTypeID || @device.SigfoxDeviceTypeID == ""
+        @device.update_attribute(:SigfoxDeviceTypeID, params[:sigfox_device_type_id])
+      end
+
+    end
+
     respond_to do |format|
       if @message.save
         format.html { redirect_to @message, flash: {success: 'Message was successfully created' } }
@@ -79,6 +91,6 @@ class MessagesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def message_params
-      params.require(:message).permit(:Time, :Data, :LQI)
+      params.require(:message).permit(:Time, :Data, :LQI, :sigfox_defice_id, :sigfox_device_type_id)
     end
 end

@@ -22,7 +22,11 @@
 
         <p>
           <strong>Lqi:</strong>
-          <%= @message.LQI %>
+          <% if @message.LQI %>
+            <%= @message.LQI %>
+          <% else %>
+            <i>N/A</i>
+          <% end %>
         </p>
         
         <p class = "cardSubTitle">Sigfox Information:</p>
@@ -36,6 +40,27 @@
           <strong>Sigfox Device Type ID:</strong>
           <%= @message.sigfox_device_type_id %>
         </p>
+        
+        <% if !@message.device.nil? %>
+
+          <p class = "cardSubTitle">Device Information:</p>
+
+          <p>
+            <strong>Wi-I-Cloud Device Name:</strong>
+            <%= @message.device.Name %>
+          </p>
+
+          <p>
+            <strong>Wi-I-Cloud Device Longitude:</strong>
+            <%= @message.device.Longitude %>
+          </p>
+
+          <p>
+            <strong>Wi-I-Cloud Device Latitude:</strong>
+            <%= @message.device.Latitude %>
+          </p>
+
+        <% end %>
 
         <br/>
       </div>

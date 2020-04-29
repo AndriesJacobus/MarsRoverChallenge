@@ -533,8 +533,7 @@ class GoogleMap extends React.Component {
       }
     });
 
-    // Todo: if devices have been placed (already have loc data in prop),
-    // place on relevant loc on map (trigger onClick)
+    // Place on relevant loc on map (trigger onClick)
     this.placeDevicesFromProps();
 
     this.props.map_groups.forEach(map_group => {
@@ -573,8 +572,7 @@ class GoogleMap extends React.Component {
 
     });
 
-    // Todo since all map_groups already have loc data in prop,
-    // place each map_group on relevant loc on map (trigger perimeter add)
+    // Place each map_group on relevant loc on map (trigger perimeter add)
     this.placePerimsFromProps();
 
     // Push devices and perims

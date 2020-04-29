@@ -31,7 +31,20 @@ module API
         end
         post do
           begin
-            Message.create!(permitted_params[:callback_data])
+            @message = Message.create!(permitted_params[:callback_data])
+
+            # Look for device with sigfox id
+            @device = Device.where(SigfoxID: permitted_params[:callback_data][:sigfox_defice_id]).take
+            if @device
+              @device.messages << @message
+
+              # Update device with message info, if not present
+              if !@device.SigfoxDeviceTypeID || @device.SigfoxDeviceTypeID == ""
+                @device.update_attribute(:SigfoxDeviceTypeID, permitted_params[:callback_data][:sigfox_device_type_id])
+              end
+
+            end
+
             status 200 # Saved OK
           rescue ActiveRecord::RecordNotFound => e
             status 404 # Not found

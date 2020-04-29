@@ -45,37 +45,37 @@
         <p class = "cardSubTitle">Sigfox Information:</p>
 
         <p>
-          <strong>Sigfoxdevicetypeid:</strong>
+          <strong>SigfoxDeviceTypeID:</strong>
           <%= @device.SigfoxDeviceTypeID %>
         </p>
 
         <p>
-          <strong>Sigfoxdevicetypename:</strong>
+          <strong>SigfoxDeviceTypeName:</strong>
           <%= @device.SigfoxDeviceTypeName %>
         </p>
 
         <p>
-          <strong>Sigfoxgroupid:</strong>
+          <strong>SigfoxGroupID:</strong>
           <%= @device.SigfoxGroupID %>
         </p>
 
         <p>
-          <strong>Sigfoxgroupname:</strong>
+          <strong>SigfoxGroupName:</strong>
           <%= @device.SigfoxGroupName %>
         </p>
 
         <p>
-          <strong>Sigfoxactivationtime:</strong>
+          <strong>SigfoxActivationTime:</strong>
           <%= @device.SigfoxActivationTime %>
         </p>
 
         <p>
-          <strong>Sigfoxcreationtime:</strong>
+          <strong>SigfoxCreationTime:</strong>
           <%= @device.SigfoxCreationTime %>
         </p>
 
         <p>
-          <strong>Sigfoxcreatedbyid:</strong>
+          <strong>SigfoxCreatedByID:</strong>
           <%= @device.SigfoxCreatedByID %>
         </p>
 
@@ -86,6 +86,13 @@
 </div>
 
 <br/>
+
+<% if @device.messages.length >= 1 %>
+  <p style = "font-size: 28px;">Messages for <%= @device.Name %>:</p>
+  <hr style = "display: block; height: 1px; border: 0; border-top: 1px solid #ccc; margin: 1em 0; padding: 0;"/>
+
+  <%= render partial: 'messages/message_table', locals: {messages: @device.messages} %>
+<% end %>
 
 <%= link_to 'Edit', edit_device_path(@device), class: "waves-effect waves-light blue lighten-1 btn-small white-text" %> |
 <%= link_to 'Back', devices_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>

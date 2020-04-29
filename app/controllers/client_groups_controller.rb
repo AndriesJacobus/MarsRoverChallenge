@@ -31,21 +31,17 @@ class ClientGroupsController < ApplicationController
       if current_user.usertype == "Sysadmin"
         # Todo: filter - only show devices linked to current client_group
         #                 eg: @devices = Devices.where(client_group: params[:id])
-        # Todo: filter - only show map_groups linked to current client_group
 
-        # @devices = Device.where(map_group: nil).all
         @devices = Device.all
-        @map_groups= @client_group.map_groups.all
+        @map_groups= @client_group.map_groups.all.sort_by(&:Name)
 
       elsif current_user
         # Todo: filter - only show devices linked to current client_group
         #                 eg: @devices = Devices.where(client_group: params[:id])
         # Todo: filter - only show map_groups linked to current client_group
-        # Todo: filter - only show devices linked to current client
 
-        # @devices = Device.where(map_group: nil).all
         @devices = Device.all
-        @map_groups= @client_group.map_groups.all
+        @map_groups= @client_group.map_groups.all.sort_by(&:Name)
 
       else
         redirect_to root_path, flash: {warning: 'Please log in before viewing this page' }
