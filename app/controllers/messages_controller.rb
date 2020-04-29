@@ -2,6 +2,8 @@ class MessagesController < ApplicationController
   before_action :set_message, only: [:show, :edit, :update, :destroy]
   before_action :authorize_user, only: :index
 
+  require 'date'
+
   # GET /messages
   # GET /messages.json
   def index
