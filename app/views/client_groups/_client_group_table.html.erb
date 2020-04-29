@@ -4,8 +4,8 @@
     <thead>
       <tr>
         <th>Name</th>
-        <th style = "white-space: nowrap;">Sigfox Group ID</th>
-        <th style = "white-space: nowrap; padding-right: 35px;">Sigfox Group Name</th>
+        <th style = "white-space: nowrap; padding-right: 35px;">Sigfox GroupID</th>
+        <th style = "white-space: nowrap; padding-right: 35px;">Sigfox GroupName</th>
         <th style = "white-space: nowrap; padding-right: 35px;">Client Name</th>
         <th style = "white-space: nowrap; padding-right: 35px;">Client DeviceType</th>
         <th colspan="4"></th>
@@ -16,8 +16,8 @@
       <% client_groups.each do |client_group| %>
         <tr>
           <td style = "white-space: nowrap; padding-right: 35px;"><%= client_group.Name %></td>
-          <td style = "padding-right: 35px;"><%= client_group.SigfoxGroupID %></td>
-          <td style = "padding-right: 35px;"><%= client_group.SigfoxGroupName %></td>
+          <td style = "padding-right: 35px; padding-right: 35px;"><%= client_group.SigfoxGroupID %></td>
+          <td style = "padding-right: 35px; padding-right: 35px;"><%= client_group.SigfoxGroupName %></td>
 
           <% if !client_group.client.nil? %>
             <td style = "padding-right: 35px;"><%= client_group.client.Name %></td>
