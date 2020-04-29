@@ -5,10 +5,12 @@
   <table>
     <thead>
       <tr>
-        <th>Email</th>
-        <th>Name</th>
-        <th>Surname</th>
-        <th>Type</th>
+        <th style = "white-space: nowrap; padding-right: 35px;">Email</th>
+        <th style = "white-space: nowrap; padding-right: 35px;">Name</th>
+        <th style = "white-space: nowrap; padding-right: 35px;">Surname</th>
+        <th style = "white-space: nowrap; padding-right: 35px;">Type</th>
+        <th style = "white-space: nowrap; padding-right: 35px;">Client Name</th>
+        <th style = "white-space: nowrap; padding-right: 35px;">Client DeviceType</th>
         <th colspan="3"></th>
       </tr>
     </thead>
@@ -16,10 +18,23 @@
     <tbody>
       <% @users.each do |user| %>
         <tr>
-          <td><%= user.email %></td>
-          <td><%= user.name %></td>
-          <td><%= user.surname %></td>
-          <td><%= user.usertype %></td>
+          <td style = "white-space: nowrap; padding-right: 35px;"><%= user.email %></td>
+          <td style = "white-space: nowrap; padding-right: 35px;"><%= user.name %></td>
+          <td style = "white-space: nowrap; padding-right: 35px;"><%= user.surname %></td>
+          <td style = "white-space: nowrap; padding-right: 35px;"><%= user.usertype %></td>
+
+          <% if !user.client.nil? %>
+            <td style = "padding-right: 35px;"><%= user.client.Name %></td>
+          <% else %>
+            <td style = "padding-right: 35px;"><i>N/A</i></td>
+          <% end %>
+
+          <% if !user.client.nil? %>
+            <td style = "padding-right: 35px;"><%= user.client.SigfoxDeviceTypeName %></td>
+          <% else %>
+            <td style = "padding-right: 35px;"><i>N/A</i></td>
+          <% end %>
+
           <td><%= link_to 'Show', user, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
           <td><%= link_to 'Edit', edit_user_path(user), class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
           <td><%= link_to 'Delete', user, method: :delete, data: { confirm: 'Are you sure?' }, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>

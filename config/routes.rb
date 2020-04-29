@@ -24,6 +24,7 @@ Rails.application.routes.draw do
   delete '/client_groups/:id/delete_map_group', to: 'client_groups#delete_map_group', as: 'delete_map_group'
 
   get '/set_client_for_client_group', to: 'client_groups#set_client_for_client_group', as: 'set_client_for_client_group'
+  get '/set_client_for_user', to: 'users#set_client_for_user', as: 'set_client_for_user'
   
   get 'signup', to: 'users#new', as: 'signup'
   get 'login', to: 'sessions#new', as: 'login'
