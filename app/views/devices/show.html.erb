@@ -78,12 +78,43 @@
           <strong>SigfoxCreatedByID:</strong>
           <%= @device.SigfoxCreatedByID %>
         </p>
+        
+        <p class = "cardSubTitle">Client Group Information:</p>
+
+        <p>
+          <strong>Client Group Name:</strong><br/>
+          <% if !@device.client_group.nil? %>
+            <%= @device.client_group.Name %>
+          <% else %>
+            <i>N/A</i>
+          <% end %>
+        </p>
+        <br/>
+
+        <p>
+          <strong>Client Group SigfoxGroup Name:</strong><br/>
+          <% if !@device.client_group.nil? %>
+            <%= @device.client_group.SigfoxGroupName %>
+          <% else %>
+            <i>N/A</i>
+          <% end %>
+        </p>
+        <br/>
 
         <br/>
       </div>
     </div>
   </div>
 </div>
+
+<% if @device.client_group.nil? %>
+  
+  <p style = "font-size: 28px;">Link a Client Group for <%= @device.Name %>:</p>
+  <hr style = "display: block; height: 1px; border: 0; border-top: 1px solid #ccc; margin: 1em 0; padding: 0;"/>
+
+  <%= render partial: 'client_groups/select_client_group', locals: {client_groups: @client_groups, device: @device} %>
+
+<% end %>
 
 <% if @device.messages.length >= 1 %>
   <p style = "font-size: 28px;">Messages for <%= @device.Name %>:</p>

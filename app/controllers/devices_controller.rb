@@ -23,6 +23,7 @@ class DevicesController < ApplicationController
   # GET /devices/1
   # GET /devices/1.json
   def show
+    @client_groups = ClientGroup.all
   end
 
   # GET /devices/new
@@ -47,6 +48,30 @@ class DevicesController < ApplicationController
       else
         format.html { render :new }
         format.json { render json: @device.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def set_client_group_for_device
+    @client_group = ClientGroup.find(params[:ClientGroupID])
+    @device = Device.find(params[:id])
+
+    if @client_group && @device
+      @device.client_group = @client_group
+
+      respond_to do |format|
+        if @device.save
+          format.html { redirect_to devices_path, flash: {success: 'Client Group was successfully added' } }
+          format.json { render :index, status: :created, location: current_device }
+        else
+          format.html { redirect_to devices_path, flash: {warning: 'Client Group could not be added' } }
+          format.json { head :no_content }
+        end
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to devices_path, flash: {warning: 'Client Group could not be added' } }
+        format.json { head :no_content }
       end
     end
   end
@@ -180,6 +205,20 @@ class DevicesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def device_params
-      params.require(:device).permit(:id, :Name, :SigfoxID, :SigfoxName, :SerialNumber, :Longitude, :Latitude, :SigfoxDeviceTypeID, :SigfoxDeviceTypeName, :SigfoxGroupID, :SigfoxGroupName, :SigfoxActivationTime, :SigfoxCreationTime, :SigfoxCreatedByID)
+      params.require(:device).permit(
+        :id,
+        :Name, 
+        :SigfoxID,
+        :SigfoxName,
+        :SerialNumber,
+        :Longitude,
+        :Latitude,
+        :SigfoxDeviceTypeID, :SigfoxDeviceTypeName,
+        :SigfoxGroupID,
+        :SigfoxGroupName,
+        :SigfoxActivationTime,
+        :SigfoxCreationTime,
+        :SigfoxCreatedByID,
+        :ClientGroupID)
     end
 end

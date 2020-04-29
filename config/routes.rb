@@ -25,6 +25,7 @@ Rails.application.routes.draw do
 
   get '/set_client_for_client_group', to: 'client_groups#set_client_for_client_group', as: 'set_client_for_client_group'
   get '/set_client_for_user', to: 'users#set_client_for_user', as: 'set_client_for_user'
+  get '/set_client_group_for_device', to: 'devices#set_client_group_for_device', as: 'set_client_group_for_device'
   
   get 'signup', to: 'users#new', as: 'signup'
   get 'login', to: 'sessions#new', as: 'login'
