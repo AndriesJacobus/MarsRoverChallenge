@@ -17,7 +17,7 @@
     <tbody>
       <% messages.each do |message| %>
         <tr>
-          <td><%= message.Time %></td>
+          <td><%= "#{DateTime.strptime("#{message.Time}",'%s').to_s[0..9]} #{DateTime.strptime("#{message.Time}",'%s').to_s[11..18]} UTC±00:00" %></td>
           <td style = "padding-left: 25px;"><%= message.Data %></td>
 
           <% if message.LQI %>

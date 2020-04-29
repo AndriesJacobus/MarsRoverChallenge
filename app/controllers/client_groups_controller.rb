@@ -8,6 +8,7 @@ class ClientGroupsController < ApplicationController
     # Only Admins can view index
     if current_user.usertype == "Sysadmin"
       @client_groups = ClientGroup.all
+
     elsif current_user.usertype == "Client Admin"
       # Todo: filter client groups to show only those with the same 'client'
       #       tag as the current Admin
@@ -20,6 +21,7 @@ class ClientGroupsController < ApplicationController
   # GET /client_groups/1
   # GET /client_groups/1.json
   def show
+    @clients = Client.all
   end
 
   # GET /client_groups/1/map_view
@@ -223,6 +225,30 @@ class ClientGroupsController < ApplicationController
     end
   end
 
+  def set_client_for_client_group
+    @client = Client.find(params[:ClientID])
+    @client_group = ClientGroup.find(params[:id])
+
+    if @client && @client_group
+      @client_group.client = @client
+
+      respond_to do |format|
+        if @client_group.save
+          format.html { redirect_to client_groups_path, flash: {success: 'Client was successfully added' } }
+          format.json { render :index, status: :created, location: current_device }
+        else
+          format.html { redirect_to client_groups_path, flash: {warning: 'Client could not be added' } }
+          format.json { head :no_content }
+        end
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to client_groups_path, flash: {warning: 'Client could not be added' } }
+        format.json { head :no_content }
+      end
+    end
+  end
+
   # GET /client_groups/new
   def new
     @client_group = ClientGroup.new
@@ -296,6 +322,7 @@ class ClientGroupsController < ApplicationController
         :DeviceId,
         :DeviceLat,
         :DeviceLng,
+        :ClientID
       )
     end
 end
