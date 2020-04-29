@@ -1,6 +1,4 @@
 
-<h3><u>Map Groups</u></h3>
-
 <div class = "z-depth-5 hoverable scroller">
   <table>
     <thead>
@@ -14,7 +12,7 @@
     </thead>
 
     <tbody>
-      <% @map_groups.each do |map_group| %>
+      <% map_groups.each do |map_group| %>
         <tr>
           <td style = "white-space: nowrap; padding-right: 35px;"><%= map_group.Name %></td>
 
@@ -35,15 +33,6 @@
           <% else %>
             <td style = "padding-right: 25px;"><i>No Data</i></td>
           <% end %>
-          
-          <td><%= link_to 'Show', map_group, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
-
-          <% if map_group.client_group %>
-            <td><%= link_to 'Map_View', map_view_path(map_group.client_group.id), class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
-          <% end %>
-
-          <td><%= link_to 'Edit', edit_map_group_path(map_group), class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
-          <td><%= link_to 'Delete', map_group, method: :delete, data: { confirm: 'Are you sure?' }, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
         </tr>
       <% end %>
     </tbody>
@@ -51,6 +40,3 @@
 </div>
 
 <br>
-
-<%= link_to 'New Map Group', new_map_group_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %> |
-<%= link_to 'Back to Dashboard', root_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
