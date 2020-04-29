@@ -24,6 +24,8 @@ module API
             requires :Time, type: Integer, desc: 'Time that the Message being sent was received'
             requires :Data, type: String, desc: 'Data of the Message'
             requires :LQI, type: Integer, desc: 'Signal strength of the Message'
+            requires :sigfox_defice_id, type: String, desc: 'ID of the Sigfox Device'
+            requires :sigfox_device_type_id, type: String, desc: 'ID of the Sigfox Device Type'
 
           end
         end

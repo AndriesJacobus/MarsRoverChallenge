@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200428035330) do
+ActiveRecord::Schema.define(version: 20200429011943) do
 
   create_table "api_keys", force: :cascade do |t|
     t.string "username"
@@ -78,6 +78,8 @@ ActiveRecord::Schema.define(version: 20200428035330) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "device_id"
+    t.string "sigfox_defice_id"
+    t.string "sigfox_device_type_id"
     t.index ["device_id"], name: "index_messages_on_device_id"
   end
 
