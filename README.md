@@ -76,7 +76,7 @@ The functional requirements of the MVP Phase One include:
         - Allow notifications to be set on individual devices or group of devices
         - Group notification settings apply to devices in group as well
         - Notification options
-        - Map view
+          - Map view
       - Ignore
         - Prevent individual devices in a group from sending notifications
         - Same options as notify
@@ -151,8 +151,7 @@ The functional requirements of the MVP Phase One include:
     - [ ] Create/Link Devices
 - [ ] Create Client hierarchy view in Dashoard (according to Project View Hierarchy)
 - [ ] Message Controller and View Updates
-  - [ ] Add deviceID to Message
-  - [ ] Add sigf device Name to Message
+  - [x] Add Sigfox Device ID to Message
   - [ ] Add wi-i device Name to Message
   - [ ] Add deconstructed packet to Message
 - [ ] Device create via Message callback:
@@ -175,7 +174,7 @@ The functional requirements of the MVP Phase One include:
         - [ ]  SigFox back end
           - [x]  Devices to be registered on SigFox back end manually and added manually to Wi- [ ] i controller
           - [ ]  Tie SigFox device ID up with device serial number
-          - [ ]  Callback with unique hash
+          - [x]  Callback with unique hash
     - [x]  Remove devices
     - [X]  Rename devices
     - [x]  Group devices
@@ -210,13 +209,13 @@ The functional requirements of the MVP Phase One include:
       - [ ]  Alarm
       - [ ]  Maintenance
       - [ ]  Device Online/Offline
-    - [ ]  List groups, devices currently configured on system
+    - [x]  List groups, devices currently configured on system
   - [ ]  Actions
     - [ ]  Notify
       - [ ]  Allow notifications to be set on individual devices or group of devices
       - [ ]  Group notification settings apply to devices in group as well
-      - [ ]  Notification options
-      - [ ]  Map view
+      - [x]  Notification options
+        - [x]  Map view
     - [ ]  Ignore
       - [ ]  Prevent individual devices in a group from sending notifications
       - [ ]  Same options as notify
@@ -225,6 +224,6 @@ The functional requirements of the MVP Phase One include:
   
 - [ ] 5. Controller Deliverables
   - [ ]  Cloud server
-    - [ ]  Connected to SigFox back end to handle callbacks
+    - [x]  Connected to SigFox back end to handle callbacks
     - [ ]  Passes on packets received from SigFox devices to local server
     - [ ]  Synchronization with local server
