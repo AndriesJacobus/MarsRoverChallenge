@@ -76,6 +76,13 @@
   <%= render partial: 'map_groups/map_group_table', locals: {map_groups: @client_group.map_groups} %>
 <% end %>
 
+<% if @client_group.devices.length >= 1 %>
+  <p style = "font-size: 28px;">Devices for <%= @client_group.Name %>:</p>
+  <hr style = "display: block; height: 1px; border: 0; border-top: 1px solid #ccc; margin: 1em 0; padding: 0;"/>
+
+  <%= render partial: 'devices/device_table', locals: {devices: @client_group.devices} %>
+<% end %>
+
 <br/>
 
 <%= link_to 'Edit', edit_client_group_path(@client_group), class: "waves-effect waves-light blue lighten-1 btn-small white-text" %> |
