@@ -162,18 +162,18 @@ The functional requirements of the MVP Phase One include:
   - [ ] Only Sysadmins and Client Admins can create Operators
 
 ## Progress
-- [ ] 1. Configuration
+- [x] 1. Configuration
     - [x]  Operator
     - [x]  Add/Delete user
     - [x]  Password management
     - [x]  User access level
       - [x]  Admin – total access
       - [x]  Operator – map view and logs access
-    - [ ]  Devices
+    - [x]  Devices
       - [x]  Add devices
-        - [ ]  SigFox back end
-          - [x]  Devices to be registered on SigFox back end manually and added manually to Wi- [ ] i controller
-          - [ ]  Tie SigFox device ID up with device serial number
+        - [x]  SigFox back end
+          - [x]  Devices to be registered on SigFox back end manually and added manually to Wi-I-Cloud controller
+          - [x]  Tie SigFox device ID up with device serial number
           - [x]  Callback with unique hash
     - [x]  Remove devices
     - [X]  Rename devices
