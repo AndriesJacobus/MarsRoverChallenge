@@ -98,7 +98,7 @@ The functional requirements of the MVP Phase One include:
    - Configuration
      - Operator
      - Devices
-2. Month 2 - Integration and Interaction
+2. ~~Month 2 - Integration and Interaction~~
    - Map View
      - Static map
      - Graphical representation of layout of perimeter
@@ -117,7 +117,7 @@ The functional requirements of the MVP Phase One include:
      - Heading filters
    - Controller Setup
      - Installation of server on local controller
-     - Synchronization of packets received from SigFox devices to local server with local server
+     - Synchronization of packets received from SigFox devices to local server
 
 ## Project View Hierarchy
 1. Clients (sigf device type)
@@ -128,6 +128,13 @@ The functional requirements of the MVP Phase One include:
       2. Devices
 
 ## Extra Added Functional Requirements
+- [x] Device create via Message callback:
+  - [x] if message comes in from device with sigfox ID not registered on wi-i, create new device and link message to device
+  - [x] enable users to merge current devices with automatically created devices (copy over device name, client, client_group, map_group) 
+- [ ] Message Controller and View Updates
+  - [x] Add Sigfox Device ID to Message
+  - [x] Add wi-i device Name to Message
+  - [ ] Add deconstructed packet to Message
 - [ ] Client Admin
   - [x] Create new User Type: Client Admin
   - [x] Rename Admin User Type to Sysadmin
@@ -150,13 +157,6 @@ The functional requirements of the MVP Phase One include:
     - [ ] Create/Link Client Group
     - [ ] Create/Link Devices
 - [ ] Create Client hierarchy view in Dashoard (according to Project View Hierarchy)
-- [ ] Message Controller and View Updates
-  - [x] Add Sigfox Device ID to Message
-  - [ ] Add wi-i device Name to Message
-  - [ ] Add deconstructed packet to Message
-- [ ] Device create via Message callback:
-  - [ ] if message comes in from device with sigfox ID not registered on wi-i, create new device and link message to device
-  - [x] enable users to merge current devices with automatically created devices (copy over device name, client, client_group, map_group) 
 - [ ] User Create Update
   - [ ] Only Sysadmins can create Client Admins
   - [ ] Only Sysadmins and Client Admins can create Operators
