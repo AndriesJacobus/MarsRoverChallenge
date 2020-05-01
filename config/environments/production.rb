@@ -90,6 +90,6 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   # Whitelist sigfox
-  config.web_console.whitelisted_ips = '185.110.0.0/16'
+  # config.web_console.whitelisted_ips = '185.110.0.0/16'
   # config.web_console.whiny_requests = false
 end
