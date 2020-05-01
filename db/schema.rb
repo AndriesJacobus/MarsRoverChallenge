@@ -10,11 +10,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200319022826) do
+ActiveRecord::Schema.define(version: 20200429011943) do
 
   create_table "api_keys", force: :cascade do |t|
     t.string "username"
     t.string "password"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "client_groups", force: :cascade do |t|
+    t.string "Name"
+    t.string "SigfoxGroupID"
+    t.string "SigfoxGroupName"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "client_id"
+    t.index ["client_id"], name: "index_client_groups_on_client_id"
+  end
+
+  create_table "clients", force: :cascade do |t|
+    t.string "Name"
+    t.string "SigfoxDeviceTypeID"
+    t.string "SigfoxDeviceTypeName"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -35,13 +53,22 @@ ActiveRecord::Schema.define(version: 20200319022826) do
     t.string "SigfoxCreatedByID"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "map_group_id"
+    t.integer "client_group_id"
+    t.index ["client_group_id"], name: "index_devices_on_client_group_id"
+    t.index ["map_group_id"], name: "index_devices_on_map_group_id"
   end
 
   create_table "map_groups", force: :cascade do |t|
     t.string "Name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "devices_added"
+    t.integer "client_group_id"
+    t.float "startLon"
+    t.float "startLat"
+    t.float "endLon"
+    t.float "endLat"
+    t.index ["client_group_id"], name: "index_map_groups_on_client_group_id"
   end
 
   create_table "messages", force: :cascade do |t|
@@ -50,6 +77,10 @@ ActiveRecord::Schema.define(version: 20200319022826) do
     t.integer "LQI"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "device_id"
+    t.string "sigfox_defice_id"
+    t.string "sigfox_device_type_id"
+    t.index ["device_id"], name: "index_messages_on_device_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -60,6 +91,8 @@ ActiveRecord::Schema.define(version: 20200319022826) do
     t.string "name"
     t.string "surname"
     t.string "usertype", default: "Operator"
+    t.integer "client_id"
+    t.index ["client_id"], name: "index_users_on_client_id"
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 

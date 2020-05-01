@@ -1,0 +1,89 @@
+
+<br/>
+
+<div class="row">
+  <div class="col s12 m6">
+    <div class="card blue white-text z-depth-5 hoverable">
+      <div class="card-content">
+        <span class="card-title">Client Group Information:</span>
+        <hr style = "display: block; height: 1px; border: 0; border-top: 1px solid #ccc; margin: 1em 0; padding: 0;"/>
+
+        <p class = "cardSubTitle">Basic Information:</p>
+
+        <p> 
+          <strong>Name:</strong><br/>
+          <%= @client_group.Name %>
+        </p>
+
+        <br/>
+
+        <p>
+          <strong>Sigfoxgroupid:</strong><br/>
+          <%= @client_group.SigfoxGroupID %>
+        </p>
+
+        <br/>
+
+        <p>
+          <strong>Sigfoxgroupname:</strong><br/>
+          <%= @client_group.SigfoxGroupName %>
+        </p>
+
+        <br/>
+
+        <p class = "cardSubTitle">Client Information:</p>
+
+        <p>
+          <strong>Client Name:</strong><br/>
+          <% if !@client_group.client.nil? %>
+            <%= @client_group.client.Name %>
+          <% else %>
+            <i>N/A</i>
+          <% end %>
+        </p>
+
+        <br/>
+        
+        <p>
+          <strong>Client DeviceType:</strong><br/>
+          <% if !@client_group.client.nil? %>
+            <%= @client_group.client.SigfoxDeviceTypeName %>
+          <% else %>
+            <i>N/A</i>
+          <% end %>
+        </p>
+
+        <br/>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<% if @client_group.client.nil? %>
+  
+  <p style = "font-size: 28px;">Link a Client for <%= @client_group.Name %>:</p>
+  <hr style = "display: block; height: 1px; border: 0; border-top: 1px solid #ccc; margin: 1em 0; padding: 0;"/>
+
+  <%= render partial: 'clients/select_client', locals: {clients: @clients, client_group: @client_group} %>
+
+<% end %>
+
+<% if @client_group.map_groups.length >= 1 %>
+  <p style = "font-size: 28px;">Map Groups (Perimeters) for <%= @client_group.Name %>:</p>
+  <hr style = "display: block; height: 1px; border: 0; border-top: 1px solid #ccc; margin: 1em 0; padding: 0;"/>
+
+  <%= render partial: 'map_groups/map_group_table', locals: {map_groups: @client_group.map_groups} %>
+<% end %>
+
+<% if @client_group.devices.length >= 1 %>
+  <p style = "font-size: 28px;">Devices for <%= @client_group.Name %>:</p>
+  <hr style = "display: block; height: 1px; border: 0; border-top: 1px solid #ccc; margin: 1em 0; padding: 0;"/>
+
+  <%= render partial: 'devices/device_table', locals: {devices: @client_group.devices} %>
+<% end %>
+
+<br/>
+
+<%= link_to 'Edit', edit_client_group_path(@client_group), class: "waves-effect waves-light blue lighten-1 btn-small white-text" %> |
+<%= link_to 'Back to Client Groups', client_groups_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>

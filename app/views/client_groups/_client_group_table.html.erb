@@ -1,0 +1,39 @@
+
+<div class = "z-depth-5 hoverable scroller">
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th style = "white-space: nowrap; padding-right: 35px;">Sigfox GroupID</th>
+        <th style = "white-space: nowrap; padding-right: 35px;">Sigfox GroupName</th>
+        <th style = "white-space: nowrap; padding-right: 35px;">Client Name</th>
+        <th style = "white-space: nowrap; padding-right: 35px;">Client DeviceType</th>
+        <th colspan="4"></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% client_groups.each do |client_group| %>
+        <tr>
+          <td style = "white-space: nowrap; padding-right: 35px;"><%= client_group.Name %></td>
+          <td style = "padding-right: 35px; padding-right: 35px;"><%= client_group.SigfoxGroupID %></td>
+          <td style = "padding-right: 35px; padding-right: 35px;"><%= client_group.SigfoxGroupName %></td>
+
+          <% if !client_group.client.nil? %>
+            <td style = "padding-right: 35px;"><%= client_group.client.Name %></td>
+          <% else %>
+            <td style = "padding-right: 35px;"><i>N/A</i></td>
+          <% end %>
+
+          <% if !client_group.client.nil? %>
+            <td style = "padding-right: 35px;"><%= client_group.client.SigfoxDeviceTypeName %></td>
+          <% else %>
+            <td style = "padding-right: 35px;"><i>N/A</i></td>
+          <% end %>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<br>

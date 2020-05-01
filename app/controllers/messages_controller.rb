@@ -2,10 +2,21 @@ class MessagesController < ApplicationController
   before_action :set_message, only: [:show, :edit, :update, :destroy]
   before_action :authorize_user, only: :index
 
+  require 'date'
+
   # GET /messages
   # GET /messages.json
   def index
-    @messages = Message.all
+    # Only Admins can view index
+    if current_user.usertype == "Sysadmin"
+      @messages = Message.all
+    elsif current_user.usertype == "Client Admin"
+      # Todo: filter messages to show only those with the same 'client'
+      #       tag as the current Admin
+      @messages = Message.all
+    else
+      redirect_to root_path, flash: {warning: 'Please log in as an Admin before viewing this page' }
+    end
   end
 
   # GET /messages/1
@@ -26,6 +37,18 @@ class MessagesController < ApplicationController
   # POST /messages.json
   def create
     @message = Message.new(message_params)
+
+    # Look for device with sigfox id
+    @device = Device.where(SigfoxID: params[:sigfox_defice_id]).take
+    if @device
+      @device.messages << @message
+
+      # Update device with message info, if not present
+      if !@device.SigfoxDeviceTypeID || @device.SigfoxDeviceTypeID == ""
+        @device.update_attribute(:SigfoxDeviceTypeID, params[:sigfox_device_type_id])
+      end
+
+    end
 
     respond_to do |format|
       if @message.save
@@ -70,6 +93,6 @@ class MessagesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def message_params
-      params.require(:message).permit(:Time, :Data, :LQI)
+      params.require(:message).permit(:Time, :Data, :LQI, :sigfox_defice_id, :sigfox_device_type_id)
     end
 end

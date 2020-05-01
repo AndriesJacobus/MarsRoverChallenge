@@ -1,0 +1,21 @@
+<h3><u><%= @client_group.Name %> MapView</u></h3>
+
+<br/>
+<br/>
+
+<%= react_component("GoogleMap",
+    {
+        markerIconUrl: asset_path("chipIcon2.png"),
+        perimIconUrl: asset_path("perimeter.png"),
+        curr_client_group: @client_group.id,
+        auth_token: form_authenticity_token,
+        devices: @devices.as_json,
+        map_groups: @map_groups.as_json(include: :devices),
+    })
+%>
+
+<br/>
+<br/>
+<br/>
+
+<%= link_to 'Back to Client Groups', client_groups_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>

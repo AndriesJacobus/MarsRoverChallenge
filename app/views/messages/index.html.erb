@@ -6,8 +6,12 @@
     <thead>
       <tr>
         <th>Time</th>
-        <th>Data</th>
-        <th>Lqi</th>
+        <th style = "padding-left: 25px;">Raw Data</th>
+        <th style = "padding-left: 25px;">Lqi</th>
+        <th style = "padding-left: 25px; white-space: nowrap;">Has Wi-I-Cloud Device</th>
+        <th style = "padding-left: 25px; white-space: nowrap;">Wi-I-Cloud Device Name</th>
+        <th style = "padding-left: 25px;">Sigfox Device ID</th>
+        <th style = "padding-left: 25px;">Sigfox Type ID</th>
         <th colspan="3"></th>
       </tr>
     </thead>
@@ -15,10 +19,28 @@
     <tbody>
       <% @messages.each do |message| %>
         <tr>
-          <td><%= message.Time %></td>
-          <td><%= message.Data %></td>
-          <td><%= message.LQI %></td>
-          <td><%= link_to 'Show', message, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
+          <td>
+            <%= "#{DateTime.strptime("#{message.Time}",'%s').to_s[0..9]} #{DateTime.strptime("#{message.Time}",'%s').to_s[11..18]} UTC±00:00" %>
+          </td>
+          <td style = "padding-left: 25px;"><%= message.Data %></td>
+
+          <% if message.LQI %>
+            <td style = "padding-left: 25px;"><%= message.LQI %></td>
+          <% else %>
+            <td style = "padding-left: 25px;"><i>N/A</i></td>
+          <% end %>
+
+          <td style = "padding-left: 25px;"><%= !message.device.nil? %></td>
+
+          <% if message.device %>
+            <td style = "padding-left: 25px;"><%= message.device.Name %></td>
+          <% else %>
+            <td style = "padding-left: 25px;"><i>N/A</i></td>
+          <% end %>
+
+          <td style = "padding-left: 25px; padding-right: 75px;"><%= message.sigfox_defice_id %></td>
+          <td style = "padding-left: 25px;"><%= message.sigfox_device_type_id %></td>
+          <td style = "padding-left: 25px;"><%= link_to 'Show', message, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
           <td><%= link_to 'Edit', edit_message_path(message), class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
           <td><%= link_to 'Delete', message, method: :delete, data: { confirm: 'Are you sure?' }, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
         </tr>
@@ -30,4 +52,4 @@
 <br>
 
 <%= link_to 'New Message', new_message_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %> |
-<%= link_to 'Back to Home', root_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
+<%= link_to 'Back to Dashboard', root_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>

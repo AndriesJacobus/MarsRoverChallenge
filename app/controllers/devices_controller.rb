@@ -8,12 +8,22 @@ class DevicesController < ApplicationController
   # GET /devices
   # GET /devices.json
   def index
-    @devices = Device.all
+    # Only Admins can view index
+    if current_user.usertype == "Sysadmin"
+      @devices = Device.all
+    elsif current_user.usertype == "Client Admin"
+      # Todo: filter devices to show only those with the same 'client'
+      #       tag as the current Admin
+      @devices = Device.all
+    else
+      redirect_to root_path, flash: {warning: 'Please log in as an Admin before viewing this page' }
+    end
   end
 
   # GET /devices/1
   # GET /devices/1.json
   def show
+    @client_groups = ClientGroup.all
   end
 
   # GET /devices/new
@@ -28,6 +38,7 @@ class DevicesController < ApplicationController
   # POST /devices
   # POST /devices.json
   def create
+    # Todo: make sure device names are unique
     @device = Device.new(device_params)
 
     respond_to do |format|
@@ -41,9 +52,34 @@ class DevicesController < ApplicationController
     end
   end
 
+  def set_client_group_for_device
+    @client_group = ClientGroup.find(params[:ClientGroupID])
+    @device = Device.find(params[:id])
+
+    if @client_group && @device
+      @device.client_group = @client_group
+
+      respond_to do |format|
+        if @device.save
+          format.html { redirect_to devices_path, flash: {success: 'Client Group was successfully added' } }
+          format.json { render :index, status: :created, location: current_device }
+        else
+          format.html { redirect_to devices_path, flash: {warning: 'Client Group could not be added' } }
+          format.json { head :no_content }
+        end
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to devices_path, flash: {warning: 'Client Group could not be added' } }
+        format.json { head :no_content }
+      end
+    end
+  end
+
   # PATCH/PUT /devices/1
   # PATCH/PUT /devices/1.json
   def update
+    # Todo: make sure device names are unique
     respond_to do |format|
       if @device.update(device_params)
         format.html { redirect_to @device, flash: {success: 'Device was successfully updated' } }
@@ -58,6 +94,8 @@ class DevicesController < ApplicationController
   # DELETE /devices/1
   # DELETE /devices/1.json
   def destroy
+    @device.messages.delete_all
+    
     @device.destroy
     respond_to do |format|
       format.html { redirect_to devices_url, flash: {warning: 'Device was successfully deleted' } }
@@ -71,29 +109,42 @@ class DevicesController < ApplicationController
     resp = get_device_info_internal
 
     if resp["message"]
+      err = 'Device data could not be retrieved because SigFox request limit reached'
+
+      if resp["message"] == "Invalid value or type" || resp[0]["message"] == "The requested resource was not found." 
+        err = 'Device data could not be retrieved because the device with the SigFoxId of ' + params[:SigfoxID] + ' could not be found'
+      end
+
       respond_to do |format|
-        format.html { redirect_to devices_url, flash: {warning: 'Device data could not be retrieved because SigFox request limit reached' } }
+        format.html { redirect_to devices_url, flash: {warning: err } }
         format.json { head :no_content }
       end
     elsif current_device == nil
       respond_to do |format|
-        format.html { redirect_to devices_url, flash: {warning: 'Device data could not be retrieved because device could not be found' } }
+        format.html { redirect_to devices_url, flash: {warning: 'Device data could not be retrieved because device record could not be found' } }
         format.json { head :no_content }
       end
     else
-      current_device.SigfoxName = resp["name"]
-      current_device.SigfoxDeviceTypeID = resp["deviceType"]["id"]
-      # current_device.SigfoxDeviceTypeName = 
-      current_device.SigfoxGroupID = resp["group"]["id"]
-      # current_device.SigfoxGroupName = 
-      current_device.SigfoxActivationTime = resp["activationTime"]
-      current_device.SigfoxCreationTime = resp["creationTime"]
-      current_device.SigfoxCreatedByID = resp["createdBy"]
+      puts resp
+      puts resp["name"]
+      puts ""
+      puts resp.as_json
+      puts resp.as_json["name"]
+
+      current_device.update_attributes(
+        :SigfoxName => resp["name"],
+        :SigfoxDeviceTypeID => resp["deviceType"]["id"],
+        :SigfoxGroupID => resp["group"]["id"],
+        :SigfoxActivationTime => resp["activationTime"],
+        :SigfoxCreationTime => resp["creationTime"],
+        :SigfoxCreatedByID => resp["createdBy"]
+      )
+      puts current_device.errors.as_json
   
       respond_to do |format|
         if current_device.save
-          format.html { redirect_to @device, flash: {success: 'Device data was successfully autofilled' } }
-          format.json { render :show, status: :created, location: @device }
+          format.html { redirect_to current_device, flash: {success: 'Device data was successfully autofilled' } }
+          format.json { render :show, status: :created, location: current_device }
         else
           format.html { redirect_to devices_url, flash: {warning: 'Device could not be autofilled' } }
           format.json { head :no_content }
@@ -111,8 +162,8 @@ class DevicesController < ApplicationController
       http.request(req)
     }
 
-    puts res.body
-    res.body
+    puts res.body.as_json
+    res.body.as_json
   end
 
   def get_device_info
@@ -154,6 +205,20 @@ class DevicesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def device_params
-      params.require(:device).permit(:Name, :SigfoxID, :SigfoxName, :SerialNumber, :Longitude, :Latitude, :SigfoxDeviceTypeID, :SigfoxDeviceTypeName, :SigfoxGroupID, :SigfoxGroupName, :SigfoxActivationTime, :SigfoxCreationTime, :SigfoxCreatedByID)
+      params.require(:device).permit(
+        :id,
+        :Name, 
+        :SigfoxID,
+        :SigfoxName,
+        :SerialNumber,
+        :Longitude,
+        :Latitude,
+        :SigfoxDeviceTypeID, :SigfoxDeviceTypeName,
+        :SigfoxGroupID,
+        :SigfoxGroupName,
+        :SigfoxActivationTime,
+        :SigfoxCreationTime,
+        :SigfoxCreatedByID,
+        :ClientGroupID)
     end
 end

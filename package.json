@@ -1,7 +1,37 @@
 {
-  "name": "BReview",
+  "name": "Wi_I_Cloud",
   "private": true,
   "dependencies": {
-    "material-design-icons": "^3.0.1"
+    "@babel/core": "^7.9.0",
+    "@babel/preset-react": "^7.9.4",
+    "@material-ui/core": "^4.9.11",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.50",
+    "@material-ui/styles": "^4.9.10",
+    "@rails/webpacker": "4.2.2",
+    "@syncfusion/ej2-react-grids": "^18.1.45",
+    "@syncfusion/ej2-react-navigations": "^18.1.45",
+    "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
+    "d3-array": "^2.4.0",
+    "d3-request": "^1.0.6",
+    "d3-scale": "^3.2.1",
+    "google-map-react": "^1.1.7",
+    "google-maps-react": "^2.0.6",
+    "material-design-icons": "^3.0.1",
+    "material-ui": "^1.0.0-beta.47",
+    "moment": "^2.24.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.13.1",
+    "react-addons-update": "^15.6.2",
+    "react-dom": "^16.13.1",
+    "react-map-gl": "^5.2.5",
+    "react-sortable-tree": "^2.7.1",
+    "react-sortable-tree-theme-file-explorer": "^2.0.0",
+    "react_ujs": "^2.6.1",
+    "typeface-roboto": "0.0.75",
+    "webpack": "^4.43.0"
+  },
+  "devDependencies": {
+    "webpack-dev-server": "^3.10.3"
   }
 }

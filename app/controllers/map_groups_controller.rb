@@ -5,7 +5,16 @@ class MapGroupsController < ApplicationController
   # GET /map_groups
   # GET /map_groups.json
   def index
-    @map_groups = MapGroup.all
+    # Only Admins can view index
+    if current_user.usertype == "Sysadmin"
+      @map_groups = MapGroup.all
+    elsif current_user.usertype == "Client Admin"
+      # Todo: filter map_groups to show only those with the same 'client'
+      #       tag as the current Admin
+      @map_groups = MapGroup.all
+    else
+      redirect_to root_path, flash: {warning: 'Please log in as an Admin before viewing this page' }
+    end
   end
 
   # GET /map_groups/1
@@ -55,6 +64,8 @@ class MapGroupsController < ApplicationController
   # DELETE /map_groups/1
   # DELETE /map_groups/1.json
   def destroy
+    @map_group.devices.delete_all
+    
     @map_group.destroy
     respond_to do |format|
       format.html { redirect_to map_groups_url, flash: {warning: 'Map group was successfully deleted' } }

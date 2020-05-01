@@ -5,7 +5,16 @@ class ApiKeysController < ApplicationController
   # GET /api_keys
   # GET /api_keys.json
   def index
-    @api_keys = ApiKey.all
+    # Only Admins can view index
+    if current_user.usertype == "Sysadmin"
+      @api_keys = ApiKey.all
+    elsif current_user.usertype == "Client Admin"
+      # Todo: filter api_keys to show only those with the same 'client'
+      #       tag as the current Admin
+      @api_keys = ApiKey.all
+    else
+      redirect_to root_path, flash: {warning: 'Please log in as an Admin before viewing this page' }
+    end
   end
 
   # GET /api_keys/1

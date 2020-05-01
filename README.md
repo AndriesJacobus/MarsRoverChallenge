@@ -1,6 +1,25 @@
-# Wi-I-Cloud
+# Wi_I_Cloud
 Custom cloud front-end to connect to the Teqcon Sigfox back-end and manage IoT devices for security perimeters.
 Currently we are busy with the first iteration of the project - the **MVP Phase One**.
+
+## Code initiation and running
+### Prerequisites
+You need to have the following installed to run the project:
+- npm & node
+- ruby on rails (5.1>)
+- Database:
+  - Dev: smysql
+  - Prod: postgress
+
+### Build and run
+To build and run the code:
+
+`npm install --save` or `yarn install`
+
+`rails server`
+
+## API Documentation
+To view the API docs, run the server and go to the `/documentation`
 
 ## MVP Phase One Features
 The functional requirements of the MVP Phase One include: 
@@ -57,7 +76,7 @@ The functional requirements of the MVP Phase One include:
         - Allow notifications to be set on individual devices or group of devices
         - Group notification settings apply to devices in group as well
         - Notification options
-        - Map view
+          - Map view
       - Ignore
         - Prevent individual devices in a group from sending notifications
         - Same options as notify
@@ -79,12 +98,12 @@ The functional requirements of the MVP Phase One include:
    - Configuration
      - Operator
      - Devices
-2. Month 2 - Integration and Interaction
+2. ~~Month 2 - Integration and Interaction~~
    - Map View
      - Static map
      - Graphical representation of layout of perimeter
      - Editable
-     - Indication of device events/states using colour, icons
+     - Indication of device events/states using colour & icons
      - Operator interaction
    - Business Rules
      - Events
@@ -98,35 +117,49 @@ The functional requirements of the MVP Phase One include:
      - Heading filters
    - Controller Setup
      - Installation of server on local controller
-     - Synchronization of packets received from SigFox devices to local server with local server
-
-## Extra Added Functional Requirements
-- [ ] Client Admin
-  - [ ] Create new User Type: Client Admin
-  - [ ] Transfer Operator privileges to Client Admin
-  - [ ] Rename Admin User Type to Sysadmin
-  - [ ] New Operator Privileges
-    - [ ] View own user info
-    - [ ] Map View
-    - [ ] Logs
-- [ ] Client Groups
-  - [ ] Create new Controller and View: Clients (= sifg DeviceType)
-  - [ ] Create new Controller and View: Client Groups (= sifg Group like MyTestGroup)
-- [ ] Message Controller and View Updates
-  - [ ] Add deviceID to Message
-  - [ ] Add sigf device Name to Message
-  - [ ] Add wi-i device Name to Message
-  - [ ] Add deconstructed packet to Message
-- [ ] User Create Update
-  - [ ] Only Sysadmins can create Client Admins
-  - [ ] Only Sysadmins and Client Admins can create Operators
+     - Synchronization of packets received from SigFox devices to local server
 
 ## Project View Hierarchy
 1. Clients (sigf device type)
    1. Client Admin
    2. Client Operator
-   3. Client Group (sigf Group like MyTestGroup)
-      1. Devices
+   3. Client Group (sigf Group)
+      1. MapGroups (Perimeter)
+      2. Devices
+
+## Extra Added Functional Requirements
+- [x] Device create via Message callback:
+  - [x] if message comes in from device with sigfox ID not registered on wi-i, create new device and link message to device
+  - [x] enable users to merge current devices with automatically created devices (copy over device name, client, client_group, map_group) 
+- [ ] Message Controller and View Updates
+  - [x] Add Sigfox Device ID to Message
+  - [x] Add wi-i device Name to Message
+  - [ ] Add deconstructed packet to Message
+- [ ] Client Admin
+  - [x] Create new User Type: Client Admin
+  - [x] Rename Admin User Type to Sysadmin
+  - [x] Transfer Operator privileges to Client Admin
+  - [ ] New Operator Privileges
+    - [x] View own user info
+    - [ ] Map View
+    - [ ] Logs
+- [ ] Client Groups
+  - [x] Create new Controller and View: Clients (= sifg DeviceType like Wi-i Platform Testing)
+  - [x] Create new Controller and View: Client Groups (= sifg Group like MyTestGroup)
+  - [x] Clients View Styling Updates
+  - [x] Client Groups View Styling Updates
+  - [x] Link Clients Controller and View in Dashboard
+  - [x] Link Client Groups Controller and View in Dashboard
+  - [ ] Create Dashboard process to setup a Client (according to Project View Hierarchy)
+    - [ ] Create Client
+    - [ ] Create/Link Client Admin
+    - [ ] Create/Link Operator
+    - [ ] Create/Link Client Group
+    - [ ] Create/Link Devices
+- [ ] Create Client hierarchy view in Dashoard (according to Project View Hierarchy)
+- [ ] User Create Update
+  - [ ] Only Sysadmins can create Client Admins
+  - [ ] Only Sysadmins and Client Admins can create Operators
 
 ## Progress
 - [ ] 1. Configuration
@@ -141,24 +174,24 @@ The functional requirements of the MVP Phase One include:
         - [ ]  SigFox back end
           - [x]  Devices to be registered on SigFox back end manually and added manually to Wi- [ ] i controller
           - [ ]  Tie SigFox device ID up with device serial number
-          - [ ]  Callback with unique hash
+          - [x]  Callback with unique hash
     - [x]  Remove devices
     - [X]  Rename devices
-    - [ ]  Group devices
-    - [ ]  Rename groups
-    - [ ]  Tree list view of devices, groups already configured
+    - [x]  Group devices
+    - [x]  Rename groups
+    - [x]  Tree list view of devices and groups already configured
   
 - [ ] 2. Log
   - [ ]  List view
   - [ ]  Heading filters
 
 - [ ] 3. Map View
-  - [ ]  Static map
-  - [ ]  Graphical representation of layout of perimeter
-    - [ ]  Groups allowing access to individual bridges and devices
-  - [ ]  Editable
-    - [ ]  Provide a list of configured groups and devices
-    - [ ]  Groups and devices can be placed on map
+  - [x]  Static map (integrated a dynamic map)
+  - [x]  Graphical representation of layout of perimeter
+    - [x]  Groups allowing access to individual bridges and devices
+  - [x]  Editable
+    - [x]  Provide a list of configured groups and devices
+    - [x]  Groups and devices can be placed on map
   - [ ]  Indication of device events/states using colour, icons
     - [ ]  Alarm
     - [ ]  Online/offline
@@ -176,21 +209,21 @@ The functional requirements of the MVP Phase One include:
       - [ ]  Alarm
       - [ ]  Maintenance
       - [ ]  Device Online/Offline
-    - [ ]  List groups, devices currently configured on system
-    - [ ]  Actions
-      - [ ]  Notify
-        - [ ]  Allow notifications to be set on individual devices or group of devices
-        - [ ]  Group notification settings apply to devices in group as well
-        - [ ]  Notification options
-        - [ ]  Map view
-      - [ ]  Ignore
-        - [ ]  Prevent individual devices in a group from sending notifications
-        - [ ]  Same options as notify
+    - [x]  List groups, devices currently configured on system
+  - [ ]  Actions
+    - [ ]  Notify
+      - [ ]  Allow notifications to be set on individual devices or group of devices
+      - [ ]  Group notification settings apply to devices in group as well
+      - [x]  Notification options
+        - [x]  Map view
+    - [ ]  Ignore
+      - [ ]  Prevent individual devices in a group from sending notifications
+      - [ ]  Same options as notify
   - [ ]  New added devices configured with default rules
-    - [ ]  Notify on map view on alarms, maintenance, offline devices
+    - [ ]  Notify via map view on alarms, maintenance, offline devices
   
 - [ ] 5. Controller Deliverables
   - [ ]  Cloud server
-    - [ ]  Connected to SigFox back end to handle callbacks
+    - [x]  Connected to SigFox back end to handle callbacks
     - [ ]  Passes on packets received from SigFox devices to local server
     - [ ]  Synchronization with local server

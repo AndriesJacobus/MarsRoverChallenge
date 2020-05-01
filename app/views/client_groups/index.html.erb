@@ -1,0 +1,49 @@
+
+<h3><u>Client Groups</u></h3>
+
+<div class = "z-depth-5 hoverable scroller">
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th style = "white-space: nowrap; padding-right: 35px;">Sigfox Group ID</th>
+        <th style = "white-space: nowrap; padding-right: 35px;">Sigfox Group Name</th>
+        <th style = "white-space: nowrap; padding-right: 35px;">Client Name</th>
+        <th style = "white-space: nowrap; padding-right: 35px;">Client DeviceType</th>
+        <th colspan="4"></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @client_groups.each do |client_group| %>
+        <tr>
+          <td style = "white-space: nowrap; padding-right: 35px;"><%= client_group.Name %></td>
+          <td style = "padding-right: 35px;"><%= client_group.SigfoxGroupID %></td>
+          <td style = "padding-right: 35px;"><%= client_group.SigfoxGroupName %></td>
+
+          <% if !client_group.client.nil? %>
+            <td style = "padding-right: 35px;"><%= client_group.client.Name %></td>
+          <% else %>
+            <td style = "padding-right: 35px;"><i>N/A</i></td>
+          <% end %>
+
+          <% if !client_group.client.nil? %>
+            <td style = "padding-right: 35px;"><%= client_group.client.SigfoxDeviceTypeName %></td>
+          <% else %>
+            <td style = "padding-right: 35px;"><i>N/A</i></td>
+          <% end %>
+
+          <td><%= link_to 'Show', client_group, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
+          <td><%= link_to 'Map_View', map_view_path(client_group.id), method: :get, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
+          <td><%= link_to 'Edit', edit_client_group_path(client_group), class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
+          <td><%= link_to 'Delete', client_group, method: :delete, data: { confirm: 'Are you sure?' }, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<br>
+
+<%= link_to 'New Client Group', new_client_group_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %> |
+<%= link_to 'Back to Dashboard', root_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>

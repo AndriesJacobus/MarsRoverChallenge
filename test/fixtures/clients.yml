@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  Name: MyString
+  SigfoxDeviceTypeID: MyString
+  SigfoxDeviceTypeName: MyString
+
+two:
+  Name: MyString
+  SigfoxDeviceTypeID: MyString
+  SigfoxDeviceTypeName: MyString
