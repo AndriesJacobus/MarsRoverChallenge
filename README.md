@@ -16,7 +16,7 @@ To build and run the code:
 
 `npm install --save` or `yarn install`
 
-`rails server`
+`rails server` 
 
 ## API Documentation
 To view the API docs, run the server and go to the `/documentation`
