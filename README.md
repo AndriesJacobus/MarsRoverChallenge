@@ -1,25 +1,79 @@
-# Wi_I_Cloud
-Custom cloud front-end to connect to the Teqcon Sigfox back-end and manage IoT devices for security perimeters.
+# Wi-I-Cloud
+Custom cloud front-end to connect to the Teqcon Sigfox back-end and manage IoT devices for security perimeters.  
 Currently we are busy with the first iteration of the project - the **MVP Phase One**.
 
-## Code initiation and running
+## Code Initialization and Running
 ### Prerequisites
 You need to have the following installed to run the project:
 - npm & node
 - ruby on rails (5.1>)
 - Database:
-  - Dev: smysql
+  - Dev: sqlite3
   - Prod: postgress
 
-### Build and run
-To build and run the code:
+### Local Build and Run
+To build and run the code locally (dev environment):
 
-`npm install --save` or `yarn install`
+```
+yarn install
+```
+_(or the unrecommended route: `npm install --save`)_
 
-`rails server`
+then:
+
+```
+rails server
+```
+
+---
+
+## Deploy to Heroku
+### Prerequisites
+
+* Both the Rails and NodeJS heroku buildpacks need to be installed on the heroku dyno. See: [Multiple build packs in Heroku](https://devcenter.heroku.com/articles/using-multiple-buildpacks-for-an-app)
+* The heap memory of the dyno needs to be adjusted for the React libraries to build.
+  To do this, run:  
+  ```
+  heroku config:set NODE_OPTIONS="--max_old_space_size=2560" -a [app_name]
+  ```  
+  from your terminal (for this the heroku cli must be installed locally and you need to be logged into the correct profile - for more info, see [The Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli))
+
+### Pushing Updates
+To push updates to Heroku:
+
+1. Precompile all assets locally:  
+   ```
+   RAILS_ENV=production rake assets:precompile
+   ```
+2. Precompile webserver assets locally:  
+   ```
+   RAILS_ENV=production bundle exec rails webpacker:compile
+   ```
+3. Commit all built assets (for this to work make sure the /public/packs directory is not part of your gitignore file):  
+   ```
+   git add .; git commit -m 'update: built assets'
+   ```
+4. Update the remote `master` branch:  
+   ```
+   git push origin master
+   ```
+5. Push the `master` branch to heroku:  
+   ```
+   git push heroku master
+   ```
+
+---
 
 ## API Documentation
-To view the API docs, run the server and go to the `/documentation`
+### Local
+To view the API docs, run the local server and go to the `/documentation` endpoint.  
+_(for example: localhost:3000/documentation)_
+
+### Cloud
+To view the API docs, open an instance of the cloud server (for example: https://wi-i-cloud.herokuapp.com) and navigate to the `/documentation` endpoint.  
+_Click [here](https://wi-i-cloud.herokuapp.com/documentation) to navigate to an instance of the cloud server at the documentation endpoint._
+
+---
 
 ## MVP Phase One Features
 The functional requirements of the MVP Phase One include: 
@@ -89,6 +143,8 @@ The functional requirements of the MVP Phase One include:
     - Passes on packets received from SigFox devices to local server
     - Synchronization with local server
 
+---
+
 ## Dev Plan
 1. ~~Month 1 - Setup and Configuration~~
    - Cloud Setup and Deployment
@@ -119,6 +175,8 @@ The functional requirements of the MVP Phase One include:
      - Installation of server on local controller
      - Synchronization of packets received from SigFox devices to local server
 
+---
+
 ## Project View Hierarchy
 1. Clients (sigf device type)
    1. Client Admin
@@ -126,11 +184,14 @@ The functional requirements of the MVP Phase One include:
    3. Client Group (sigf Group)
       1. MapGroups (Perimeter)
       2. Devices
+         1. Messages
+
+---
 
 ## Extra Added Functional Requirements
-- [x] Device create via Message callback:
+- [ ] Device create via Message callback:
   - [x] if message comes in from device with sigfox ID not registered on wi-i, create new device and link message to device
-  - [x] enable users to merge current devices with automatically created devices (copy over device name, client, client_group, map_group) 
+  - [ ] enable users to merge current devices with automatically created devices (copy over device name, client, client_group, map_group) 
 - [ ] Message Controller and View Updates
   - [x] Add Sigfox Device ID to Message
   - [x] Add wi-i device Name to Message
@@ -160,6 +221,8 @@ The functional requirements of the MVP Phase One include:
 - [ ] User Create Update
   - [ ] Only Sysadmins can create Client Admins
   - [ ] Only Sysadmins and Client Admins can create Operators
+
+---
 
 ## Progress
 - [x] 1. Configuration
