@@ -39,6 +39,11 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       if @user.save
+        # Create log entry
+        @log = Log.new(trigger_by_bot: "user_bot", action_type: "user_create")
+        @log.user = @user
+        @log.save
+
         format.html { redirect_to @user, flash: {success: 'User was successfully created' } }
         format.json { render :show, status: :created, location: @user }
       else
@@ -77,6 +82,11 @@ class UsersController < ApplicationController
   def update
     respond_to do |format|
       if @user.update(user_params)
+        # Create log entry
+        @log = Log.new(trigger_by_bot: "user_bot", action_type: "user_updated")
+        @log.user = @user
+        @log.save
+
         format.html { redirect_to @user, flash: {success: 'User was successfully updated' } }
         format.json { render :show, status: :ok, location: @user }
       else
@@ -93,6 +103,11 @@ class UsersController < ApplicationController
     if current_user.usertype != "Sysadmin" || current_user.usertype != "Client Admin"
       redirect_to root_path, flash: {warning: 'Please log in as an Admin before deleting users' }
     end
+
+    # Create log entry
+    @log = Log.new(trigger_by_bot: "user_bot", action_type: "user_deleted")
+    @log.user = current_user
+    @log.save
 
     @user.destroy
     respond_to do |format|

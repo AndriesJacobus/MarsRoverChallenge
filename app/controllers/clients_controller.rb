@@ -38,6 +38,11 @@ class ClientsController < ApplicationController
 
     respond_to do |format|
       if @client.save
+        # Create log entry
+        @log = Log.new(trigger_by_bot: "client_bot", action_type: "client_created")
+        @log.client = @client
+        @log.save
+
         format.html { redirect_to @client, flash: {success: 'Client was successfully created' } }
         format.json { render :show, status: :created, location: @client }
       else
@@ -52,6 +57,11 @@ class ClientsController < ApplicationController
   def update
     respond_to do |format|
       if @client.update(client_params)
+        # Create log entry
+        @log = Log.new(trigger_by_bot: "client_bot", action_type: "client_updated")
+        @log.client = @client
+        @log.save
+
         format.html { redirect_to @client, flash: {success: 'Client was successfully updated' } }
         format.json { render :show, status: :ok, location: @client }
       else
@@ -64,6 +74,12 @@ class ClientsController < ApplicationController
   # DELETE /clients/1
   # DELETE /clients/1.json
   def destroy
+    # Create log entry
+    @log = Log.new(trigger_by_bot: "client_bot", action_type: "client_deleted")
+    @log.user = current_user
+    @log.client = @client
+    @log.save
+
     @client.users.delete_all
     @client.client_groups.delete_all
 

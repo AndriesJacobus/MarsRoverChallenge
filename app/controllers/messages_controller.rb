@@ -48,10 +48,21 @@ class MessagesController < ApplicationController
         @device.update_attribute(:SigfoxDeviceTypeID, params[:sigfox_device_type_id])
       end
 
+      # Create log entry
+      @log = Log.new(trigger_by_bot: "device_bot", action_type: "message_linked_to_device")
+      @log.message = @message
+      @log.device = @device
+      @log.save
+
     end
 
     respond_to do |format|
       if @message.save
+        # Create log entry
+        @log = Log.new(trigger_by_bot: "message_bot", action_type: "message_created")
+        @log.message = @message
+        @log.save
+
         format.html { redirect_to @message, flash: {success: 'Message was successfully created' } }
         format.json { render :show, status: :created, location: @message }
       else
@@ -66,6 +77,11 @@ class MessagesController < ApplicationController
   def update
     respond_to do |format|
       if @message.update(message_params)
+        # Create log entry
+        @log = Log.new(trigger_by_bot: "message_bot", action_type: "message_updated")
+        @log.message = @message
+        @log.save
+
         format.html { redirect_to @message, flash: {success: 'Message was successfully updated' } }
         format.json { render :show, status: :ok, location: @message }
       else
@@ -78,6 +94,12 @@ class MessagesController < ApplicationController
   # DELETE /messages/1
   # DELETE /messages/1.json
   def destroy
+    # Create log entry
+    @log = Log.new(trigger_by_bot: "message_bot", action_type: "message_deleted")
+    @log.user = current_user
+    @log.message = @message
+    @log.save
+    
     @message.destroy
     respond_to do |format|
       format.html { redirect_to messages_url, flash: {warning: 'Message was successfully deleted' } }

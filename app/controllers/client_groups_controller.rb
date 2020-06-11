@@ -286,6 +286,11 @@ class ClientGroupsController < ApplicationController
 
     respond_to do |format|
       if @client_group.save
+        # Create log entry
+        @log = Log.new(trigger_by_bot: "client_group_bot", action_type: "client_group_created")
+        @log.client_group = @client_group
+        @log.save
+
         format.html { redirect_to @client_group, flash: {success: 'Client Group was successfully created' } }
         format.json { render :show, status: :created, location: @client_group }
       else
@@ -300,6 +305,11 @@ class ClientGroupsController < ApplicationController
   def update
     respond_to do |format|
       if @client_group.update(client_group_params)
+        # Create log entry
+        @log = Log.new(trigger_by_bot: "client_group_bot", action_type: "client_group_updated")
+        @log.client_group = @client_group
+        @log.save
+
         format.html { redirect_to @client_group, flash: {success: 'Client Group was successfully updated' } }
         format.json { render :show, status: :ok, location: @client_group }
       else
@@ -312,6 +322,12 @@ class ClientGroupsController < ApplicationController
   # DELETE /client_groups/1
   # DELETE /client_groups/1.json
   def destroy
+    # Create log entry
+    @log = Log.new(trigger_by_bot: "client_group_bot", action_type: "client_group_deleted")
+    @log.user = current_user
+    @log.client_group = @client_group
+    @log.save
+
     @client_group.map_groups.delete_all
     @client_group.devices.delete_all
 

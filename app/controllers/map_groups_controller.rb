@@ -38,6 +38,11 @@ class MapGroupsController < ApplicationController
 
     respond_to do |format|
       if @map_group.save
+        # Create log entry
+        @log = Log.new(trigger_by_bot: "map_group_bot", action_type: "map_group_created")
+        @log.map_group = @map_group
+        @log.save
+
         format.html { redirect_to @map_group, flash: {success: 'Map group was successfully created' } }
         format.json { render :show, status: :created, location: @map_group }
       else
@@ -52,6 +57,11 @@ class MapGroupsController < ApplicationController
   def update
     respond_to do |format|
       if @map_group.update(map_group_params)
+        # Create log entry
+        @log = Log.new(trigger_by_bot: "map_group_bot", action_type: "map_group_updated")
+        @log.map_group = @map_group
+        @log.save
+
         format.html { redirect_to @map_group, flash: {success: 'Map group was successfully updated' } }
         format.json { render :show, status: :ok, location: @map_group }
       else
@@ -64,6 +74,12 @@ class MapGroupsController < ApplicationController
   # DELETE /map_groups/1
   # DELETE /map_groups/1.json
   def destroy
+    # Create log entry
+    @log = Log.new(trigger_by_bot: "map_group_bot", action_type: "map_group_deleted")
+    @log.user = current_user
+    @log.map_group = @map_group
+    @log.save
+
     @map_group.devices.delete_all
     
     @map_group.destroy

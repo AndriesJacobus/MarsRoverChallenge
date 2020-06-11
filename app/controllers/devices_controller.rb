@@ -43,6 +43,11 @@ class DevicesController < ApplicationController
 
     respond_to do |format|
       if @device.save
+        # Create log entry
+        @log = Log.new(trigger_by_bot: "device_bot", action_type: "device_created")
+        @log.device = @device
+        @log.save
+
         format.html { redirect_to @device, flash: {success: 'Device was successfully created' } }
         format.json { render :show, status: :created, location: @device }
       else
@@ -82,6 +87,11 @@ class DevicesController < ApplicationController
     # Todo: make sure device names are unique
     respond_to do |format|
       if @device.update(device_params)
+        # Create log entry
+        @log = Log.new(trigger_by_bot: "device_bot", action_type: "device_updated")
+        @log.device = @device
+        @log.save
+
         format.html { redirect_to @device, flash: {success: 'Device was successfully updated' } }
         format.json { render :show, status: :ok, location: @device }
       else
@@ -94,6 +104,12 @@ class DevicesController < ApplicationController
   # DELETE /devices/1
   # DELETE /devices/1.json
   def destroy
+    # Create log entry
+    @log = Log.new(trigger_by_bot: "device_bot", action_type: "device_deleted")
+    @log.user = current_user
+    @log.device = @device
+    @log.save
+
     @device.messages.delete_all
     
     @device.destroy
