@@ -128,8 +128,8 @@ class DevicesController < ApplicationController
       puts resp
       puts resp["name"]
       puts ""
-      puts resp.as_json
-      puts resp.as_json["name"]
+      puts resp.to_json
+      puts resp.to_json["name"]
 
       current_device.update_attributes(
         :SigfoxName => resp["name"],
@@ -162,8 +162,8 @@ class DevicesController < ApplicationController
       http.request(req)
     }
 
-    puts res.body.as_json
-    res.body.as_json
+    puts res.body.to_json
+    res.body.to_json
   end
 
   def get_device_info

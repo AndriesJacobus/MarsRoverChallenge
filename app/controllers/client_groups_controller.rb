@@ -31,18 +31,21 @@ class ClientGroupsController < ApplicationController
       @client_group = ClientGroup.find(params[:id])
 
       if current_user.usertype == "Sysadmin"
-        # Todo: filter - only show devices linked to current client_group
+        # Todo: filter - show all unplaced devices and devices linked to current client_group
         #                 eg: @devices = Devices.where(client_group: params[:id])
 
-        @devices = Device.all
+        @devices = Device.where(client_group_id: nil).or(Device.where(client_group_id: params[:id]))
+
+        # Filter - only show map_groups linked to current client_group
         @map_groups= @client_group.map_groups.all.sort_by(&:Name)
 
       elsif current_user
         # Todo: filter - only show devices linked to current client_group
         #                 eg: @devices = Devices.where(client_group: params[:id])
-        # Todo: filter - only show map_groups linked to current client_group
 
-        @devices = Device.all
+        @devices = Device.where(client_group_id: params[:id])
+
+        # Filter - only show map_groups linked to current client_group
         @map_groups= @client_group.map_groups.all.sort_by(&:Name)
 
       else
@@ -112,19 +115,31 @@ class ClientGroupsController < ApplicationController
         # Get device with given DeviceId
         @device = Device.find(params[:DeviceId])
 
-        @map_group.devices << @device
+        if @device
+          # Add device to map_group
+          @device.client_group = @client_group
 
-        # Todo: remove device from all other map_groups
+          # Add device to map_group
+          @map_group.devices << @device
+  
+          # Todo: remove device from all other map_groups
+  
+          message = "Device '#{@device.Name}' " + 
+                    "with id #{params[:DeviceId]} " +
+                    "successfully added to perimeter map_group '#{@map_group.Name}'"
+  
+          respond_to do |format|
+            msg = { :status => "ok", :message => message }
+            format.json  { render :json => msg }
+          end
 
-        message = "Device '#{@device.Name}' " + 
-                  "with id #{params[:DeviceId]} " +
-                  "successfully added to perimeter map_group '#{@map_group.Name}'"
-
-        respond_to do |format|
-          msg = { :status => "ok", :message => message }
-          format.json  { render :json => msg }
+        else
+          respond_to do |format|
+            msg = { :status => "not_found", :message => @map_group.errors }
+            format.json  { render :json => msg }
+          end
         end
-
+        
       else
 
         respond_to do |format|
@@ -151,6 +166,12 @@ class ClientGroupsController < ApplicationController
           :Latitude => params[:DeviceLat],
           :Longitude => params[:DeviceLng]
         })
+
+        # Add device to map_group
+        @client_group = ClientGroup.find(params[:id])
+        if @client_group
+          @device.client_group = @client_group
+        end
 
         # Todo: remove device from all other map_groups
 

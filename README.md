@@ -194,7 +194,7 @@ The functional requirements of the MVP Phase One include:
 
 ---
 
-## Extra Added Functional Requirements
+## Possible Additional Functional Requirements
 - [ ] Device create via Message callback:
   - [x] if message comes in from device with sigfox ID not registered on wi-i, create new device and link message to device
   - [ ] enable users to merge current devices with automatically created devices (copy over device name, client, client_group, map_group) 
@@ -223,10 +223,15 @@ The functional requirements of the MVP Phase One include:
     - [ ] Create/Link Operator
     - [ ] Create/Link Client Group
     - [ ] Create/Link Devices
-- [ ] Create Client hierarchy view in Dashoard (according to Project View Hierarchy)
+- [ ] Create Client hierarchy view in Dashboard (according to Project View Hierarchy)
 - [ ] User Create Update
   - [ ] Only Sysadmins can create Client Admins
   - [ ] Only Sysadmins and Client Admins can create Operators
+- [ ] Map View
+  - [ ] Admin view of all clients on map
+    - [ ] Each client group
+    - [ ] Each client group perimeter
+    - [ ] Each perimeter device
 
 ---
 
@@ -285,8 +290,7 @@ The functional requirements of the MVP Phase One include:
       - [ ]  Group notification settings apply to devices in group as well
       - [x]  Notification options
         - [x]  Map view
-    - [ ]  Ignore
-      - [ ]  Prevent individual devices in a group from sending notifications
+    - [ ]  Ignore (Prevent individual devices in a group from sending notifications)
       - [ ]  Same options as notify
   - [ ]  New added devices configured with default rules
     - [ ]  Notify via map view on alarms, maintenance, offline devices

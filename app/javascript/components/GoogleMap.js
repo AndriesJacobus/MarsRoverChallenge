@@ -881,5 +881,5 @@ GoogleMap.propTypes = {
 };
 
 export default GoogleApiWrapper({
-  apiKey: 'AIzaSyB2or4v6xRW5OpQW9SuqFgEiL_YNprmjTI',
+  apiKey: 'AIzaSyCY6u1hicHayNKSogBwPU-H7mvIEpe6QJc',
 })(GoogleMap)
