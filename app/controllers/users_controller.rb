@@ -40,7 +40,7 @@ class UsersController < ApplicationController
     respond_to do |format|
       if @user.save
         # Create log entry
-        @log = Log.new(trigger_by_bot: "user_bot", action_type: "user_create")
+        @log = Log.new(trigger_by_bot: "user_bot", action_type: "user_created")
         @log.user = @user
         @log.save
 
@@ -102,6 +102,7 @@ class UsersController < ApplicationController
     # Only Admins can delete
     if current_user.usertype != "Sysadmin" || current_user.usertype != "Client Admin"
       redirect_to root_path, flash: {warning: 'Please log in as an Admin before deleting users' }
+      return
     end
 
     # Create log entry
