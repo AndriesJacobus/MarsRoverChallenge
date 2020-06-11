@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  resources :logs
   root 'home#index'
 
   resources :client_groups

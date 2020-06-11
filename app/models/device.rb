@@ -3,4 +3,5 @@ class Device < ApplicationRecord
     belongs_to :map_group, optional: true
 
     has_many :messages
+    has_many :logs
 end

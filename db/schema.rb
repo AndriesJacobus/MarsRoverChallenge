@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200429011943) do
+ActiveRecord::Schema.define(version: 20200611043210) do
 
   create_table "api_keys", force: :cascade do |t|
     t.string "username"
@@ -57,6 +57,25 @@ ActiveRecord::Schema.define(version: 20200429011943) do
     t.integer "client_group_id"
     t.index ["client_group_id"], name: "index_devices_on_client_group_id"
     t.index ["map_group_id"], name: "index_devices_on_map_group_id"
+  end
+
+  create_table "logs", force: :cascade do |t|
+    t.string "trigger_by_bot"
+    t.string "action_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "client_id"
+    t.integer "client_group_id"
+    t.integer "map_group_id"
+    t.integer "device_id"
+    t.integer "message_id"
+    t.integer "user_id"
+    t.index ["client_group_id"], name: "index_logs_on_client_group_id"
+    t.index ["client_id"], name: "index_logs_on_client_id"
+    t.index ["device_id"], name: "index_logs_on_device_id"
+    t.index ["map_group_id"], name: "index_logs_on_map_group_id"
+    t.index ["message_id"], name: "index_logs_on_message_id"
+    t.index ["user_id"], name: "index_logs_on_user_id"
   end
 
   create_table "map_groups", force: :cascade do |t|

@@ -1,0 +1,31 @@
+<br/>
+
+<div class="row">
+  <div class="col s12 m6">
+    <div class="card blue white-text z-depth-5 hoverable">
+      <div class="card-content">
+        <span class="card-title"> Information:</span>
+        <hr style = "display: block; height: 1px; border: 0; border-top: 1px solid #ccc; margin: 1em 0; padding: 0;"/>
+        
+        <p class = "cardSubTitle">Basic Information:</p>
+        
+        <p>
+          <strong>Trigger by bot:</strong>
+          <%= @log.trigger_by_bot %>
+        </p>
+
+        <p>
+          <strong>Action type:</strong>
+          <%= @log.action_type %>
+        </p>
+
+        <br/>
+      </div>
+    </div>
+  </div>
+</div>
+
+<br/>
+
+<%= link_to 'Edit', edit_log_path(@log), class: "waves-effect waves-light blue lighten-1 btn-small white-text" %> |
+<%= link_to 'Back', logs_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>

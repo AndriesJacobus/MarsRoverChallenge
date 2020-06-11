@@ -177,6 +177,26 @@
         <% end %>
       </div>
 
+      <div class="col s4">
+        <%= link_to logs_path do %>
+          <%= react_component("DashboardCard",
+            {
+              title:
+                "Logs",
+              content:
+                "Access logs for all events happening on the Wi-I-Cloud, from user creation and 
+                updates to message calls from SigFox.",
+              resource:
+                asset_path("logs.jpg"),
+              link:
+                logs_path,
+              linkText:
+                "Go to Logs",
+            })
+          %>
+        <% end %>
+      </div>
+
     <% else %>
 
       <div class="col s4">
@@ -194,6 +214,25 @@
                 current_user,
               linkText:
                 "Go to My Page",
+            })
+          %>
+        <% end %>
+      </div>
+
+      <div class="col s4">
+        <%= link_to logs_path do %>
+          <%= react_component("DashboardCard",
+            {
+              title:
+                "Logs",
+              content:
+                "Access logs for Wi-I-Cloud events",
+              resource:
+                asset_path("logs.jpg"),
+              link:
+                logs_path,
+              linkText:
+                "Go to Logs",
             })
           %>
         <% end %>
