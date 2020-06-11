@@ -1,5 +1,5 @@
 # Wi-I-Cloud
-Custom cloud front-end to connect to the Teqcon Sigfox back-end and manage IoT devices for security perimeters.  
+Custom cloud back-end and React-ive front-end view to connect to the Teqcon Sigfox back-end and manage IoT devices for security perimeters.  
 Currently we are busy with the first iteration of the project - the **MVP Phase One**.
 
 ## Code Initialization and Running
@@ -23,7 +23,13 @@ then:
 
 ```
 rails server
+```  
+
+together with (in another terminal):
+
 ```
+./bin/webpack-dev-server
+```  
 
 ---
 
@@ -290,3 +296,7 @@ The functional requirements of the MVP Phase One include:
     - [x]  Connected to SigFox back end to handle callbacks
     - [ ]  Passes on packets received from SigFox devices to local server
     - [ ]  Synchronization with local server
+
+---
+
+**Created with 💚 by _<a href = "www.ivy-innovation.com" target = "_blank" style = "color: green;">Ivy Innovation</a>_**
