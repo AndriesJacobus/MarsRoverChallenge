@@ -6,6 +6,8 @@
     <thead>
       <tr>
         <th>Name</th>
+        <th style = "white-space: nowrap; padding-right: 35px;">Longitude</th>
+        <th style = "white-space: nowrap; padding-right: 35px;">Latitude</th>
         <th style = "white-space: nowrap; padding-right: 35px;">Sigfox Group ID</th>
         <th style = "white-space: nowrap; padding-right: 35px;">Sigfox Group Name</th>
         <th style = "white-space: nowrap; padding-right: 35px;">Client Name</th>
@@ -18,6 +20,9 @@
       <% @client_groups.each do |client_group| %>
         <tr>
           <td style = "white-space: nowrap; padding-right: 35px;"><%= client_group.Name %></td>
+          <td style = "padding-right: 35px;"><%= client_group.longitude %></td>
+          <td style = "padding-right: 35px;"><%= client_group.latitude %></td>
+
           <td style = "padding-right: 35px;"><%= client_group.SigfoxGroupID %></td>
           <td style = "padding-right: 35px;"><%= client_group.SigfoxGroupName %></td>
 

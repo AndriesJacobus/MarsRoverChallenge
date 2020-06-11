@@ -171,6 +171,10 @@ class ClientGroupsController < ApplicationController
         @client_group = ClientGroup.find(params[:id])
         if @client_group
           @device.client_group = @client_group
+
+          if @client_group.longitude == nil || @client_group.latitude == nil
+            @client_group.update_attributes(:longitude => params[:DeviceLng], :latitude => params[:DeviceLat])
+          end
         end
 
         # Todo: remove device from all other map_groups

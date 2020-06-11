@@ -745,7 +745,10 @@ class GoogleMap extends React.Component {
           google={this.props.google}
           zoom={8}
           style={mapStyles}
-          initialCenter={{ lat: 47.444, lng: -122.176 }}
+          initialCenter={{ 
+            lat: this.props.map_lat,
+            lng: this.props.map_lng,
+          }}
           mapTypeControl={true}
           streetViewControl={false}
           onClick={this.onClick} >
@@ -786,6 +789,21 @@ class GoogleMap extends React.Component {
 
             <div>
               <p style={infoTitle}>{this.state.markerInfo.title}</p>
+              <hr/>
+              
+              <p style={infoSubTitle}>State:</p>
+              <div className="chip" style = {circleStyle}>Active, No alarm</div>
+              
+              <br/>
+              <p style={infoSubTitle}>Actions:</p>
+
+              <a
+                className="waves-effect waves-light primary btn"
+                // onClick={this.toggleDrawPerimeter}
+                >
+                <i className="material-icons right">edit</i>Maintenance On
+              </a>
+                    
             </div>
 
           </InfoWindow>
@@ -802,6 +820,20 @@ class GoogleMap extends React.Component {
 
             <div>
               <p style={infoTitle}>{this.state.perInfoTitle}</p>
+              <hr/>
+              
+              <p style={infoSubTitle}>State:</p>
+              <div className="chip" style = {circleStyle}>Active, No alarm</div>
+              
+              <br/>
+              <p style={infoSubTitle}>Actions:</p>
+
+              <a
+                className="waves-effect waves-light primary btn"
+                // onClick={this.toggleDrawPerimeter}
+                >
+                <i className="material-icons right">edit</i>Maintenance On
+              </a>
             </div>
 
           </InfoWindow>
@@ -830,6 +862,11 @@ class GoogleMap extends React.Component {
   }
 }
 
+const circleStyle = {
+  borderRadius: 25,
+  background: "green",
+  color: "white",
+};
 const mapStyles = {
   width: "60vw",
   height: '60%',
@@ -837,6 +874,9 @@ const mapStyles = {
 };
 const infoTitle = {
   fontSize: 18,
+};
+const infoSubTitle = {
+  fontSize: 14,
 };
 const actionStyle = {
   top: 0,

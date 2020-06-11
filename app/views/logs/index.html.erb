@@ -46,13 +46,13 @@
           <% end %>
           
           <% if log.device %>
-            <td style = "padding-left: 25px;"><%= log.device.name %></td>
+            <td style = "padding-left: 25px;"><%= log.device.Name %></td>
           <% else %>
             <td style = "padding-left: 25px;"><i>N/A</i></td>
           <% end %>
           
           <% if log.message %>
-            <td style = "padding-left: 25px;"><%= log.message %></td>
+            <td style = "padding-left: 25px;"><%= log.message.Data %></td>
           <% else %>
             <td style = "padding-left: 25px;"><i>N/A</i></td>
           <% end %>

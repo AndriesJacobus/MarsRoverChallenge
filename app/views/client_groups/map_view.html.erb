@@ -8,6 +8,8 @@
         markerIconUrl: asset_path("chipIcon2.png"),
         perimIconUrl: asset_path("perimeter.png"),
         curr_client_group: @client_group.id,
+        map_lat: @client_group.latitude ? @client_group.latitude : 47.444,
+        map_lng: @client_group.longitude ? @client_group.longitude : -122.176,
         auth_token: form_authenticity_token,
         devices: @devices.as_json,
         map_groups: @map_groups.as_json(include: :devices),
