@@ -107,6 +107,16 @@ class MessagesController < ApplicationController
     end
   end
 
+  # 
+  def interpret_data
+
+    @device
+
+    res = ""
+
+    return res.to_json
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_message

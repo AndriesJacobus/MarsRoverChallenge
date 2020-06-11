@@ -7,7 +7,7 @@
       <tr>
         <th>Time</th>
         <th style = "padding-left: 25px;">Raw Data</th>
-        <th style = "padding-left: 25px;">Lqi</th>
+        <th style = "padding-left: 25px;">Message Data</th>
         <th style = "padding-left: 25px; white-space: nowrap;">Has Wi-I-Cloud Device</th>
         <th style = "padding-left: 25px; white-space: nowrap;">Wi-I-Cloud Device Name</th>
         <th style = "padding-left: 25px;">Sigfox Device ID</th>
@@ -24,11 +24,46 @@
           </td>
           <td style = "padding-left: 25px;"><%= message.Data %></td>
 
-          <% if message.LQI %>
-            <td style = "padding-left: 25px;"><%= message.LQI %></td>
-          <% else %>
-            <td style = "padding-left: 25px;"><i>N/A</i></td>
-          <% end %>
+          <td style = "padding-left: 25px;">
+            Type:
+            <% if message.Data.to_s[0...2] == "52" %>
+              Triggered Message
+            <% else %>
+              Keepalive
+            <% end %>
+            <br/><br/>
+
+            Seq number:
+            <%= message.Data.to_s[2...4].to_i(16) %>
+            <br/><br/>
+            
+            Serial:
+            <%= message.Data.to_s[4...12] %>
+            <br/><br/>
+            
+            Alarm:
+            <% m = message.Data.to_s[13...14].to_i.to_s(2) %>
+            <% if m.length == 3 %>
+              <% m = "0" + m %>
+            <% elsif m.length == 2 %>
+              <% m = "00" + m %>
+            <% elsif m.length == 1 %>
+              <% m = "000" + m %>
+            <% elsif m.length == 0 %>
+              <% m = "0000" %>
+            <% end %>
+            <%= puts m %>
+
+            <% if m.to_s[0...2] == "00" %>
+              Legacy Alarm
+            <% elsif m.to_s[0...2] == "01" %>
+              Climb Alarm
+            <% elsif m.to_s[0...2] == "10" %>
+              Cut Alarm
+            <% elsif m.to_s[0...2] == "11" %>
+              Climb and Cut Alarm
+            <% end %>
+          </td>
 
           <td style = "padding-left: 25px;"><%= !message.device.nil? %></td>
 

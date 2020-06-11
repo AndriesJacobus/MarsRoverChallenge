@@ -256,7 +256,7 @@ The functional requirements of the MVP Phase One include:
     - [x]  Tree list view of devices and groups already configured
   
 - [ ] 2. Log
-  - [ ]  List view
+  - [x]  List view
   - [ ]  Heading filters
 
 - [ ] 3. Map View
