@@ -4,7 +4,11 @@ class LogsController < ApplicationController
   # GET /logs
   # GET /logs.json
   def index
-    @logs = Log.all
+    if current_user.usertype == "Sysadmin"
+      @logs = Log.all
+    elsif current_user.usertype == "Client Admin"
+      @logs = Log.where(client_id: current_user.client_id)
+    end
   end
 
   # GET /logs/1

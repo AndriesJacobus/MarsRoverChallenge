@@ -11,9 +11,24 @@
         <p class = "cardSubTitle">Basic Information:</p>
 
         <p>
-          <strong>Name:</strong>
+          <strong>Name:</strong><br/>
           <%= @device.Name %>
         </p>
+        <br/>
+
+        <p>
+          <strong>State:</strong>
+          <% if @device.state == "online" %>
+            <p style = "color: lightgreen"><%= @device.state %></p>
+          <% elsif @device.state == "offline" %>
+            <p style = "color: grey"><%= device.state %></p>
+          <% elsif @device.state == "maintenance" %>
+            <p style = "color: orange"><%= @device.state %></p>
+          <% else %>
+            <p style = "color: red"><%= @device.state %></p>
+          <% end %>
+        </p>
+        <br/>
 
         <p>
           <strong>Sigfoxid:</strong>

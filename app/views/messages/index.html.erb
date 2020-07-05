@@ -6,12 +6,12 @@
     <thead>
       <tr>
         <th>Time</th>
-        <th style = "padding-left: 25px;">Raw Data</th>
-        <th style = "padding-left: 25px;">Message Data</th>
-        <th style = "padding-left: 25px; white-space: nowrap;">Has Wi-I-Cloud Device</th>
-        <th style = "padding-left: 25px; white-space: nowrap;">Wi-I-Cloud Device Name</th>
-        <th style = "padding-left: 25px;">Sigfox Device ID</th>
-        <th style = "padding-left: 25px;">Sigfox Type ID</th>
+        <th style = "white-space: nowrap; padding-left: 25px;">Raw Data</th>
+        <th style = "white-space: nowrap; padding-left: 35px;">Message Data</th>
+        <th style = "white-space: nowrap; padding-left: 25px; white-space: nowrap;">Has Wi-I-Cloud Device</th>
+        <th style = "white-space: nowrap; padding-left: 25px; white-space: nowrap;">Wi-I-Cloud Device Name</th>
+        <th style = "white-space: nowrap; padding-left: 25px;">Sigfox Device ID</th>
+        <th style = "white-space: nowrap; padding-left: 25px;">Sigfox Type ID</th>
         <th colspan="3"></th>
       </tr>
     </thead>
@@ -24,7 +24,11 @@
           </td>
           <td style = "padding-left: 25px;"><%= message.Data %></td>
 
-          <td style = "padding-left: 25px;">
+          <td style = "white-space: nowrap; padding-left: 35px;">
+            Sequence:
+            <%= message.Data.to_s[2...4].to_i(16) %>
+            <br/><br/>
+
             Type:
             <% if message.Data.to_s[0...2] == "52" %>
               Triggered Message
@@ -32,27 +36,10 @@
               Keepalive
             <% end %>
             <br/><br/>
-
-            Seq number:
-            <%= message.Data.to_s[2...4].to_i(16) %>
-            <br/><br/>
-            
-            Serial:
-            <%= message.Data.to_s[4...12] %>
-            <br/><br/>
             
             Alarm:
-            <% m = message.Data.to_s[13...14].to_i.to_s(2) %>
-            <% if m.length == 3 %>
-              <% m = "0" + m %>
-            <% elsif m.length == 2 %>
-              <% m = "00" + m %>
-            <% elsif m.length == 1 %>
-              <% m = "000" + m %>
-            <% elsif m.length == 0 %>
-              <% m = "0000" %>
-            <% end %>
-            <%= puts m %>
+            <% m = message.Data.to_s[13...14] %>
+            <% m = m.hex.to_s(2).rjust(m.size*4, '0') %>
 
             <% if m.to_s[0...2] == "00" %>
               Legacy Alarm

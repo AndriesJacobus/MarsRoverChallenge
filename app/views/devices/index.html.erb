@@ -6,6 +6,7 @@
     <thead>
       <tr>
         <th>Name</th>
+        <th style = "white-space: nowrap; padding-left: 25px;">State</th>
         <th style = "white-space: nowrap; padding-left: 25px;">Sigfoxid</th>
         <th style = "white-space: nowrap; padding-left: 25px;">Sigfoxname</th>
         <th style = "white-space: nowrap; padding-left: 25px;">Serialnumber</th>
@@ -25,6 +26,19 @@
       <% @devices.each do |device| %>
         <tr>
           <td style = "white-space: nowrap;"><%= device.Name %></td>
+
+          <td style = "padding-left: 25px;">
+          <% if device.state == "online" %>
+            <p style = "color: green"><%= device.state %></p>
+          <% elsif device.state == "offline" %>
+            <p style = "color: grey"><%= device.state %></p>
+          <% elsif device.state == "maintenance" %>
+            <p style = "color: orange"><%= device.state %></p>
+          <% else %>
+            <p style = "color: red"><%= device.state %></p>
+          <% end %>
+          </td>
+
           <td style = "padding-left: 25px;"><%= device.SigfoxID %></td>
           <td style = "padding-left: 25px;"><%= device.SigfoxName %></td>
           <td style = "padding-left: 25px;"><%= device.SerialNumber %></td>

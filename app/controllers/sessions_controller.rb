@@ -9,6 +9,7 @@ class SessionsController < ApplicationController
       # Create log entry
       @log = Log.new(trigger_by_bot: "session_bot", action_type: "user_login")
       @log.user = user
+      @log.client = user.client
       @log.save
 
       # Set session
@@ -23,7 +24,8 @@ class SessionsController < ApplicationController
   def destroy
     # Create log entry
     @log = Log.new(trigger_by_bot: "session_bot", action_type: "user_logout")
-    @log.user = current_user
+    @log.user = User.find(session[:user_id])
+    @log.client = current_user.client
     @log.save
 
     session[:user_id] = nil

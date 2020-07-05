@@ -48,6 +48,24 @@ module API
                 @device.update_attribute(:SigfoxDeviceTypeID, permitted_params[:callback_data][:sigfox_device_type_id])
               end
 
+              # Update device state
+              if @message.Data.to_s[0...2] == "52"
+                # Not a keepalive
+                
+                m = @message.Data.to_s[13...14]   # Ignore first nibble between 12 and 13
+                m = m.hex.to_s(2).rjust(m.size*4, '0')
+                
+                if m.to_s[0...2] == "00"
+                  @device.update_attribute(state: "Legacy Alarm")
+                elsif m.to_s[0...2] == "01"
+                  @device.update_attribute(state: "Climb Alarm")
+                elsif m.to_s[0...2] == "10"
+                  @device.update_attribute(state: "Cut Alarm")
+                elsif m.to_s[0...2] == "11"
+                  @device.update_attribute(state: "Climb and Cut Alarm")
+                end
+              end
+
               # Create log entry
               @log = Log.new(trigger_by_bot: "device_bot", action_type: "message_linked_to_device")
               @log.message = @message
@@ -59,7 +77,25 @@ module API
               @device.messages << @message
 
               @device.save
-
+              
+              # Update device state
+              if @message.Data.to_s[0...2] == "52"
+                # Not keepalive
+                
+                m = @message.Data.to_s[13...14]   # Ignore first nibble between 12 and 13
+                m = m.hex.to_s(2).rjust(m.size*4, '0')
+                
+                if m.to_s[0...2] == "00"
+                  @device.update_attribute(state: "Legacy Alarm")
+                elsif m.to_s[0...2] == "01"
+                  @device.update_attribute(state: "Climb Alarm")
+                elsif m.to_s[0...2] == "10"
+                  @device.update_attribute(state: "Cut Alarm")
+                elsif m.to_s[0...2] == "11"
+                  @device.update_attribute(state: "Climb and Cut Alarm")
+                end
+              end
+              
               # Create log entry
               @log = Log.new(trigger_by_bot: "device_bot", action_type: "device_created_for_message")
               @log.message = @message

@@ -11,7 +11,13 @@ class MapGroupsController < ApplicationController
     elsif current_user.usertype == "Client Admin"
       # Todo: filter map_groups to show only those with the same 'client'
       #       tag as the current Admin
-      @map_groups = MapGroup.all
+      @map_groups = []
+
+      MapGroup.where.not(client_group_id: nil).each do |map_group|
+        if map_group.client_group.client == current_user.client
+          @map_groups << map_group
+        end
+      end
     else
       redirect_to root_path, flash: {warning: 'Please log in as an Admin before viewing this page' }
     end
@@ -41,6 +47,7 @@ class MapGroupsController < ApplicationController
         # Create log entry
         @log = Log.new(trigger_by_bot: "map_group_bot", action_type: "map_group_created")
         @log.map_group = @map_group
+        @log.user = current_user
         @log.save
 
         format.html { redirect_to @map_group, flash: {success: 'Map group was successfully created' } }
@@ -60,6 +67,7 @@ class MapGroupsController < ApplicationController
         # Create log entry
         @log = Log.new(trigger_by_bot: "map_group_bot", action_type: "map_group_updated")
         @log.map_group = @map_group
+        @log.user = current_user
         @log.save
 
         format.html { redirect_to @map_group, flash: {success: 'Map group was successfully updated' } }

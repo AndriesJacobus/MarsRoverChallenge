@@ -14,7 +14,13 @@ class DevicesController < ApplicationController
     elsif current_user.usertype == "Client Admin"
       # Todo: filter devices to show only those with the same 'client'
       #       tag as the current Admin
-      @devices = Device.all
+      @devices = []
+      
+      Device.where.not(client_group_id: nil).each do |device|
+        if device.client_group.client == current_user.client
+          @devices << device
+        end
+      end
     else
       redirect_to root_path, flash: {warning: 'Please log in as an Admin before viewing this page' }
     end
@@ -40,6 +46,7 @@ class DevicesController < ApplicationController
   def create
     # Todo: make sure device names are unique
     @device = Device.new(device_params)
+    @device.update_attribute(state: "online")
 
     respond_to do |format|
       if @device.save

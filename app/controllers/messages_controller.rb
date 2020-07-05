@@ -13,7 +13,13 @@ class MessagesController < ApplicationController
     elsif current_user.usertype == "Client Admin"
       # Todo: filter messages to show only those with the same 'client'
       #       tag as the current Admin
-      @messages = Message.all
+      @messages = []
+
+      Message.where.not(device_id: nil).each do |message|
+        if message.device.client_group.client && message.device.client_group.client == current_user.client
+          @messages << message
+        end
+      end
     else
       redirect_to root_path, flash: {warning: 'Please log in as an Admin before viewing this page' }
     end

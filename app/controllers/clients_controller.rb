@@ -11,7 +11,7 @@ class ClientsController < ApplicationController
     elsif current_user.usertype == "Client Admin"
       # Todo: filter clients to show only those with the same 'client'
       #       tag as the current Admin
-      @clients = Client.all
+      @clients = Client.where(id: current_user.client_id)
     else
       redirect_to root_path, flash: {warning: 'Please log in as an Admin before viewing this page' }
     end
@@ -41,6 +41,7 @@ class ClientsController < ApplicationController
         # Create log entry
         @log = Log.new(trigger_by_bot: "client_bot", action_type: "client_created")
         @log.client = @client
+        @log.user = current_user
         @log.save
 
         format.html { redirect_to @client, flash: {success: 'Client was successfully created' } }
@@ -60,6 +61,7 @@ class ClientsController < ApplicationController
         # Create log entry
         @log = Log.new(trigger_by_bot: "client_bot", action_type: "client_updated")
         @log.client = @client
+        @log.user = current_user
         @log.save
 
         format.html { redirect_to @client, flash: {success: 'Client was successfully updated' } }
@@ -76,8 +78,8 @@ class ClientsController < ApplicationController
   def destroy
     # Create log entry
     @log = Log.new(trigger_by_bot: "client_bot", action_type: "client_deleted")
-    @log.user = current_user
     @log.client = @client
+    @log.user = current_user
     @log.save
 
     @client.users.delete_all

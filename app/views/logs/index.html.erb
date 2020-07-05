@@ -18,7 +18,7 @@
     </thead>
 
     <tbody>
-      <% @logs.each do |log| %>
+      <% @logs && @logs.each do |log| %>
         <tr>
           <td>
             <%= "#{log.created_at} ±00:00" %>
