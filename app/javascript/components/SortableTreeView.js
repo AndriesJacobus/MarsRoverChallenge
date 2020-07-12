@@ -28,7 +28,8 @@ class SortableTreeView extends Component {
     const NEW_NODE = {
       title: rowInfo.title,
       isDevice: rowInfo.isDevice,
-      isDirectory: false
+      isDirectory: false,
+      state: rowInfo.state,
     };
 
     const newTree = addNodeUnderParent({
@@ -111,7 +112,8 @@ class SortableTreeView extends Component {
           id: nodes[index].id,
           title: nodes[index].title,
           isDevice: nodes[index].isDevice,
-          isDirectory: false
+          isDirectory: false,
+          state: nodes[index].state,
         };
       } else {
         // Is perimeter

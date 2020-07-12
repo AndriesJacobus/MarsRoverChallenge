@@ -5,7 +5,10 @@
 
 <%= react_component("GoogleMap",
     {
-        markerIconUrl: asset_path("chipIcon2.png"),
+        markerIconOnline: asset_path("deviceOnline.png"),
+        markerIconOffline: asset_path("deviceOffline.png"),
+        markerIconMaintenance: asset_path("deviceMaintenance.png"),
+        markerIconAlarm: asset_path("deviceAlarm.png"),
         perimIconUrl: asset_path("perimeter.png"),
         curr_client_group: @client_group.id,
         map_lat: @client_group.latitude ? @client_group.latitude : 47.444,

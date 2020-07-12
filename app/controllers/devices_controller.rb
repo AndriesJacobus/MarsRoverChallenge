@@ -46,7 +46,7 @@ class DevicesController < ApplicationController
   def create
     # Todo: make sure device names are unique
     @device = Device.new(device_params)
-    @device.update_attribute(state: "online")
+    @device.update_attribute(:state, "online")
 
     respond_to do |format|
       if @device.save

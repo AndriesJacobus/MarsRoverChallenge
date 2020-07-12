@@ -33,6 +33,7 @@ class GoogleMap extends React.Component {
           lat: 47.6307081,
           lng: -122.1434325
         },
+        state: "online",
       },
 
       // Perim Data
@@ -105,6 +106,8 @@ class GoogleMap extends React.Component {
 
   onClick(t, map, coord) {
     if (this.state.drawPerimeter) {
+      // Draw perimeter
+
       const { latLng } = coord;
       const _lat = latLng.lat();
       const _lng = latLng.lng();
@@ -132,11 +135,12 @@ class GoogleMap extends React.Component {
         this.pushNewPerimeterAndClear();
       }
     } else {
+      // Draw device
       this.placeMarker(coord);
     }
   };
 
-  placeMarker(coord, id = 0, name = "") {
+  placeMarker(coord, id = 0, name = "", state = "online") {
     const { latLng } = coord;
     const lat = latLng.lat();
     const lng = latLng.lng();
@@ -158,6 +162,7 @@ class GoogleMap extends React.Component {
               title: name == "" ? this.state.deviceFromTree.name : name,
               name: name == "" ? this.state.deviceFromTree.name : name,
               position: { lat, lng },
+              state: this.state.deviceFromTree.state,
             }
           ],
         }, () => {
@@ -176,6 +181,7 @@ class GoogleMap extends React.Component {
             title: name,
             name: name,
             position: { lat, lng },
+            state: state,
           }
         ],
       }, () => {
@@ -208,20 +214,25 @@ class GoogleMap extends React.Component {
       position={marker.position}
       draggable={true}
       icon={{
-        url: this.props.markerIconUrl,
+        url: (
+          marker.state == "online" ? this.props.markerIconOnline :
+          marker.state == "offline" ? this.props.markerIconOffline : 
+          marker.state == "maintenance" ? this.props.markerIconMaintenance : 
+          this.props.markerIconAlarm
+        ),
         scaledSize: new window.google.maps.Size(40,40),
       }}
-      onDragend={(t, map, coord) => this.onMarkerDragEnd(coord, marker.id, marker.title, index)}
+      onDragend={(t, map, coord) => this.onMarkerDragEnd(coord, marker.id, marker.title, index, marker.state)}
       onClick={() => this.showInfo(marker, index)}
     />
   }
 
-  onMarkerDragEnd(coord, id, name, index) {
+  onMarkerDragEnd(coord, id, name, index, state) {
     // Remove old entry
     this.state.markers.splice(index, 1);
 
     // Add updated entry
-    this.placeMarker(coord, id, name);
+    this.placeMarker(coord, id, name, state);
   }
 
   drawPerimeter = (perimeter, index) => {
@@ -246,6 +257,7 @@ class GoogleMap extends React.Component {
         title: marker.title,
         name: marker.name,
         position: marker.position,
+        state: marker.state,
       },
     });
 
@@ -270,6 +282,7 @@ class GoogleMap extends React.Component {
           lat: 47.6307081,
           lng: -122.1434325
         },
+        state: "online",
       },
 
       deviceFromTreeSelected: false,
@@ -380,10 +393,12 @@ class GoogleMap extends React.Component {
             this.state.newPerimeterStart,
             this.state.newPerimeterEnd,
           ],
+          state: "",
         }
       ],
     });
 
+    // Todo: add perim state
     this.triggerPerimAdd(perName);
     this.toggleDrawPerimeter();
 
@@ -448,10 +463,13 @@ class GoogleMap extends React.Component {
 
       perInfoLat: this.getMidpoint(
         this.state.perimeters[index].path[0].lat,
-        this.state.perimeters[index].path[1].lat),
+        this.state.perimeters[index].path[1].lat
+      ),
       perInfoLng: this.getMidpoint(
         this.state.perimeters[index].path[0].lng,
-        this.state.perimeters[index].path[1].lng),
+        this.state.perimeters[index].path[1].lng
+      ),
+      state: "",
     });
 
     this.hideInfo();
@@ -468,6 +486,7 @@ class GoogleMap extends React.Component {
 
       deviceFromTreeSelected: false,
       deviceFromTree: null,
+      state: "",
     });
   }
 
@@ -487,6 +506,7 @@ class GoogleMap extends React.Component {
         deviceFromTree: {
           id: item.id,
           name: item.title,
+          state: item.state,
         },
       });
 
@@ -529,6 +549,7 @@ class GoogleMap extends React.Component {
           title: device.Name,
           isDevice: true,
           treeIndex: 0,
+          state: device.state
         });
       }
     });
@@ -538,15 +559,15 @@ class GoogleMap extends React.Component {
 
     this.props.map_groups.forEach(map_group => {
 
+      devicesAndPerimeters.push({
+        title: map_group.Name,
+        isDevice: false,
+        treeIndex: 0,
+        children: [],
+        state: "",
+      });
+
       if (map_group.devices.length >= 1) {
-
-        devicesAndPerimeters.push({
-          title: map_group.Name,
-          isDevice: false,
-          treeIndex: 0,
-          children: [],
-        });
-
         // Add perimeter children
         let perimChildrenRef = devicesAndPerimeters[devicesAndPerimeters.length - 1].children;
 
@@ -555,19 +576,9 @@ class GoogleMap extends React.Component {
             id: device.id,
             title: device.Name,
             isDevice: true,
+            state: device.state
           });
         });
-
-      } else {
-
-        devicesAndPerimeters.push({
-
-          title: map_group.Name,
-          isDevice: false,
-          treeIndex: 0,
-          children: [],
-        });
-
       }
 
     });
@@ -599,6 +610,7 @@ class GoogleMap extends React.Component {
                 lng: currPerim.endLon,
               }
             ],
+            state: "",
           }
         ],
       }, () => {
@@ -613,7 +625,7 @@ class GoogleMap extends React.Component {
       let currDevice = this.props.devices[i];
 
       if (currDevice.Latitude && currDevice.Longitude) {
-        // Add perim to map
+        // Add device to map
         this.setState({
           markers: [
             ...this.state.markers,
@@ -625,6 +637,7 @@ class GoogleMap extends React.Component {
                 lat: currDevice.Latitude,
                 lng: currDevice.Longitude,
               },
+              state: currDevice.state,
             }
           ],
         }, () => {
@@ -792,17 +805,119 @@ class GoogleMap extends React.Component {
               <hr/>
               
               <p style={infoSubTitle}>State:</p>
-              <div className="chip" style = {circleStyle}>Active, No alarm</div>
+
+              {
+                (this.state.markerInfo.state == "online") ? (
+                  <div className="chip" style = {circleStyleGreen}>
+                    Online, No alarm
+                  </div>
+                ) :
+                (this.state.markerInfo.state == "offline") ? (
+                  <div className="chip" style = {circleStyleGrey}>
+                    Offline
+                  </div>
+                ) :
+                (this.state.markerInfo.state == "maintenance") ? (
+                  <div className="chip" style = {circleStyleYellow}>
+                    Maintenance
+                  </div>
+                ) :
+                  <div className="chip" style = {circleStyleRed}>
+                    {this.state.markerInfo.state}
+                  </div>
+              }
               
               <br/>
               <p style={infoSubTitle}>Actions:</p>
 
-              <a
-                className="waves-effect waves-light primary btn"
-                // onClick={this.toggleDrawPerimeter}
-                >
-                <i className="material-icons right">edit</i>Maintenance On
-              </a>
+              {
+                (this.state.markerInfo.state == "online") ? (
+                  <div>
+                    <a
+                      className="waves-effect waves-light primary btn"
+                      // onClick={this.toggleDrawPerimeter}
+                      >
+  
+                      <i className="material-icons right">edit</i>
+                      Maintenance On
+                    </a>
+                    <br/>
+  
+                    <a
+                      className="waves-effect waves-light grey btn"
+                      // onClick={this.toggleDrawPerimeter}
+                      style={infoActionButton}
+                      >
+  
+                      <i className="material-icons right">edit</i>
+                      Take Offline
+                    </a>
+                    <br/>
+                  </div>
+                ) :
+                (this.state.markerInfo.state == "offline") ? (
+                  <div>
+                    <a
+                      className="waves-effect waves-light primary btn"
+                      // onClick={this.toggleDrawPerimeter}
+                      >
+  
+                      <i className="material-icons right">edit</i>
+                      Maintenance On
+                    </a>
+                    <br/>
+  
+                    <a
+                      className="waves-effect waves-light green btn"
+                      // onClick={this.toggleDrawPerimeter}
+                      style={infoActionButton}
+                      >
+  
+                      <i className="material-icons right">edit</i>
+                      Bring Online
+                    </a>
+                    <br/>
+
+                  </div>
+                ) :
+                (this.state.markerInfo.state == "maintenance") ? (
+                  <div>
+                    <a
+                      className="waves-effect waves-light green btn"
+                      // onClick={this.toggleDrawPerimeter}
+                      >
+  
+                      <i className="material-icons right">edit</i>
+                      Bring Online
+                    </a>
+                    <br/>
+
+                  </div>
+                ) :
+                  <div>
+                    <a
+                      className="waves-effect waves-light primary btn"
+                      // onClick={this.toggleDrawPerimeter}
+                      >
+
+                      <i className="material-icons right">edit</i>
+                      Maintenance On
+                    </a>
+                    <br/>
+
+                    <a
+                      className="waves-effect waves-light green btn"
+                      // onClick={this.toggleDrawPerimeter}
+                      style={infoActionButton}
+                      >
+
+                      <i className="material-icons right">edit</i>
+                      Alarm Off
+                    </a>
+                    <br/>
+
+                  </div>
+              }
                     
             </div>
 
@@ -823,7 +938,9 @@ class GoogleMap extends React.Component {
               <hr/>
               
               <p style={infoSubTitle}>State:</p>
-              <div className="chip" style = {circleStyle}>Active, No alarm</div>
+              <div className="chip" style = {circleStyle}>
+                Active, No alarm
+              </div>
               
               <br/>
               <p style={infoSubTitle}>Actions:</p>
@@ -832,8 +949,22 @@ class GoogleMap extends React.Component {
                 className="waves-effect waves-light primary btn"
                 // onClick={this.toggleDrawPerimeter}
                 >
-                <i className="material-icons right">edit</i>Maintenance On
+
+                <i className="material-icons right">edit</i>
+                Maintenance On
               </a>
+              <br/>
+
+              <a
+                className="waves-effect waves-light red btn"
+                style={infoActionButton}
+                // onClick={this.toggleDrawPerimeter}
+                >
+
+                <i className="material-icons right">alarm</i>
+                Alarm Off
+              </a>
+              
             </div>
 
           </InfoWindow>
@@ -864,9 +995,30 @@ class GoogleMap extends React.Component {
 
 const circleStyle = {
   borderRadius: 25,
-  background: "green",
   color: "white",
+  background: "green",
 };
+const circleStyleGreen = {
+  borderRadius: 25,
+  color: "white",
+  background: "green",
+};
+const circleStyleGrey = {
+  borderRadius: 25,
+  color: "white",
+  background: "grey",
+};
+const circleStyleYellow = {
+  borderRadius: 25,
+  color: "white",
+  background: "yellow",
+};
+const circleStyleRed = {
+  borderRadius: 25,
+  color: "white",
+  background: "red",
+};
+
 const mapStyles = {
   width: "60vw",
   height: '60%',
@@ -911,9 +1063,12 @@ const elementsStyle = {
   marginLeft: 5,
   borderRadius: 5,
 };
+const infoActionButton = {
+  marginTop: 5,
+};
 
 GoogleMap.propTypes = {
-  markerIconUrl: PropTypes.string,
+  markerIconOnline: PropTypes.string,
   perimIconUrl: PropTypes.string,
   curr_client_group: PropTypes.number,
   devices: PropTypes.array,

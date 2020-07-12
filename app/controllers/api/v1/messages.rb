@@ -23,9 +23,9 @@ module API
 
             requires :Time, type: Integer, desc: 'Time that the Message being sent was received'
             requires :Data, type: String, desc: 'Data of the Message'
-            requires :LQI, type: Integer, desc: 'Signal strength of the Message'
+            optional :LQI, type: Integer, desc: 'Signal strength of the Message'
             requires :sigfox_defice_id, type: String, desc: 'ID of the Sigfox Device'
-            requires :sigfox_device_type_id, type: String, desc: 'ID of the Sigfox Device Type'
+            optional :sigfox_device_type_id, type: String, desc: 'ID of the Sigfox Device Type'
 
           end
         end
@@ -37,6 +37,8 @@ module API
             @log = Log.new(trigger_by_bot: "message_bot", action_type: "message_created")
             @log.message = @message
             @log.save
+
+            # Todo: take into account seq numbers of messages
 
             # Look for device with sigfox id
             @device = Device.where(SigfoxID: permitted_params[:callback_data][:sigfox_defice_id]).take
@@ -56,13 +58,13 @@ module API
                 m = m.hex.to_s(2).rjust(m.size*4, '0')
                 
                 if m.to_s[0...2] == "00"
-                  @device.update_attribute(state: "Legacy Alarm")
+                  @device.update_attribute(:state, "Legacy Alarm")
                 elsif m.to_s[0...2] == "01"
-                  @device.update_attribute(state: "Climb Alarm")
+                  @device.update_attribute(:state, "Climb Alarm")
                 elsif m.to_s[0...2] == "10"
-                  @device.update_attribute(state: "Cut Alarm")
+                  @device.update_attribute(:state, "Cut Alarm")
                 elsif m.to_s[0...2] == "11"
-                  @device.update_attribute(state: "Climb and Cut Alarm")
+                  @device.update_attribute(:state, "Climb and Cut Alarm")
                 end
               end
 

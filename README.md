@@ -209,7 +209,7 @@ The functional requirements of the MVP Phase One include:
   - [ ] New Operator Privileges
     - [x] View own user info
     - [ ] Map View
-    - [ ] Logs
+    - [ ] No Logs
 - [ ] Client Groups
   - [x] Create new Controller and View: Clients (= sifg DeviceType like Wi-i Platform Testing)
   - [x] Create new Controller and View: Client Groups (= sifg Group like MyTestGroup)
@@ -273,9 +273,9 @@ The functional requirements of the MVP Phase One include:
     - [ ]  States propagate onto parent groups
   - [ ]  Operator interaction
     - [ ]  Inhibit devices, groups
-      - [ ]  Provide reason for inhibit
+    - [ ]  Provide reason for inhibit
     - [ ]  Acknowledgement of events
-      - [ ]  Provide reason for event
+    - [ ]  Provide reason for event
   
 - [ ] 4. Business Rules
   - [ ]  Events
