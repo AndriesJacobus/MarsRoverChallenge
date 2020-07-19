@@ -85,6 +85,10 @@ class GoogleMap extends React.Component {
     this.addInitialDevicesAndPerimeters = this.addInitialDevicesAndPerimeters.bind(this);
     this.publishNewPerim = this.publishNewPerim.bind(this);
     this.onDeviceDragged = this.onDeviceDragged.bind(this);
+
+    this.updateDeviceState = this.updateDeviceState.bind(this);
+    // this.onlineMarker = this.onlineMarker.bind(this);
+    // this.offlineMarker = this.offlineMarker.bind(this);
   }
 
   componentDidMount(){
@@ -141,6 +145,9 @@ class GoogleMap extends React.Component {
   };
 
   placeMarker(coord, id = 0, name = "", state = "online") {
+    console.log("Coord:");
+    console.log(coord);
+
     const { latLng } = coord;
     const lat = latLng.lat();
     const lng = latLng.lng();
@@ -329,6 +336,47 @@ class GoogleMap extends React.Component {
     });
   }
 
+  updateDeviceState(deviceId, newState) {
+    // console.log("Here FINALLY!");
+
+    if (!deviceId || !newState) {
+      return;
+    }
+
+    let body = JSON.stringify({
+      DeviceId: deviceId,
+      DeviceState: newState,
+    });
+
+    fetch('/client_groups/' + this.props.curr_client_group + '/update_device_state', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': this.props.auth_token,
+      },
+      body: body,
+    }).then(response => response.json())
+    .then(response => {
+        // window.location.reload(false);
+        console.log(response);
+
+        // Remove old entry
+        this.state.markers.splice(this.state.markerInfo.markerIndex, 1);
+
+        // Make call fit with other placeMarker calls
+        let coord = {
+          latLng: {
+            lat: () => { return this.state.markerInfo.position.lat},
+            lng: () => { return this.state.markerInfo.position.lng},
+          }
+        };
+
+        // Add updated entry
+        this.placeMarker(coord, this.state.markerInfo.id, this.state.markerInfo.title, newState);
+        this.hideInfo();
+    });
+  }
+
   deletePerimeter(event) {
     event.preventDefault();
 
@@ -344,7 +392,7 @@ class GoogleMap extends React.Component {
       showPerDel: false,
       perimeterIndex: null,
     });
-  };
+  }
 
   publishDeletePerimeter(perimeterTitle) {
     let body = JSON.stringify({
@@ -677,6 +725,136 @@ class GoogleMap extends React.Component {
     }
   }
 
+  onlineMarker() {
+    return <div>
+      <a onClick={() => this.updateDeviceState(this.state.markerInfo.id, "maintenance")}
+        className={"orange btn"} >
+
+        <i className="material-icons right">edit</i>
+        Maintenance On
+      </a>
+        
+      <br/>
+
+      <a
+        onClick={() => this.updateDeviceState(this.state.markerInfo.id, "offline")} 
+        className={"grey btn"}
+        style={infoActionButton} >
+
+        <i className="material-icons right">edit</i>
+        Take Offline
+      </a>
+
+      <br/>
+    </div>
+  }
+
+  offlineMarker() {
+    return <div>
+    <div
+      onClick={() => {
+        this.updateDeviceState(this.state.markerInfo.id, "maintenance")
+      }}
+      className={"orange btn"}
+      >
+
+      <i className="material-icons right">edit</i>
+      Maintenance On
+    </div>
+    <br/>
+
+    <div
+      onClick={() => {
+        this.updateDeviceState(this.state.markerInfo.id, "online")
+      }}
+      className={"green btn"}
+      style={infoActionButton} >
+
+      <i className="material-icons right">edit</i>
+      Bring Online
+    </div>
+    <br/>
+
+  </div>
+  }
+
+  maintMarker() {
+    return <div>
+    <div
+      onClick={() => {
+        this.updateDeviceState(this.state.markerInfo.id, "offline")
+      }}
+      className={"grey btn"}
+      >
+
+      <i className="material-icons right">edit</i>
+      Take Offline
+    </div>
+    <br/>
+      
+    <div
+      onClick={() => {
+        this.updateDeviceState(this.state.markerInfo.id, "online")
+      }}
+      className={"green btn"}
+      style={infoActionButton} >
+
+      <i className="material-icons right">edit</i>
+      Bring Online
+    </div>
+    <br/>
+
+  </div>
+  }
+
+  alarmMarker() {
+    return <div>
+    <div
+      onClick={() => {
+        this.updateDeviceState(this.state.markerInfo.id, "maintenance")
+      }}
+      className={"orange btn"}
+      >
+
+      <i className="material-icons right">edit</i>
+      Maintenance On
+    </div>
+    <br/>
+
+    <div
+      onClick={() => {
+        this.updateDeviceState(this.state.markerInfo.id, "online")
+      }}
+      className={"green btn"}
+      style={infoActionButton} >
+
+      <i className="material-icons right">edit</i>
+      Alarm Off
+    </div>
+    <br/>
+
+  </div>
+  }
+
+  onInfoWindowOpen(props, e) {
+    let content;
+
+    if (this.state.markerInfo.state == "online") {
+      content = this.onlineMarker();
+    }
+    else if (this.state.markerInfo.state == "offline") {
+      content = this.offlineMarker();
+    }
+    else if (this.state.markerInfo.state == "maintenance") {
+      content = this.maintMarker();
+    }
+    else {
+      content = this.alarmMarker();
+    }
+
+    ReactDOM.render(React.Children.only(content), document.getElementById("actionsContainer"));
+  }
+
   render() {
     return (
       <div className="wrapper" onKeyUp={this.handleKey}>
@@ -790,139 +968,64 @@ class GoogleMap extends React.Component {
             />
           }
 
-          <InfoWindow
-            visible={this.state.showInfo}
-            onCloseClick={this.hideInfo}
-            onClose={this.hideInfo}
+          {
+            (this.state.markerInfo.state) ? (
+              <InfoWindow
+                visible={this.state.showInfo}
+                onCloseClick={this.hideInfo}
+                onClose={this.hideInfo}
+                onOpen={e => {
+                  this.onInfoWindowOpen(this.props, e);
+                }}
 
-            position={{
-              lat: this.state.markerInfo.position.lat,
-              lng: this.state.markerInfo.position.lng,
-            }} >
+                position={{
+                  lat: this.state.markerInfo.position.lat,
+                  lng: this.state.markerInfo.position.lng,
+                }} >
 
-            <div>
-              <p style={infoTitle}>{this.state.markerInfo.title}</p>
-              <hr/>
-              
-              <p style={infoSubTitle}>State:</p>
+                <div>
+                  <p style={infoTitle}>{this.state.markerInfo.title}</p>
+                  <hr/>
+                  
+                  <p style={infoSubTitle}>State:</p>
 
-              {
-                (this.state.markerInfo.state == "online") ? (
-                  <div className="chip" style = {circleStyleGreen}>
-                    Online, No alarm
+                  {
+                    (this.state.markerInfo.state == "online") ? (
+                      <div>
+                        <div className="chip" style = {circleStyleGreen}>
+                          Online, No alarm
+                        </div>
+                      </div>
+                    ) :
+                    (this.state.markerInfo.state == "offline") ? (
+                      <div className="chip" style = {circleStyleGrey}>
+                        Offline
+                      </div>
+                    ) :
+                    (this.state.markerInfo.state == "maintenance") ? (
+                      <div className="chip" style = {circleStyleYellow}>
+                        Maintenance
+                      </div>
+                    ) :
+                      <div className="chip" style = {circleStyleRed}>
+                        {this.state.markerInfo.state}
+                      </div>
+                  }
+                  
+                  <br/>
+                  <p style={infoSubTitle}>Actions:</p>
+
+                  <div id={"actionsContainer"}>
+                    {/* Marker actions loaded on infowindow open */}
                   </div>
-                ) :
-                (this.state.markerInfo.state == "offline") ? (
-                  <div className="chip" style = {circleStyleGrey}>
-                    Offline
-                  </div>
-                ) :
-                (this.state.markerInfo.state == "maintenance") ? (
-                  <div className="chip" style = {circleStyleYellow}>
-                    Maintenance
-                  </div>
-                ) :
-                  <div className="chip" style = {circleStyleRed}>
-                    {this.state.markerInfo.state}
-                  </div>
-              }
-              
-              <br/>
-              <p style={infoSubTitle}>Actions:</p>
+                        
+                </div>
 
-              {
-                (this.state.markerInfo.state == "online") ? (
-                  <div>
-                    <a
-                      className="waves-effect waves-light primary btn"
-                      // onClick={this.toggleDrawPerimeter}
-                      >
-  
-                      <i className="material-icons right">edit</i>
-                      Maintenance On
-                    </a>
-                    <br/>
-  
-                    <a
-                      className="waves-effect waves-light grey btn"
-                      // onClick={this.toggleDrawPerimeter}
-                      style={infoActionButton}
-                      >
-  
-                      <i className="material-icons right">edit</i>
-                      Take Offline
-                    </a>
-                    <br/>
-                  </div>
-                ) :
-                (this.state.markerInfo.state == "offline") ? (
-                  <div>
-                    <a
-                      className="waves-effect waves-light primary btn"
-                      // onClick={this.toggleDrawPerimeter}
-                      >
-  
-                      <i className="material-icons right">edit</i>
-                      Maintenance On
-                    </a>
-                    <br/>
-  
-                    <a
-                      className="waves-effect waves-light green btn"
-                      // onClick={this.toggleDrawPerimeter}
-                      style={infoActionButton}
-                      >
-  
-                      <i className="material-icons right">edit</i>
-                      Bring Online
-                    </a>
-                    <br/>
-
-                  </div>
-                ) :
-                (this.state.markerInfo.state == "maintenance") ? (
-                  <div>
-                    <a
-                      className="waves-effect waves-light green btn"
-                      // onClick={this.toggleDrawPerimeter}
-                      >
-  
-                      <i className="material-icons right">edit</i>
-                      Bring Online
-                    </a>
-                    <br/>
-
-                  </div>
-                ) :
-                  <div>
-                    <a
-                      className="waves-effect waves-light primary btn"
-                      // onClick={this.toggleDrawPerimeter}
-                      >
-
-                      <i className="material-icons right">edit</i>
-                      Maintenance On
-                    </a>
-                    <br/>
-
-                    <a
-                      className="waves-effect waves-light green btn"
-                      // onClick={this.toggleDrawPerimeter}
-                      style={infoActionButton}
-                      >
-
-                      <i className="material-icons right">edit</i>
-                      Alarm Off
-                    </a>
-                    <br/>
-
-                  </div>
-              }
-                    
-            </div>
-
-          </InfoWindow>
-
+              </InfoWindow>
+            ) :
+              null
+          }
+          
           <InfoWindow
             visible={this.state.showPerDel}
             onCloseClick={this.hidePerimInfo}
@@ -978,8 +1081,7 @@ class GoogleMap extends React.Component {
           </span>
 
           <div style={{ margin: 15, }} />
-
-          {/* <CustomTreeView onDeviceClicked={this.onDeviceClicked} /> */}
+          
           <SortableTreeView
             ref={tree => this.tree = tree}
             onDeviceClicked={this.onDeviceClicked}
@@ -1011,7 +1113,7 @@ const circleStyleGrey = {
 const circleStyleYellow = {
   borderRadius: 25,
   color: "white",
-  background: "yellow",
+  background: "orange",
 };
 const circleStyleRed = {
   borderRadius: 25,

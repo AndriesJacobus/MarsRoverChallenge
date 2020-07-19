@@ -238,6 +238,25 @@
         <% end %>
       </div>
 
+      <div class="col s4">
+        <%= link_to map_view_path do %>
+          <%= react_component("DashboardCard",
+            {
+              title:
+                "Map View",
+              content:
+                "Devices are arranged on a map via map groups. A map group is
+                a group of devices coupled together to form a section of a perimeter.",
+              resource:
+                asset_path("map_groups.jpg"),
+              link:
+                map_view_path,
+              linkText:
+                "Go to Map Groups",
+            })
+          %>
+        <% end %>
+
     <% end %>
     
   </div>    

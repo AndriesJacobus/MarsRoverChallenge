@@ -208,6 +208,45 @@ class ClientGroupsController < ApplicationController
     end
   end
 
+  # POST /client_groups/1/update_device_state
+  def update_device_state
+    if current_user
+
+      @device = Device.find(params[:DeviceId])
+
+      if @device
+
+        @device.update_attribute(:state, params[:DeviceState])
+
+        message = "Device '#{@device.Name}' " + 
+                  "with id #{params[:DeviceId]} " +
+                  "successfully updated state to #{params[:DeviceState]}"
+
+        if @device.save
+          respond_to do |format|
+            msg = { :status => "ok", :message => message }
+            format.json  { render :json => msg }
+          end
+        else
+          respond_to do |format|
+            msg = { :status => "bad_request", :message => @device.errors }
+            format.json  { render :json => msg }
+          end
+        end
+        
+      else
+
+        respond_to do |format|
+          msg = { :status => "not_found", :message => @device.errors }
+          format.json  { render :json => msg }
+        end
+
+      end
+    else
+      redirect_to root_path, flash: {warning: 'Please log in before viewing this page' }
+    end
+  end
+
   # DELETE /client_groups/1/delete_map_group
   def delete_map_group
     if current_user
@@ -363,6 +402,7 @@ class ClientGroupsController < ApplicationController
         :DeviceId,
         :DeviceLat,
         :DeviceLng,
+        :DeviceState,
         :ClientID
       )
     end

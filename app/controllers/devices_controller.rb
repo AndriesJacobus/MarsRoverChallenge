@@ -151,8 +151,8 @@ class DevicesController < ApplicationController
       puts resp
       puts resp["name"]
       puts ""
-      puts resp.to_json
-      puts resp.to_json["name"]
+      puts resp.as_json
+      puts resp.as_json["name"]
 
       current_device.update_attributes(
         :SigfoxName => resp["name"],

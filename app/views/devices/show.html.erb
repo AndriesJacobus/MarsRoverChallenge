@@ -23,7 +23,7 @@
           <% elsif @device.state == "offline" %>
             <p style = "color: grey"><%= device.state %></p>
           <% elsif @device.state == "maintenance" %>
-            <p style = "color: yellow"><%= @device.state %></p>
+            <p style = "color: orange"><%= @device.state %></p>
           <% else %>
             <p style = "color: red"><%= @device.state %></p>
           <% end %>
