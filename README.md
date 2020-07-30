@@ -173,7 +173,7 @@ The functional requirements of the MVP Phase One include:
      - List groups, devices currently configured on system
      - Actions
      - New added devices configured with default rules
-3. Month 3 - Cloud to Local
+3. ~~Month 3 - Cloud to Local~~
    - Log
      - List view
      - Heading filters
