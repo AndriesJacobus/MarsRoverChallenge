@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200802214953) do
+ActiveRecord::Schema.define(version: 20200802221901) do
 
   create_table "alarms", force: :cascade do |t|
     t.boolean "acknowledged"
@@ -19,6 +19,12 @@ ActiveRecord::Schema.define(version: 20200802214953) do
     t.string "note"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "device_id"
+    t.integer "message_id"
+    t.integer "user_id"
+    t.index ["device_id"], name: "index_alarms_on_device_id"
+    t.index ["message_id"], name: "index_alarms_on_message_id"
+    t.index ["user_id"], name: "index_alarms_on_user_id"
   end
 
   create_table "api_keys", force: :cascade do |t|
