@@ -1,5 +1,7 @@
-import React from "react"
-import PropTypes from "prop-types"
+import React from "react";
+import ReactDOM from 'react-dom';
+import PropTypes from "prop-types";
+import M from "materialize-css";
 
 class SortableTable extends React.Component {
 
@@ -10,6 +12,17 @@ class SortableTable extends React.Component {
       loaded: false,
 
       logs: [],
+
+      selectedContentFilters: {
+        trigger_by_bot: [],
+        action_type: [],
+        userName: [],           // user.name
+        clientName: [],         // client.Name
+        client_groupName: [],   // client_group.Name
+        deviceName: [],         // device.Name
+      },
+      triggerItems: [],
+
 		  hover: false,
       created_at_sort: 0,
       trigger_by_bot_sort: null,
@@ -24,16 +37,22 @@ class SortableTable extends React.Component {
     this.onSort = this.onSort.bind(this);
     this.toggleHover = this.toggleHover.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
+    this.contentFilterClicked = this.contentFilterClicked.bind(this)
   }
   
   componentDidMount(){
+    let _triggerItems = this.getTriggerItems();
+
+    // Load Materialize
+    let selects = document.querySelectorAll('select');
+    
+    M.FormSelect.init(selects, {});
+
     // Load logs
-
-    console.log(this.props.logs);
-
     this.setState({
       logs: this.props.logs,
       loaded: true,
+      triggerItems: _triggerItems,
     });
   }
 
@@ -507,7 +526,7 @@ class SortableTable extends React.Component {
   }
 
   handleShow() {
-    
+    // Todo, for now omitting
   }
 
   handleDelete(id, index){
@@ -532,7 +551,55 @@ class SortableTable extends React.Component {
     });
   }
 
-  render() {
+  getTriggerItems() {
+    const logCopy = this.props.logs;
+
+    // Filter out unique items
+    const unique = [...new Set(logCopy.map(item => item.trigger_by_bot))];
+
+    let selects = document.querySelectorAll('select');
+    
+    M.FormSelect.init(selects, {});
+
+    // return ret;
+    return unique;
+  }
+
+  contentFilterClicked(event, item) {
+    const value = event.target.innerHTML;
+    console.log(value);
+    console.log(item);
+  }
+
+  renderContentFilters() {
+    // const triggerItems = this.getTriggerItems();
+    
+    return <div>
+      <div className = "input-field col s12" style = {{width: "40vw",}}>
+        <select
+          multiple
+          style = {{opacity: 0, width: 0, height: 0, }}
+          // onChange={this.contentFilterClicked}
+          >
+
+          {this.state.triggerItems.map((triggerItem, index) => {
+            return <option
+              id= "selectTest"
+              key = {index}
+              value={triggerItem}
+              onChange={event => this.contentFilterClicked(event, triggerItem)}
+              >
+
+              {triggerItem}
+            </option>
+          })}
+        </select>
+        <label>Trigger by bot</label>
+      </div>
+    </div>
+  }
+
+  renderTable() {
     var newdata = this.state.logs;
     var headerStyle;
 
@@ -560,268 +627,279 @@ class SortableTable extends React.Component {
       };
     }
 
+    return <div className = "z-depth-5 hoverable scroller">
+      {
+        this.state.loaded &&
+        <table style = {borderStyle}>
+          <thead>
+            <tr>
+
+              <th
+                onClick={e => this.onSort(e, 'created_at')}
+                onMouseEnter={this.toggleHover}
+                onMouseLeave={this.toggleHover}
+                style = {headerStyle}>
+
+                Time
+                <br/><i>{
+                (this.state.created_at_sort == null) ? (
+                  "(not sorted)"
+                ) :
+                (this.state.created_at_sort == 0) ? (
+                  "(ascending)"
+                ) :
+                  "(descending)"
+                }</i>
+              </th>
+
+              <th
+                onClick={e => this.onSort(e, 'trigger_by_bot')}
+                onMouseEnter={this.toggleHover}
+                onMouseLeave={this.toggleHover}
+                style = {headerStyle}>
+
+                Trigger by bot
+                <br/><i>{
+                (this.state.trigger_by_bot_sort == null) ? (
+                  "(not sorted)"
+                ) :
+                (this.state.trigger_by_bot_sort == 0) ? (
+                  "(ascending)"
+                ) :
+                  "(descending)"
+                }</i>
+              </th>
+
+              <th
+                onClick={e => this.onSort(e, 'action_type')}
+                onMouseEnter={this.toggleHover}
+                onMouseLeave={this.toggleHover}
+                style = {headerStyle}>
+
+                Action type
+                <br/><i>{
+                (this.state.action_type_sort == null) ? (
+                  "(not sorted)"
+                ) :
+                (this.state.action_type_sort == 0) ? (
+                  "(ascending)"
+                ) :
+                  "(descending)"
+                }</i>
+              </th>
+
+              <th
+                onClick={e => this.onSort(e, 'user')}
+                onMouseEnter={this.toggleHover}
+                onMouseLeave={this.toggleHover}
+                style = {headerStyle}>
+
+                User
+                <br/><i>{
+                (this.state.user_sort == null) ? (
+                  "(not sorted)"
+                ) :
+                (this.state.user_sort == 0) ? (
+                  "(ascending)"
+                ) :
+                  "(descending)"
+                }</i>
+              </th>
+
+              <th
+                onClick={e => this.onSort(e, 'client')}
+                onMouseEnter={this.toggleHover}
+                onMouseLeave={this.toggleHover}
+                style = {headerStyle}>
+
+                Client
+                <br/><i>{
+                (this.state.client_sort == null) ? (
+                  "(not sorted)"
+                ) :
+                (this.state.client_sort == 0) ? (
+                  "(ascending)"
+                ) :
+                  "(descending)"
+                }</i>
+              </th>
+
+              <th
+                onClick={e => this.onSort(e, 'client_group')}
+                onMouseEnter={this.toggleHover}
+                onMouseLeave={this.toggleHover}
+                style = {headerStyle}>
+
+                Client Group
+                <br/><i>{
+                (this.state.client_group_sort == null) ? (
+                  "(not sorted)"
+                ) :
+                (this.state.client_group_sort == 0) ? (
+                  "(ascending)"
+                ) :
+                  "(descending)"
+                }</i>
+              </th>
+
+              <th
+                onClick={e => this.onSort(e, 'device')}
+                onMouseEnter={this.toggleHover}
+                onMouseLeave={this.toggleHover}
+                style = {headerStyle}>
+
+                Device
+                <br/><i>{
+                (this.state.device_sort == null) ? (
+                  "(not sorted)"
+                ) :
+                (this.state.device_sort == 0) ? (
+                  "(ascending)"
+                ) :
+                  "(descending)"
+                }</i>
+              </th>
+
+              <th
+                onClick={e => this.onSort(e, 'message')}
+                onMouseEnter={this.toggleHover}
+                onMouseLeave={this.toggleHover}
+                style = {headerStyle}>
+
+                Message
+                <br/><i>{
+                (this.state.message_sort == null) ? (
+                  "(not sorted)"
+                ) :
+                (this.state.message_sort == 0) ? (
+                  "(ascending)"
+                ) :
+                  "(descending)"
+                }</i>
+              </th>
+
+              <th colSpan="3"></th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {newdata.map(function(log, index) {
+              return (
+                <tr key={index} id={log.id} data-item={log}>
+                  <td style = {tableStyle}>
+                    {
+                      new Intl.DateTimeFormat('en-US', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                      }).format(Date.parse(log.created_at))
+                    } ±00:00
+                  </td>
+
+                  <td style = {tableStyle}>
+                    {log.trigger_by_bot}
+                  </td>
+
+                  <td style = {tableStyle}>
+                    {log.action_type}
+                  </td>
+
+                  {
+                    (log.user != null) ? (
+                      <td style = {tableStyle}>
+                        {log.user.name}
+                      </td>
+                    ) :
+                      <td style = {tableStyle}><i>N/A</i></td>
+                  }
+
+                  {
+                    (log.client != null) ? (
+                      <td style = {tableStyle}>
+                        {log.client.Name}
+                      </td>
+                    ) :
+                      <td style = {tableStyle}><i>N/A</i></td>
+                  }
+
+                  {
+                    (log.client_group != null) ? (
+                      <td style = {tableStyle}>
+                        {log.client_group.Name}
+                      </td>
+                    ) :
+                      <td style = {tableStyle}><i>N/A</i></td>
+                  }
+
+                  {
+                    (log.device != null) ? (
+                      <td style = {tableStyle}>
+                        {log.device.Name}
+                      </td>
+                    ) :
+                      <td style = {tableStyle}><i>N/A</i></td>
+                  }
+
+                  {
+                    (log.message != null) ? (
+                      <td style = {tableStyle}>
+                        {log.message.Data}
+                      </td>
+                    ) :
+                      <td style = {tableStyle}><i>N/A</i></td>
+                  }
+
+                  {/* <td><button onClick={this.handleShow(log.id)} className = "waves-effect waves-light blue lighten-1 btn-small white-text">Show</button></td>
+                  <td><button onClick={this.handleDelete(log.id, index)} className = "waves-effect waves-light blue lighten-1 btn-small white-text">Delete</button></td> */}
+                </tr>
+              );
+            })}
+            
+          </tbody>
+        </table>
+      }
+      
+    </div>
+  }
+
+  render() {
+
     return (
-      <div className = "z-depth-5 hoverable scroller">
-        {
-          this.state.loaded &&
-          <table style = {borderStyle}>
-            <thead>
-              <tr>
+      <div>
+        {/* {
+          (this.state.loaded) ? (
+            <div>
+              <p style = {subHeadingStyle}>
+                Table Content Filters:
+              </p>
 
-                <th
-                  onClick={e => this.onSort(e, 'created_at')}
-                  onMouseEnter={this.toggleHover}
-                  onMouseLeave={this.toggleHover}
-                  style = {headerStyle}>
+              {this.renderContentFilters()}
 
-                  Time
-                  <br/><i>{
-                  (this.state.created_at_sort == null) ? (
-                    "(not sorted)"
-                  ) :
-                  (this.state.created_at_sort == 0) ? (
-                    "(ascending)"
-                  ) :
-                    "(descending)"
-                  }</i>
-                </th>
+              <br/>
 
-                <th
-                  onClick={e => this.onSort(e, 'trigger_by_bot')}
-                  onMouseEnter={this.toggleHover}
-                  onMouseLeave={this.toggleHover}
-                  style = {headerStyle}>
-
-                  Trigger by bot
-                  <br/><i>{
-                  (this.state.trigger_by_bot_sort == null) ? (
-                    "(not sorted)"
-                  ) :
-                  (this.state.trigger_by_bot_sort == 0) ? (
-                    "(ascending)"
-                  ) :
-                    "(descending)"
-                  }</i>
-                </th>
-
-                <th
-                  onClick={e => this.onSort(e, 'action_type')}
-                  onMouseEnter={this.toggleHover}
-                  onMouseLeave={this.toggleHover}
-                  style = {headerStyle}>
-
-                  Action type
-                  <br/><i>{
-                  (this.state.action_type_sort == null) ? (
-                    "(not sorted)"
-                  ) :
-                  (this.state.action_type_sort == 0) ? (
-                    "(ascending)"
-                  ) :
-                    "(descending)"
-                  }</i>
-                </th>
-
-                <th
-                  onClick={e => this.onSort(e, 'user')}
-                  onMouseEnter={this.toggleHover}
-                  onMouseLeave={this.toggleHover}
-                  style = {headerStyle}>
-
-                  User
-                  <br/><i>{
-                  (this.state.user_sort == null) ? (
-                    "(not sorted)"
-                  ) :
-                  (this.state.user_sort == 0) ? (
-                    "(ascending)"
-                  ) :
-                    "(descending)"
-                  }</i>
-                </th>
-
-                <th
-                  onClick={e => this.onSort(e, 'client')}
-                  onMouseEnter={this.toggleHover}
-                  onMouseLeave={this.toggleHover}
-                  style = {headerStyle}>
-
-                  Client
-                  <br/><i>{
-                  (this.state.client_sort == null) ? (
-                    "(not sorted)"
-                  ) :
-                  (this.state.client_sort == 0) ? (
-                    "(ascending)"
-                  ) :
-                    "(descending)"
-                  }</i>
-                </th>
-
-                <th
-                  onClick={e => this.onSort(e, 'client_group')}
-                  onMouseEnter={this.toggleHover}
-                  onMouseLeave={this.toggleHover}
-                  style = {headerStyle}>
-
-                  Client Group
-                  <br/><i>{
-                  (this.state.client_group_sort == null) ? (
-                    "(not sorted)"
-                  ) :
-                  (this.state.client_group_sort == 0) ? (
-                    "(ascending)"
-                  ) :
-                    "(descending)"
-                  }</i>
-                </th>
-
-                <th
-                  onClick={e => this.onSort(e, 'device')}
-                  onMouseEnter={this.toggleHover}
-                  onMouseLeave={this.toggleHover}
-                  style = {headerStyle}>
-
-                  Device
-                  <br/><i>{
-                  (this.state.device_sort == null) ? (
-                    "(not sorted)"
-                  ) :
-                  (this.state.device_sort == 0) ? (
-                    "(ascending)"
-                  ) :
-                    "(descending)"
-                  }</i>
-                </th>
-
-                <th
-                  onClick={e => this.onSort(e, 'message')}
-                  onMouseEnter={this.toggleHover}
-                  onMouseLeave={this.toggleHover}
-                  style = {headerStyle}>
-
-                  Message
-                  <br/><i>{
-                  (this.state.message_sort == null) ? (
-                    "(not sorted)"
-                  ) :
-                  (this.state.message_sort == 0) ? (
-                    "(ascending)"
-                  ) :
-                    "(descending)"
-                  }</i>
-                </th>
-
-                <th colSpan="3"></th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {newdata.map(function(log, index) {
-                return (
-                  <tr key={index} id={log.id} data-item={log}>
-                    <td style = {tableStyle}>
-                      {
-                        new Intl.DateTimeFormat('en-US', {
-                          year: 'numeric',
-                          month: '2-digit',
-                          day: '2-digit',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                          second: '2-digit',
-                        }).format(Date.parse(log.created_at))
-                      } ±00:00
-                    </td>
-
-                    <td style = {tableStyle}>
-                      {log.trigger_by_bot}
-                    </td>
-
-                    <td style = {tableStyle}>
-                      {log.action_type}
-                    </td>
-
-                    {
-                      (log.user != null) ? (
-                        <td style = {tableStyle}>
-                          {log.user.name}
-                        </td>
-                      ) :
-                        <td style = {tableStyle}><i>N/A</i></td>
-                    }
-
-                    {
-                      (log.client != null) ? (
-                        <td style = {tableStyle}>
-                          {log.client.Name}
-                        </td>
-                      ) :
-                        <td style = {tableStyle}><i>N/A</i></td>
-                    }
-
-                    {
-                      (log.client_group != null) ? (
-                        <td style = {tableStyle}>
-                          {log.client_group.Name}
-                        </td>
-                      ) :
-                        <td style = {tableStyle}><i>N/A</i></td>
-                    }
-
-                    {
-                      (log.device != null) ? (
-                        <td style = {tableStyle}>
-                          {log.device.Name}
-                        </td>
-                      ) :
-                        <td style = {tableStyle}><i>N/A</i></td>
-                    }
-
-                    {
-                      (log.message != null) ? (
-                        <td style = {tableStyle}>
-                          {log.message.Data}
-                        </td>
-                      ) :
-                        <td style = {tableStyle}><i>N/A</i></td>
-                    }
-
-                    {/* <td><button onClick={this.handleShow(log.id)} className = "waves-effect waves-light blue lighten-1 btn-small white-text">Show</button></td>
-                    <td><button onClick={this.handleDelete(log.id, index)} className = "waves-effect waves-light blue lighten-1 btn-small white-text">Delete</button></td> */}
-                  </tr>
-                );
-              })}
-              
-            </tbody>
-          </table>
-        }
-        
+              {this.renderTable()}
+            </div>
+          ) : 
+          null
+          
+        } */}
+        <div>
+          {this.renderTable()}
+        </div>
       </div>
-
-      // <table className="m-table">
-      //   <thead>
-      //     <tr>
-      //       <th onClick={e => this.onSort(e, 'accountname')}>AccountName</th>
-      //       <th onClick={e => this.onSort(e, 'negotiatedcontractvalue')}>ContractValue</th>
-      //     </tr>
-      //   </thead>
-      //   <tbody>
-      //     {newdata.map(function(account, index) {
-      //       return (
-      //         <tr key={index} data-item={account}>
-      //           <td data-title="Account">{account.accountname}</td>
-      //           <td data-title="Value">{account.negotiatedcontractvalue}</td>
-      //         </tr>
-      //       );
-      //     })}
-      //   </tbody>
-      // </table>
-
     );
   }
 
 }
 
+const subHeadingStyle = {
+  marginTop: 35,
+  marginBottom: 25,
+  fontSize: 18,
+};
 const borderStyle = {
   borderCollapse: "separate",
   borderSpacing: 15,
