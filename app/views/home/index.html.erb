@@ -178,6 +178,26 @@
       </div>
 
       <div class="col s4">
+        <%= link_to alarms_path do %>
+          <%= react_component("DashboardCard",
+            {
+              title:
+                "Alarms",
+              content:
+                "View and Manage all alarms for all devices using a quickly accessable
+                and low-data-rated List View.",
+              resource:
+                asset_path("alarms.jpg"),
+              link:
+                alarms_path,
+              linkText:
+                "Go to Alarms",
+            })
+          %>
+        <% end %>
+      </div>
+
+      <div class="col s4">
         <%= link_to logs_path do %>
           <%= react_component("DashboardCard",
             {
@@ -214,6 +234,26 @@
                 current_user,
               linkText:
                 "Go to My Page",
+            })
+          %>
+        <% end %>
+      </div>
+
+      <div class="col s4">
+        <%= link_to alarms_path do %>
+          <%= react_component("DashboardCard",
+            {
+              title:
+                "Alarms",
+              content:
+                "View and Manage all alarms for all devices using a quickly accessable
+                and low-data-rated List View.",
+              resource:
+                asset_path("alarms.jpg"),
+              link:
+                alarms_path,
+              linkText:
+                "Go to Alarms",
             })
           %>
         <% end %>
