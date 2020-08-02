@@ -5,7 +5,10 @@
   <table>
     <thead>
       <tr>
+        <th style = "white-space: nowrap; padding-right: 35px;">Associated Device</th>
+        <th style = "white-space: nowrap; padding-right: 35px;">Associated Message</th>
         <th style = "white-space: nowrap; padding-right: 35px;">Acknowledged</th>
+        <th style = "white-space: nowrap; padding-right: 35px;">Acknowledged By</th>
         <th style = "white-space: nowrap; padding-right: 35px;">Date acknowledged</th>
         <th style = "white-space: nowrap; padding-right: 35px;">Alarm reason</th>
         <th style = "white-space: nowrap; padding-right: 35px;">Note</th>
@@ -16,7 +19,32 @@
     <tbody>
       <% @alarms.each do |alarm| %>
         <tr>
-          <td style = "white-space: nowrap; padding-right: 35px;"><%= alarm.acknowledged %></td>
+          <td style = "padding-right: 35px;">
+            <% if !alarm.device.nil?%>
+              <%= alarm.device.Name %>
+            <% else %>
+              N/A
+            <% end %>
+          </td>
+
+          <td style = "padding-right: 35px;">
+            <% if !alarm.message.nil?%>
+              <%= alarm.message.Data %>
+            <% else %>
+              N/A
+            <% end %>
+          </td>
+
+          <td style = "padding-right: 35px;"><%= alarm.acknowledged %></td>
+
+          <td style = "padding-right: 35px;">
+            <% if !alarm.user.nil?%>
+              <%= alarm.user.name %>
+            <% else %>
+              N/A
+            <% end %>
+          </td>
+
           <td style = "padding-right: 35px;"><%= alarm.date_acknowledged %></td>
           <td style = "padding-right: 35px;"><%= alarm.alarm_reason %></td>
           <td style = "padding-right: 35px;"><%= alarm.note %></td>

@@ -18,6 +18,17 @@
         <br/>
 
         <p>
+          <strong>Acknowledged By:</strong>
+          <% if !@alarm.user.nil?%>
+              <%= link_to @alarm.user.name, @alarm.user, class: "waves-effect waves-light blue lighten-2 btn-small white-text" %>
+            <% else %>
+              <br/>N/A
+            <% end %>
+        </p>
+
+        <br/>
+
+        <p>
           <strong>Date acknowledged:</strong><br/>
           <%= @alarm.date_acknowledged %>
         </p>
