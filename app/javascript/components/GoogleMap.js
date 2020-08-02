@@ -65,6 +65,9 @@ class GoogleMap extends React.Component {
       // Data for adding new marker form treeview
       deviceFromTreeSelected: false,
       deviceFromTree: null,
+
+      // Device Alarm State Data
+      alarmAck: null,
     }
 
     this.domNode = null;
@@ -727,6 +730,10 @@ class GoogleMap extends React.Component {
 
   onlineMarker() {
     return <div>
+  
+      {/* <br/> */}
+      <p style={infoSubTitle}>Actions:</p>
+    
       <a onClick={() => this.updateDeviceState(this.state.markerInfo.id, "maintenance")}
         className={"orange btn"} >
 
@@ -751,102 +758,114 @@ class GoogleMap extends React.Component {
 
   offlineMarker() {
     return <div>
-    <div
-      onClick={() => {
-        this.updateDeviceState(this.state.markerInfo.id, "maintenance")
-      }}
-      className={"orange btn"}
-      >
+  
+      {/* <br/> */}
+      <p style={infoSubTitle}>Actions:</p>
+                
+      {/* <div
+        onClick={() => {
+          this.updateDeviceState(this.state.markerInfo.id, "maintenance")
+        }}
+        className={"orange btn"}
+        >
 
-      <i className="material-icons right">edit</i>
-      Maintenance On
+        <i className="material-icons right">edit</i>
+        Maintenance On
+      </div>
+      <br/> */}
+
+      <div
+        onClick={() => {
+          this.updateDeviceState(this.state.markerInfo.id, "online")
+        }}
+        className={"green btn"}
+        style={infoActionButton} >
+
+        <i className="material-icons right">edit</i>
+        Bring Online
+      </div>
+      <br/>
+
     </div>
-    <br/>
-
-    <div
-      onClick={() => {
-        this.updateDeviceState(this.state.markerInfo.id, "online")
-      }}
-      className={"green btn"}
-      style={infoActionButton} >
-
-      <i className="material-icons right">edit</i>
-      Bring Online
-    </div>
-    <br/>
-
-  </div>
   }
 
   maintMarker() {
     return <div>
-    <div
-      onClick={() => {
-        this.updateDeviceState(this.state.markerInfo.id, "offline")
-      }}
-      className={"grey btn"}
-      >
+  
+      {/* <br/> */}
+      <p style={infoSubTitle}>Actions:</p>
 
-      <i className="material-icons right">edit</i>
-      Take Offline
+      <div
+        onClick={() => {
+          this.updateDeviceState(this.state.markerInfo.id, "offline")
+        }}
+        className={"grey btn"}
+        >
+
+        <i className="material-icons right">edit</i>
+        Take Offline
+      </div>
+      <br/>
+        
+      <div
+        onClick={() => {
+          this.updateDeviceState(this.state.markerInfo.id, "online")
+        }}
+        className={"green btn"}
+        style={infoActionButton} >
+
+        <i className="material-icons right">edit</i>
+        Bring Online
+      </div>
+      <br/>
+
     </div>
-    <br/>
-      
-    <div
-      onClick={() => {
-        this.updateDeviceState(this.state.markerInfo.id, "online")
-      }}
-      className={"green btn"}
-      style={infoActionButton} >
-
-      <i className="material-icons right">edit</i>
-      Bring Online
-    </div>
-    <br/>
-
-  </div>
   }
 
   alarmMarker() {
     return <div>
-    <div
-      onClick={() => {
-        this.updateDeviceState(this.state.markerInfo.id, "maintenance")
-      }}
-      className={"orange btn"}
-      >
+  
+      {/* <br/> */}
+      <p style={infoSubTitle}>Actions:</p>
 
-      <i className="material-icons right">edit</i>
-      Maintenance On
+      {/* <div
+        onClick={() => {
+          this.updateDeviceState(this.state.markerInfo.id, "maintenance")
+        }}
+        className={"orange btn"}
+        >
+
+        <i className="material-icons right">edit</i>
+        Maintenance On
+      </div>
+      <br/> */}
+
+      <div
+        onClick={() => {
+          this.updateDeviceState(this.state.markerInfo.id, "online")
+        }}
+        className={"green btn"}
+        style={infoActionButton} >
+
+        <i className="material-icons right">check</i>
+        Acknowledge Alarm
+      </div>
+      <br/>
+
     </div>
-    <br/>
-
-    <div
-      onClick={() => {
-        this.updateDeviceState(this.state.markerInfo.id, "online")
-      }}
-      className={"green btn"}
-      style={infoActionButton} >
-
-      <i className="material-icons right">edit</i>
-      Alarm Off
-    </div>
-    <br/>
-
-  </div>
   }
 
   onInfoWindowOpen(props, e) {
     let content;
 
     if (this.state.markerInfo.state == "online") {
-      content = this.onlineMarker();
+      // content = this.onlineMarker();
     }
     else if (this.state.markerInfo.state == "offline") {
       content = this.offlineMarker();
     }
     else if (this.state.markerInfo.state == "maintenance") {
-      content = this.maintMarker();
+      // content = this.maintMarker();
     }
     else {
       content = this.alarmMarker();
@@ -1011,9 +1030,6 @@ class GoogleMap extends React.Component {
                         {this.state.markerInfo.state}
                       </div>
                   }
-                  
-                  <br/>
-                  <p style={infoSubTitle}>Actions:</p>
 
                   <div id={"actionsContainer"}>
                     {/* Marker actions loaded on infowindow open */}

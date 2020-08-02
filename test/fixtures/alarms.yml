@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  acknowledged: false
+  date_acknowledged: 2020-08-02 23:49:53
+  alarm_reason: MyString
+  note: MyString
+
+two:
+  acknowledged: false
+  date_acknowledged: 2020-08-02 23:49:53
+  alarm_reason: MyString
+  note: MyString

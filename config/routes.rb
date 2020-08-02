@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  resources :alarms
   resources :logs
   root 'home#index'
 
