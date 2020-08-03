@@ -5,6 +5,7 @@
   <table>
     <thead>
       <tr>
+        <th style = "white-space: nowrap; padding-right: 35px;">Date Triggered</th>
         <th style = "white-space: nowrap; padding-right: 35px;">Associated Device</th>
         <th style = "white-space: nowrap; padding-right: 35px;">Associated Message</th>
         <th style = "white-space: nowrap; padding-right: 35px;">Acknowledged</th>
@@ -19,6 +20,8 @@
     <tbody>
       <% @alarms.each do |alarm| %>
         <tr>
+          <td style = "padding-right: 35px;"><%= alarm.created_at %> </td>
+
           <td style = "padding-right: 35px;">
             <% if !alarm.device.nil?%>
               <%= alarm.device.Name %>
@@ -35,7 +38,13 @@
             <% end %>
           </td>
 
-          <td style = "padding-right: 35px;"><%= alarm.acknowledged %></td>
+          <td style = "padding-right: 35px;">
+            <% if alarm.acknowledged %>
+              <p style = "color: green;">Yes</p>
+            <% else %>
+              <p style = "color: red;">No</p>
+            <% end %>
+          </td>
 
           <td style = "padding-right: 35px;">
             <% if !alarm.user.nil?%>

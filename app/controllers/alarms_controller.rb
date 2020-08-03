@@ -34,6 +34,30 @@ class AlarmsController < ApplicationController
   def create
     @alarm = Alarm.new(alarm_params)
 
+    if !params[:device_id].nil?
+      @device = Device.where(id: params[:device_id]).take
+
+      if @device
+        @alarm.device = @device
+      end
+    end
+
+    if !params[:message_id].nil?
+      @message = Message.where(id: params[:message_id]).take
+
+      if @device
+        @alarm.message = @message
+      end
+    end
+
+    if !params[:user_id].nil?
+      @user = User.where(id: params[:user_id]).take
+
+      if @device
+        @alarm.user = @user
+      end
+    end
+
     respond_to do |format|
       if @alarm.save
         format.html { redirect_to @alarm, flash: {success: 'Alarm was successfully created' } }
@@ -77,6 +101,14 @@ class AlarmsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def alarm_params
-      params.require(:alarm).permit(:acknowledged, :date_acknowledged, :alarm_reason, :note)
+      params.require(:alarm).permit(
+        :acknowledged, 
+        :date_acknowledged, 
+        :alarm_reason, 
+        :note,
+        :device_id,
+        :user_id,
+        :message_id,
+      )
     end
 end

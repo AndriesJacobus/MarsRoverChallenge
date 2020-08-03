@@ -5,6 +5,9 @@ import { Map, GoogleApiWrapper, Marker, Polyline, InfoWindow } from 'google-maps
 import CustomTreeView from './CustomTreeView';
 import SortableTreeView from './SortableTreeView';
 
+import Modal from '@material-ui/core/Modal';
+import TextField from '@material-ui/core/TextField';
+
 React.useLayoutEffect = React.useEffect
 
 class GoogleMap extends React.Component {
@@ -66,8 +69,10 @@ class GoogleMap extends React.Component {
       deviceFromTreeSelected: false,
       deviceFromTree: null,
 
-      // Device Alarm State Data
-      alarmAck: null,
+      // Ack window show
+      showAckWindow: false,
+      alarmReason: "",
+      alarmNotes: "",
     }
 
     this.domNode = null;
@@ -92,6 +97,10 @@ class GoogleMap extends React.Component {
     this.updateDeviceState = this.updateDeviceState.bind(this);
     // this.onlineMarker = this.onlineMarker.bind(this);
     // this.offlineMarker = this.offlineMarker.bind(this);
+    this.handleAlarmReason = this.handleAlarmReason.bind(this);
+    this.handleAlarmNotes = this.handleAlarmNotes.bind(this);
+
+
   }
 
   componentDidMount(){
@@ -361,7 +370,7 @@ class GoogleMap extends React.Component {
     }).then(response => response.json())
     .then(response => {
         // window.location.reload(false);
-        console.log(response);
+        // console.log(response);
 
         // Remove old entry
         this.state.markers.splice(this.state.markerInfo.markerIndex, 1);
@@ -377,6 +386,34 @@ class GoogleMap extends React.Component {
         // Add updated entry
         this.placeMarker(coord, this.state.markerInfo.id, this.state.markerInfo.title, newState);
         this.hideInfo();
+
+        // Create Alarm entry
+        this.createAlarmEntry(deviceId);
+    });
+  }
+
+  createAlarmEntry(deviceId) {
+    let body = JSON.stringify({
+      acknowledged: true,
+      date_acknowledged: new Date(),
+      alarm_reason: this.state.alarmReason,
+      note: this.state.alarmNotes,
+      device_id: deviceId,
+      user_id: this.props.curr_user_i,
+    });
+    
+    this.handleAckWindowClose();
+
+    fetch('/alarms/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': this.props.auth_token,
+      },
+      body: body,
+    }).then(response => response.json())
+    .then(response => {
+      // console.log(response);
     });
   }
 
@@ -760,7 +797,7 @@ class GoogleMap extends React.Component {
     return <div>
   
       {/* <br/> */}
-      <p style={infoSubTitle}>Actions:</p>
+      {/* <p style={infoSubTitle}>Actions:</p> */}
                 
       {/* <div
         onClick={() => {
@@ -826,7 +863,7 @@ class GoogleMap extends React.Component {
     return <div>
   
       {/* <br/> */}
-      <p style={infoSubTitle}>Actions:</p>
+      {/* <p style={infoSubTitle}>Actions:</p> */}
 
       {/* <div
         onClick={() => {
@@ -842,7 +879,8 @@ class GoogleMap extends React.Component {
 
       <div
         onClick={() => {
-          this.updateDeviceState(this.state.markerInfo.id, "online")
+          this.openAlarmAckWindow();
+          // this.updateDeviceState(this.state.markerInfo.id, "online");
         }}
         className={"green btn"}
         style={infoActionButton} >
@@ -853,6 +891,12 @@ class GoogleMap extends React.Component {
       <br/>
 
     </div>
+  }
+  
+  openAlarmAckWindow() {
+    this.setState({
+      showAckWindow: true
+    });
   }
 
   onInfoWindowOpen(props, e) {
@@ -874,6 +918,26 @@ class GoogleMap extends React.Component {
     ReactDOM.render(React.Children.only(content), document.getElementById("actionsContainer"));
   }
 
+  handleAckWindowClose() {
+    this.setState({
+      alarmReason: "",
+      alarmNotes: "",
+      showAckWindow: false,
+    });
+  }
+
+  handleAlarmReason(event) {
+    this.setState({
+      alarmReason: event.target.value,
+    });
+  }
+
+  handleAlarmNotes(event) {
+    this.setState({
+      alarmNotes: event.target.value,
+    });
+  }
+
   render() {
     return (
       <div className="wrapper" onKeyUp={this.handleKey}>
@@ -884,7 +948,7 @@ class GoogleMap extends React.Component {
             Map Actions:
           </span>
 
-          <div style={{ lex: 1, flexDirection: 'row' }}>
+          <div style={{ flexDirection: 'row' }}>
             
             <div style={deleteMarkerStyle}>
               <a
@@ -1106,6 +1170,90 @@ class GoogleMap extends React.Component {
 
         </div>
 
+        <Modal
+          open={this.state.showAckWindow}
+          onClose={() => {
+            this.handleAckWindowClose();
+          }}
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description" >
+
+          <div style = {modalStyle}>
+            <p style = {infoTitle}>Acknowledge Alarm:</p>
+            <hr style = {hrStyle} />
+
+            <div
+              style = {{
+                flexDirection: "row",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center"
+              }} >
+
+              <TextField
+                id="standard-multiline-flexible"
+                label="Reason for Alarm"
+                multiline
+                rowsMax={4}
+                value={this.state.alarmReason}
+                onChange={this.handleAlarmReason}
+              />
+
+              <TextField
+                id="standard-multiline-flexible"
+                label="Extra Notes"
+                multiline
+                rowsMax={4}
+                value={this.state.alarmNotes}
+                onChange={this.handleAlarmNotes}
+                style = {{
+                  marginLeft: 15,
+                }}
+              />
+            </div>
+
+            <br/>
+
+            <div
+              style = {{
+                flexDirection: "row", 
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center"
+              }} >
+
+              <div
+                onClick={() => {
+                  // alert(this.state.markerInfo.id + " " + this.state.alarmReason + " " + this.state.alarmNotes);
+                  this.updateDeviceState(this.state.markerInfo.id, "online");
+                }}
+                className={"green btn"}
+                style={{
+                  marginTop: 15,
+                }} >
+
+                <i className="material-icons right">check</i>
+                Submit
+              </div>
+
+              <div
+                onClick={() => {
+                  this.handleAckWindowClose();
+                }}
+                className={"grey btn"}
+                style = {{
+                  marginTop: 15,
+                  marginLeft: 15,
+                }} >
+
+                <i className="material-icons right">close</i>
+                Cancel
+              </div>
+            </div>
+
+          </div>
+        </Modal>
+
       </div>
     );
   }
@@ -1136,7 +1284,9 @@ const circleStyleRed = {
   color: "white",
   background: "red",
 };
-
+const infoActionButton = {
+  marginTop: 15,
+};
 const mapStyles = {
   width: "60vw",
   height: '60%',
@@ -1181,8 +1331,23 @@ const elementsStyle = {
   marginLeft: 5,
   borderRadius: 5,
 };
-const infoActionButton = {
-  marginTop: 5,
+const modalStyle = {
+  position: 'relative',
+  top: "40vh",
+  left: "30vw",
+  width: "40vw",
+  borderWidth: 0.1,
+  borderRadius: 15,
+  padding: 25,
+  backgroundColor: "white",
+};
+const hrStyle = {
+  display: "block",
+  height: 1,
+  border: 0,
+  borderTop: "1px solid #ccc",
+  margin: "1em 0",
+  padding: 0,
 };
 
 GoogleMap.propTypes = {

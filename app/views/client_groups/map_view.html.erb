@@ -16,6 +16,7 @@
         auth_token: form_authenticity_token,
         devices: @devices.as_json,
         map_groups: @map_groups.as_json(include: :devices),
+        curr_user_i: current_user.id,
     })
 %>
 
