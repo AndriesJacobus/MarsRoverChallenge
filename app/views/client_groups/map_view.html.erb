@@ -17,6 +17,7 @@
         devices: @devices.as_json,
         map_groups: @map_groups.as_json(include: :devices),
         curr_user_i: current_user.id,
+        curr_user_type: current_user.usertype,
     })
 %>
 
@@ -24,4 +25,8 @@
 <br/>
 <br/>
 
-<%= link_to 'Back to Client Groups', client_groups_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
+<% if current_user.usertype == "Operator" %>
+    <%= link_to 'Back to Dashboard', root_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
+<% else %>
+    <%= link_to 'Back to Client Groups', client_groups_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
+<% end %>

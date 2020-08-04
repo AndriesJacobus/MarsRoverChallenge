@@ -201,15 +201,15 @@ The functional requirements of the MVP Phase One include:
 - [ ] Message Controller and View Updates
   - [x] Add Sigfox Device ID to Message
   - [x] Add wi-i device Name to Message
-  - [ ] Add deconstructed packet to Message
+  - [x] Add deconstructed packet to Message
 - [ ] Client Admin
   - [x] Create new User Type: Client Admin
   - [x] Rename Admin User Type to Sysadmin
   - [x] Transfer Operator privileges to Client Admin
-  - [ ] New Operator Privileges
+  - [x] New Operator Privileges
     - [x] View own user info
-    - [ ] Map View
-    - [ ] No Logs
+    - [x] Map View
+    - [x] No Logs
 - [ ] Client Groups
   - [x] Create new Controller and View: Clients (= sifg DeviceType like Wi-i Platform Testing)
   - [x] Create new Controller and View: Client Groups (= sifg Group like MyTestGroup)
@@ -255,9 +255,9 @@ The functional requirements of the MVP Phase One include:
     - [x]  Rename groups
     - [x]  Tree list view of devices and groups already configured
   
-- [ ] 2. Log
+- [x] 2. Log
   - [x]  List view
-  - [ ]  Heading filters
+  - [x]  Heading filters
 
 - [ ] 3. Map View
   - [x]  Static map (integrated a dynamic map)
@@ -267,22 +267,22 @@ The functional requirements of the MVP Phase One include:
     - [x]  Provide a list of configured groups and devices
     - [x]  Groups and devices can be placed on map
   - [ ]  Indication of device events/states using colour, icons
-    - [ ]  Alarm
-    - [ ]  Online/offline
-    - [ ]  Maintenance (low battery, device inhibited)
+    - [x]  Alarm
+    - [x]  Online/offline
+    - [x]  Maintenance (low battery, device inhibited)
     - [ ]  States propagate onto parent groups
-  - [ ]  Operator interaction
-    - [ ]  Inhibit devices, groups
-    - [ ]  Provide reason for inhibit
-    - [ ]  Acknowledgement of events
-    - [ ]  Provide reason for event
+  - [x]  Operator interaction
+    - [x]  Inhibit devices, groups
+    - [x]  Provide reason for inhibit
+    - [x]  Acknowledgement of events
+    - [x]  Provide reason for event
   
 - [ ] 4. Business Rules
   - [ ]  Events
     - [ ]  Type of events
-      - [ ]  Alarm
-      - [ ]  Maintenance
-      - [ ]  Device Online/Offline
+      - [x]  Alarm
+      - [x]  Maintenance
+      - [x]  Device Online/Offline
     - [x]  List groups, devices currently configured on system
   - [ ]  Actions
     - [ ]  Notify
@@ -292,8 +292,8 @@ The functional requirements of the MVP Phase One include:
         - [x]  Map view
     - [ ]  Ignore (Prevent individual devices in a group from sending notifications)
       - [ ]  Same options as notify
-  - [ ]  New added devices configured with default rules
-    - [ ]  Notify via map view on alarms, maintenance, offline devices
+  - [x]  New added devices configured with default rules
+    - [x]  Notify via map view on alarms, maintenance, offline devices
   
 - [ ] 5. Controller Deliverables
   - [ ]  Cloud server

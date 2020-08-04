@@ -34,6 +34,26 @@
     <% if current_user.usertype == "Sysadmin" || current_user.usertype == "Client Admin" %>
 
       <div class="col s4">
+        <%= link_to alarms_path do %>
+          <%= react_component("DashboardCard",
+            {
+              title:
+                "Alarms",
+              content:
+                "View and Manage all alarms for all devices using a quickly accessable
+                and low-data-rated List View.",
+              resource:
+                asset_path("alarms.jpg"),
+              link:
+                alarms_path,
+              linkText:
+                "Go to Alarms",
+            })
+          %>
+        <% end %>
+      </div>
+
+      <div class="col s4">
         <%= link_to clients_path do %>
           <%= react_component("DashboardCard",
             {
@@ -121,7 +141,7 @@
           <%= react_component("DashboardCard",
             {
               title:
-                "Map Groups",
+                "Perimeters",
               content:
                 "Devices are arranged on a map via map groups. A map group is
                 a group of devices coupled together to form a section of a perimeter.",
@@ -130,7 +150,7 @@
               link:
                 map_groups_path,
               linkText:
-                "Go to Map Groups",
+                "Go to Perimeters",
             })
           %>
         <% end %>
@@ -178,26 +198,6 @@
       </div>
 
       <div class="col s4">
-        <%= link_to alarms_path do %>
-          <%= react_component("DashboardCard",
-            {
-              title:
-                "Alarms",
-              content:
-                "View and Manage all alarms for all devices using a quickly accessable
-                and low-data-rated List View.",
-              resource:
-                asset_path("alarms.jpg"),
-              link:
-                alarms_path,
-              linkText:
-                "Go to Alarms",
-            })
-          %>
-        <% end %>
-      </div>
-
-      <div class="col s4">
         <%= link_to logs_path do %>
           <%= react_component("DashboardCard",
             {
@@ -220,26 +220,6 @@
     <% else %>
 
       <div class="col s4">
-        <%= link_to current_user do %>
-          <%= react_component("DashboardCard",
-            {
-              title:
-                "My Page",
-              content:
-                "Users each have their own privileges based on their user type.
-                Operators only have limited access to views such as Logs and Maps.",
-              resource:
-                asset_path("api_keys.jpg"),
-              link:
-                current_user,
-              linkText:
-                "Go to My Page",
-            })
-          %>
-        <% end %>
-      </div>
-
-      <div class="col s4">
         <%= link_to alarms_path do %>
           <%= react_component("DashboardCard",
             {
@@ -260,26 +240,27 @@
       </div>
 
       <div class="col s4">
-        <%= link_to logs_path do %>
+        <%= link_to current_user do %>
           <%= react_component("DashboardCard",
             {
               title:
-                "Logs",
+                "My Page",
               content:
-                "Access logs for Wi-I-Cloud events",
+                "Users each have their own privileges based on their user type.
+                Operators only have limited access to views such as Logs and Maps.",
               resource:
-                asset_path("logs.jpg"),
+                asset_path("users.jpg"),
               link:
-                logs_path,
+                current_user,
               linkText:
-                "Go to Logs",
+                "Go to My Page",
             })
           %>
         <% end %>
       </div>
 
       <div class="col s4">
-        <%= link_to map_view_path do %>
+        <%= link_to "/client_groups/#{current_user.client.client_groups.first.id}/map_view" do %>
           <%= react_component("DashboardCard",
             {
               title:
@@ -290,7 +271,7 @@
               resource:
                 asset_path("map_groups.jpg"),
               link:
-                map_view_path,
+                "/",
               linkText:
                 "Go to Map Groups",
             })

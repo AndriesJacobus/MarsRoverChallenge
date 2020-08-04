@@ -9,12 +9,15 @@ class ClientGroupsController < ApplicationController
     if current_user.usertype == "Sysadmin"
       @client_groups = ClientGroup.all
 
-    elsif current_user.usertype == "Client Admin"
-      # Todo: filter client groups to show only those with the same 'client'
-      #       tag as the current Admin
+    # elsif current_user.usertype == "Client Admin"
+    #   # Todo: filter client groups to show only those with the same 'client'
+    #   #       tag as the current Admin
+    #   @client_groups = ClientGroup.where(client_id: current_user.client_id)
+    elsif current_user
       @client_groups = ClientGroup.where(client_id: current_user.client_id)
     else
-      redirect_to root_path, flash: {warning: 'Please log in as an Admin before viewing this page' }
+      # redirect_to root_path, flash: {warning: 'Please log in as an Admin before viewing this page' }
+      redirect_to root_path, flash: {warning: 'Please log in before viewing this page' }
     end
   end
 

@@ -938,80 +938,172 @@ class GoogleMap extends React.Component {
     });
   }
 
+  mapActions() {
+    return <div style={actionStyle}>
+      <span style={bannerTextStyle}>
+        Map Actions:
+      </span>
+
+      <div style={{ flexDirection: 'row' }}>
+        
+        <div style={deleteMarkerStyle}>
+          <a
+            className="waves-effect waves-light primary btn"
+            onClick={this.toggleDrawPerimeter} >
+
+            {
+              (this.state.drawPerimeter) ? (
+                <i className="material-icons right">cancel</i>
+              ) :
+                <i className="material-icons right">add_circle</i>
+            }
+            
+            Draw Perimeter
+          </a>
+        </div>
+
+        {
+          (this.state.showPerDel) ? (
+            <div style={deleteMarkerStyle}>
+              <a
+                className="waves-effect waves-light red btn"
+                onClick={this.deletePerimeter} >
+
+                <i className="material-icons right">delete</i>
+                Delete Perimeter
+              </a>
+            </div>
+          ) :
+            <div style={deleteMarkerStyle}>
+              <div
+                className="btn disabled" style={disabledActionStyle}>
+
+                <i className="material-icons right">delete</i>
+                Delete Perimeter
+              </div>
+            </div>
+        }
+
+        {
+          (this.state.showInfo) ? (
+            <div style={deleteMarkerStyle}>
+              <a
+                className="waves-effect waves-light red btn"
+                onClick={this.deleteMarker} >
+
+                <i className="material-icons right">delete</i>
+                Delete Marker
+              </a>
+            </div>
+          ) :
+            <div style={deleteMarkerStyle}>
+              <div
+                className="btn disabled" style={disabledActionStyle}>
+
+                <i className="material-icons right">delete</i>
+                Delete Marker
+              </div>
+            </div>
+        }
+      </div>
+
+    </div>
+  }
+
+  reasonModal() {
+    return <Modal
+      open={this.state.showAckWindow}
+      onClose={() => {
+        this.handleAckWindowClose();
+      }}
+      aria-labelledby="simple-modal-title"
+      aria-describedby="simple-modal-description" >
+
+      <div style = {modalStyle}>
+        <p style = {infoTitle}>Acknowledge Alarm:</p>
+        <hr style = {hrStyle} />
+
+        <div
+          style = {{
+            flexDirection: "row",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center"
+          }} >
+
+          <TextField
+            id="standard-multiline-flexible"
+            label="Reason for Alarm"
+            multiline
+            rowsMax={4}
+            value={this.state.alarmReason}
+            onChange={this.handleAlarmReason}
+          />
+
+          <TextField
+            id="standard-multiline-flexible"
+            label="Extra Notes"
+            multiline
+            rowsMax={4}
+            value={this.state.alarmNotes}
+            onChange={this.handleAlarmNotes}
+            style = {{
+              marginLeft: 15,
+            }}
+          />
+        </div>
+
+        <br/>
+
+        <div
+          style = {{
+            flexDirection: "row", 
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center"
+          }} >
+
+          <div
+            onClick={() => {
+              // alert(this.state.markerInfo.id + " " + this.state.alarmReason + " " + this.state.alarmNotes);
+              this.updateDeviceState(this.state.markerInfo.id, "online");
+            }}
+            className={"green btn"}
+            style={{
+              marginTop: 15,
+            }} >
+
+            <i className="material-icons right">check</i>
+            Submit
+          </div>
+
+          <div
+            onClick={() => {
+              this.handleAckWindowClose();
+            }}
+            className={"grey btn"}
+            style = {{
+              marginTop: 15,
+              marginLeft: 15,
+            }} >
+
+            <i className="material-icons right">close</i>
+            Cancel
+          </div>
+        </div>
+
+      </div>
+    </Modal>
+  }
+
   render() {
     return (
       <div className="wrapper" onKeyUp={this.handleKey}>
 
-        <div style={actionStyle}>
-
-          <span style={bannerTextStyle}>
-            Map Actions:
-          </span>
-
-          <div style={{ flexDirection: 'row' }}>
-            
-            <div style={deleteMarkerStyle}>
-              <a
-                className="waves-effect waves-light primary btn"
-                onClick={this.toggleDrawPerimeter} >
-
-                {
-                  (this.state.drawPerimeter) ? (
-                    <i className="material-icons right">cancel</i>
-                  ) :
-                    <i className="material-icons right">add_circle</i>
-                }
-                
-                Draw Perimeter
-              </a>
-            </div>
-
-            {
-              (this.state.showPerDel) ? (
-                <div style={deleteMarkerStyle}>
-                  <a
-                    className="waves-effect waves-light red btn"
-                    onClick={this.deletePerimeter} >
-
-                    <i className="material-icons right">delete</i>
-                    Delete Perimeter
-                  </a>
-                </div>
-              ) :
-                <div style={deleteMarkerStyle}>
-                  <div
-                    className="btn disabled" style={disabledActionStyle}>
-
-                    <i className="material-icons right">delete</i>
-                    Delete Perimeter
-                  </div>
-                </div>
-            }
-
-            {
-              (this.state.showInfo) ? (
-                <div style={deleteMarkerStyle}>
-                  <a
-                    className="waves-effect waves-light red btn"
-                    onClick={this.deleteMarker} >
-
-                    <i className="material-icons right">delete</i>
-                    Delete Marker
-                  </a>
-                </div>
-              ) :
-                <div style={deleteMarkerStyle}>
-                  <div
-                    className="btn disabled" style={disabledActionStyle}>
-
-                    <i className="material-icons right">delete</i>
-                    Delete Marker
-                  </div>
-                </div>
-            }
-          </div>
-
-        </div>
+        {
+          this.props.curr_user_type != "Operator" && 
+          this.mapActions()
+        }
 
         <Map
           ref={node => this.domNode = node}
@@ -1154,105 +1246,33 @@ class GoogleMap extends React.Component {
 
         </Map>
 
-        <div style={elementsStyle}>
+        {
+          (this.props.curr_user_type != "Operator") ? (
+            <div style={elementsStyle}>
+              <span style={bannerTextStyle}>
+                Map Elements:
+              </span>
 
-          <span style={bannerTextStyle}>
-            Map Elements:
-          </span>
-
-          <div style={{ margin: 15, }} />
-          
-          <SortableTreeView
-            ref={tree => this.tree = tree}
-            onDeviceClicked={this.onDeviceClicked}
-            onDeviceDragged={this.onDeviceDragged}
-          />
-
-        </div>
-
-        <Modal
-          open={this.state.showAckWindow}
-          onClose={() => {
-            this.handleAckWindowClose();
-          }}
-          aria-labelledby="simple-modal-title"
-          aria-describedby="simple-modal-description" >
-
-          <div style = {modalStyle}>
-            <p style = {infoTitle}>Acknowledge Alarm:</p>
-            <hr style = {hrStyle} />
-
-            <div
-              style = {{
-                flexDirection: "row",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center"
-              }} >
-
-              <TextField
-                id="standard-multiline-flexible"
-                label="Reason for Alarm"
-                multiline
-                rowsMax={4}
-                value={this.state.alarmReason}
-                onChange={this.handleAlarmReason}
-              />
-
-              <TextField
-                id="standard-multiline-flexible"
-                label="Extra Notes"
-                multiline
-                rowsMax={4}
-                value={this.state.alarmNotes}
-                onChange={this.handleAlarmNotes}
-                style = {{
-                  marginLeft: 15,
-                }}
+              <div style={{ margin: 15, }} />
+              
+              <SortableTreeView
+                ref={tree => this.tree = tree}
+                onDeviceClicked={this.onDeviceClicked}
+                onDeviceDragged={this.onDeviceDragged}
               />
             </div>
-
-            <br/>
-
-            <div
-              style = {{
-                flexDirection: "row", 
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center"
-              }} >
-
-              <div
-                onClick={() => {
-                  // alert(this.state.markerInfo.id + " " + this.state.alarmReason + " " + this.state.alarmNotes);
-                  this.updateDeviceState(this.state.markerInfo.id, "online");
-                }}
-                className={"green btn"}
-                style={{
-                  marginTop: 15,
-                }} >
-
-                <i className="material-icons right">check</i>
-                Submit
-              </div>
-
-              <div
-                onClick={() => {
-                  this.handleAckWindowClose();
-                }}
-                className={"grey btn"}
-                style = {{
-                  marginTop: 15,
-                  marginLeft: 15,
-                }} >
-
-                <i className="material-icons right">close</i>
-                Cancel
-              </div>
-            </div>
-
+          ) :
+          <div style={elementsStyleBlank}>  
+            <SortableTreeView
+              hidden={true}
+              ref={tree => this.tree = tree}
+              onDeviceClicked={this.onDeviceClicked}
+              onDeviceDragged={this.onDeviceDragged}
+            />
           </div>
-        </Modal>
+        }
+
+        {this.reasonModal()}
 
       </div>
     );
@@ -1331,6 +1351,15 @@ const elementsStyle = {
   marginLeft: 5,
   borderRadius: 5,
 };
+const elementsStyleBlank = {
+  position: 'relative',
+  // width: '24.6vw',
+  // left: '60vw',
+  height: '60vh',
+  // padding: 20,
+  // marginLeft: 5,
+  // borderRadius: 5,
+};
 const modalStyle = {
   position: 'relative',
   top: "40vh",
@@ -1348,6 +1377,11 @@ const hrStyle = {
   borderTop: "1px solid #ccc",
   margin: "1em 0",
   padding: 0,
+};
+const hiddenStyle = {
+  opacity: 0,
+  height: 0,
+  width: 0
 };
 
 GoogleMap.propTypes = {
