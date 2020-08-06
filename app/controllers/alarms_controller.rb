@@ -34,6 +34,7 @@ class AlarmsController < ApplicationController
   def create
     @alarm = Alarm.new(alarm_params)
 
+    # Link device to alarm
     if !params[:device_id].nil?
       @device = Device.where(id: params[:device_id]).take
 
@@ -42,6 +43,7 @@ class AlarmsController < ApplicationController
       end
     end
 
+    # Link message to alarm
     if !params[:message_id].nil?
       @message = Message.where(id: params[:message_id]).take
 
@@ -50,6 +52,7 @@ class AlarmsController < ApplicationController
       end
     end
 
+    # Link user to alarm
     if !params[:user_id].nil?
       @user = User.where(id: params[:user_id]).take
 
@@ -82,14 +85,37 @@ class AlarmsController < ApplicationController
       end
     end
   end
+  
+    # DELETE /alarms/1
+    # DELETE /alarms/1.json
+    def destroy
+      @alarm.destroy
+      respond_to do |format|
+        format.html { redirect_to alarms_url, flash: {warning: 'Alarm was successfully deleted' } }
+        format.json { head :no_content }
+      end
+    end
 
-  # DELETE /alarms/1
-  # DELETE /alarms/1.json
-  def destroy
-    @alarm.destroy
-    respond_to do |format|
-      format.html { redirect_to alarms_url, flash: {warning: 'Alarm was successfully deleted' } }
-      format.json { head :no_content }
+  # DELETE /alarms/delete_all_alarms
+  def delete_all_alarms
+    if !(current_user.usertype == "Sysadmin" || current_user.usertype == "Client Admin")
+      respond_to do |format|
+        format.html { redirect_to alarms_url, flash: {warning: 'Only Admin users can perform this operation' } }
+        format.json { head :no_content }
+      end
+
+    else
+      @alarms = Alarm.all
+      
+      @alarms.each do |alarm|
+        alarm.destroy
+      end
+  
+      respond_to do |format|
+        format.html { redirect_to alarms_url, flash: {warning: 'Alarms were successfully deleted' } }
+        format.json { head :no_content }
+      end
+
     end
   end
 
@@ -109,6 +135,8 @@ class AlarmsController < ApplicationController
         :device_id,
         :user_id,
         :message_id,
+        :state_change_to,
+        :state_change_from,
       )
     end
 end

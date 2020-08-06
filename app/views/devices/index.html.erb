@@ -28,15 +28,15 @@
           <td style = "white-space: nowrap;"><%= device.Name %></td>
 
           <td style = "padding-left: 25px;">
-          <% if device.state == "online" %>
-            <p style = "color: green"><%= device.state %></p>
-          <% elsif device.state == "offline" %>
-            <p style = "color: grey"><%= device.state %></p>
-          <% elsif device.state == "maintenance" %>
-            <p style = "color: orange"><%= device.state %></p>
-          <% else %>
-            <p style = "color: red"><%= device.state %></p>
-          <% end %>
+            <% if device.state == "online" %>
+              <p style = "color: green"><%= device.state %></p>
+            <% elsif device.state == "offline" %>
+              <p style = "color: lightgrey"><%= device.state %></p>
+            <% elsif device.state == "maintenance" %>
+              <p style = "color: orange"><%= device.state %></p>
+            <% else %>
+              <p style = "color: red"><%= device.state %></p>
+            <% end %>
           </td>
 
           <td style = "padding-left: 25px;"><%= device.SigfoxID %></td>

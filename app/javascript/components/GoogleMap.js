@@ -71,6 +71,7 @@ class GoogleMap extends React.Component {
 
       // Ack window show
       showAckWindow: false,
+      stateToAck: "",
       alarmReason: "",
       alarmNotes: "",
     }
@@ -385,14 +386,16 @@ class GoogleMap extends React.Component {
 
         // Add updated entry
         this.placeMarker(coord, this.state.markerInfo.id, this.state.markerInfo.title, newState);
-        this.hideInfo();
-
+        
         // Create Alarm entry
-        this.createAlarmEntry(deviceId);
+        this.createAlarmEntry(deviceId, newState);
+
+        // Hide marker info window
+        this.hideInfo();
     });
   }
 
-  createAlarmEntry(deviceId) {
+  createAlarmEntry(deviceId, stateChangedTo) {
     let body = JSON.stringify({
       acknowledged: true,
       date_acknowledged: new Date(),
@@ -400,6 +403,8 @@ class GoogleMap extends React.Component {
       note: this.state.alarmNotes,
       device_id: deviceId,
       user_id: this.props.curr_user_i,
+      state_change_to: stateChangedTo,
+      state_change_from: this.state.markerInfo.state,
     });
     
     this.handleAckWindowClose();
@@ -769,25 +774,37 @@ class GoogleMap extends React.Component {
     return <div>
   
       {/* <br/> */}
-      <p style={infoSubTitle}>Actions:</p>
+      {/* <p style={infoSubTitle}>Actions:</p> */}
     
-      <a onClick={() => this.updateDeviceState(this.state.markerInfo.id, "maintenance")}
-        className={"orange btn"} >
+      {
+        this.props.curr_user_type != "Operator" &&
+        <span>
+          <div
+            onClick={() => {
+              // this.updateDeviceState(this.state.markerInfo.id, "maintenance");
+              this.openAlarmAckWindow("maintenance");
+            }}
+            className={"orange btn"}
+            style={infoActionButton} >
 
-        <i className="material-icons right">edit</i>
-        Maintenance On
-      </a>
-        
-      <br/>
+            <i className="material-icons right">edit</i>
+            Maintenance On
+          </div>
+          <br/>
+        </span>
+      }
 
-      <a
-        onClick={() => this.updateDeviceState(this.state.markerInfo.id, "offline")} 
+      <div
+        onClick={() => {
+          // this.updateDeviceState(this.state.markerInfo.id, "offline");
+          this.openAlarmAckWindow("offline");
+        }}
         className={"grey btn"}
         style={infoActionButton} >
 
         <i className="material-icons right">edit</i>
         Take Offline
-      </a>
+      </div>
 
       <br/>
     </div>
@@ -798,22 +815,29 @@ class GoogleMap extends React.Component {
   
       {/* <br/> */}
       {/* <p style={infoSubTitle}>Actions:</p> */}
-                
-      {/* <div
-        onClick={() => {
-          this.updateDeviceState(this.state.markerInfo.id, "maintenance")
-        }}
-        className={"orange btn"}
-        >
+            
+      {
+        this.props.curr_user_type != "Operator" &&    
+        <span>
+          <div
+            onClick={() => {
+              // this.updateDeviceState(this.state.markerInfo.id, "maintenance");
+              this.openAlarmAckWindow("maintenance");
+            }}
+            className={"orange btn"}
+            style={infoActionButton} >
 
-        <i className="material-icons right">edit</i>
-        Maintenance On
-      </div>
-      <br/> */}
+            <i className="material-icons right">edit</i>
+            Maintenance On
+          </div>
+          <br/>
+        </span>
+      }
 
       <div
         onClick={() => {
-          this.updateDeviceState(this.state.markerInfo.id, "online")
+          // this.updateDeviceState(this.state.markerInfo.id, "online");
+          this.openAlarmAckWindow("online");
         }}
         className={"green btn"}
         style={infoActionButton} >
@@ -830,23 +854,25 @@ class GoogleMap extends React.Component {
     return <div>
   
       {/* <br/> */}
-      <p style={infoSubTitle}>Actions:</p>
+      {/* <p style={infoSubTitle}>Actions:</p> */}
 
-      <div
+      {/* <div
         onClick={() => {
-          this.updateDeviceState(this.state.markerInfo.id, "offline")
+          // this.updateDeviceState(this.state.markerInfo.id, "offline");
+          this.openAlarmAckWindow("offline");
         }}
         className={"grey btn"}
-        >
+        style={infoActionButton} >
 
         <i className="material-icons right">edit</i>
         Take Offline
       </div>
-      <br/>
+      <br/> */}
         
       <div
         onClick={() => {
-          this.updateDeviceState(this.state.markerInfo.id, "online")
+          // this.updateDeviceState(this.state.markerInfo.id, "online");
+          this.openAlarmAckWindow("online");
         }}
         className={"green btn"}
         style={infoActionButton} >
@@ -865,22 +891,28 @@ class GoogleMap extends React.Component {
       {/* <br/> */}
       {/* <p style={infoSubTitle}>Actions:</p> */}
 
-      {/* <div
-        onClick={() => {
-          this.updateDeviceState(this.state.markerInfo.id, "maintenance")
-        }}
-        className={"orange btn"}
-        >
+      {
+        this.props.curr_user_type != "Operator" &&
+        <span>
+          <div
+            onClick={() => {
+              // this.updateDeviceState(this.state.markerInfo.id, "maintenance");
+              this.openAlarmAckWindow("maintenance");
+            }}
+            className={"orange btn"}
+            style={infoActionButton} >
 
-        <i className="material-icons right">edit</i>
-        Maintenance On
-      </div>
-      <br/> */}
-
+            <i className="material-icons right">edit</i>
+            Maintenance On
+          </div>
+          <br/>
+        </span>
+      }
+      
       <div
         onClick={() => {
-          this.openAlarmAckWindow();
           // this.updateDeviceState(this.state.markerInfo.id, "online");
+          this.openAlarmAckWindow("online");
         }}
         className={"green btn"}
         style={infoActionButton} >
@@ -893,9 +925,10 @@ class GoogleMap extends React.Component {
     </div>
   }
   
-  openAlarmAckWindow() {
+  openAlarmAckWindow(deviceState) {
     this.setState({
-      showAckWindow: true
+      showAckWindow: true,
+      stateToAck: deviceState,
     });
   }
 
@@ -903,13 +936,13 @@ class GoogleMap extends React.Component {
     let content;
 
     if (this.state.markerInfo.state == "online") {
-      // content = this.onlineMarker();
+      content = this.onlineMarker();
     }
     else if (this.state.markerInfo.state == "offline") {
       content = this.offlineMarker();
     }
     else if (this.state.markerInfo.state == "maintenance") {
-      // content = this.maintMarker();
+      content = this.maintMarker();
     }
     else {
       content = this.alarmMarker();
@@ -920,9 +953,10 @@ class GoogleMap extends React.Component {
 
   handleAckWindowClose() {
     this.setState({
+      showAckWindow: false,
+      stateToAck: "",
       alarmReason: "",
       alarmNotes: "",
-      showAckWindow: false,
     });
   }
 
@@ -1020,7 +1054,19 @@ class GoogleMap extends React.Component {
       aria-describedby="simple-modal-description" >
 
       <div style = {modalStyle}>
-        <p style = {infoTitle}>Acknowledge Alarm:</p>
+        {
+          (this.state.stateToAck == "online") ? (
+            <p style = {infoTitle}>Bring Online:</p>
+          ) :
+          (this.state.stateToAck == "offline") ? (
+            <p style = {infoTitle}>Take Offline:</p>
+          ) :
+          (this.state.stateToAck == "maintenance") ? (
+            <p style = {infoTitle}>Put into Maintenance:</p>
+          ) :
+            <p style = {infoTitle}>Acknowledge Alarm:</p>
+        }
+        
         <hr style = {hrStyle} />
 
         <div
@@ -1033,7 +1079,7 @@ class GoogleMap extends React.Component {
 
           <TextField
             id="standard-multiline-flexible"
-            label="Reason for Alarm"
+            label={(this.state.stateToAck.includes("alarm")) ? "Reason for Alarm" : "Reason"}
             multiline
             rowsMax={4}
             value={this.state.alarmReason}
@@ -1042,7 +1088,7 @@ class GoogleMap extends React.Component {
 
           <TextField
             id="standard-multiline-flexible"
-            label="Extra Notes"
+            label="Notes"
             multiline
             rowsMax={4}
             value={this.state.alarmNotes}
@@ -1066,7 +1112,7 @@ class GoogleMap extends React.Component {
           <div
             onClick={() => {
               // alert(this.state.markerInfo.id + " " + this.state.alarmReason + " " + this.state.alarmNotes);
-              this.updateDeviceState(this.state.markerInfo.id, "online");
+              this.updateDeviceState(this.state.markerInfo.id, this.state.stateToAck);
             }}
             className={"green btn"}
             style={{

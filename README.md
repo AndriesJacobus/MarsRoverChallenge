@@ -25,7 +25,7 @@ then:
 rails server
 ```  
 
-together with (in another terminal):
+together with webpack for automatic reloads when updating React code (in another terminal):
 
 ```
 ./bin/webpack-dev-server
