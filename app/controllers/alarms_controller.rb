@@ -35,6 +35,54 @@ class AlarmsController < ApplicationController
   def edit
   end
 
+  # POST /acknowledge_all_alarms
+  # POST /alarms.json
+  def acknowledge_all_alarms
+    if current_user.usertype == "Sysadmin"
+      @alarms = Alarm.all
+
+      @alarms.each do |alarm|
+        alarm.update_attributes(
+          acknowledged: true,
+          date_acknowledged: Time.now,
+          alarm_reason: "Admin bulk Acknowledge",
+          user_id: current_user.id,
+          state_change_to: "online",
+        )
+      end
+
+      respond_to do |format|
+        format.html { redirect_to alarms_url, flash: {success: 'Alarms were successfully acknowledged' } }
+      end
+
+    else
+      # Todo: filter Alarms to show only those with the same 'client'
+      #       tag as the current Admin
+      @alarms = []
+
+      Alarm.all.each do |alarm|
+        if alarm.device && alarm.device.client_group &&  alarm.device.client_group.client == current_user.client
+          @alarms << alarm
+        end
+      end
+
+      @alarms.each do |alarm|
+        alarm.update_attributes(
+          acknowledged: true,
+          date_acknowledged: Time.now,
+          alarm_reason: "Admin bulk Acknowledge",
+          user_id: current_user.id,
+          state_change_to: "online",
+        )
+      end
+
+      respond_to do |format|
+        format.html { redirect_to alarms_url, flash: {success: 'Alarms were successfully acknowledged' } }
+      end
+
+    end
+  end
+
   # POST /alarms
   # POST /alarms.json
   def create
