@@ -42,6 +42,10 @@ class MapGroupsController < ApplicationController
   def create
     @map_group = MapGroup.new(map_group_params)
 
+    if params[:state] == nil || params[:state] == ""
+      @map_group.state = "online"
+    end
+
     respond_to do |format|
       if @map_group.save
         # Create log entry
@@ -105,6 +109,9 @@ class MapGroupsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def map_group_params
-      params.require(:map_group).permit(:Name)
+      params.require(:map_group).permit(
+        :Name,
+        :state,
+      )
     end
 end

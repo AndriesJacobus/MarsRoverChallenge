@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200805105905) do
+ActiveRecord::Schema.define(version: 20200806222701) do
 
   create_table "alarms", force: :cascade do |t|
     t.boolean "acknowledged"
@@ -107,6 +107,7 @@ ActiveRecord::Schema.define(version: 20200805105905) do
     t.float "startLat"
     t.float "endLon"
     t.float "endLat"
+    t.string "state"
     t.index ["client_group_id"], name: "index_map_groups_on_client_group_id"
   end
 

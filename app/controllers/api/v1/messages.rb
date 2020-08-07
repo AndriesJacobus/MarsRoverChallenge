@@ -66,6 +66,15 @@ module API
                 elsif m.to_s[0...2] == "11"
                   @device.update_attribute(:state, "Climb and Cut Alarm")
                 end
+
+                # Update parimeter state
+                if @device.state.downcase.include?("alarm") && @device.map_group && !@device.map_group.state.downcase.include?("alarm")
+                  @device.map_group.state = "alarm"
+                  @device.map_group.save
+                end
+
+                # Todo: create Alarm entry
+
               end
 
               # Create log entry
@@ -96,6 +105,13 @@ module API
                 elsif m.to_s[0...2] == "11"
                   @device.update_attribute(state: "Climb and Cut Alarm")
                 end
+
+                # Update parimeter state
+                if @device.state.downcase.include?("alarm") && @device.map_group && !@device.map_group.state.downcase.include?("alarm")
+                  @device.map_group.state = "alarm"
+                  @device.map_group.save
+                end
+
               end
               
               # Create log entry

@@ -23,6 +23,7 @@ Rails.application.routes.draw do
   post '/client_groups/:id/add_device_to_map_group', to: 'client_groups#add_device_to_map_group', as: 'add_device_to_map_group'
   post '/client_groups/:id/update_marker_loc', to: 'client_groups#update_marker_loc', as: 'update_marker_loc'
   post '/client_groups/:id/update_device_state', to: 'client_groups#update_device_state', as: 'update_device_state'
+  post '/client_groups/:id/update_map_group_state', to: 'client_groups#update_map_group_state', as: 'update_map_group_state'
 
   delete '/client_groups/:id/delete_map_group', to: 'client_groups#delete_map_group', as: 'delete_map_group'
 

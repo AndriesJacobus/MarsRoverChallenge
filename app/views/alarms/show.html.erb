@@ -16,6 +16,17 @@
         <br/>
 
         <p>
+          <strong>Is Alarm:</strong><br/>
+          <% if @alarm.state_change_from.downcase.include?("alarm") %>
+              <p style = "color: red">Yes</p>
+            <% else %>
+              <p style = "color: lightgreen">No</p>
+            <% end %>
+        </p>
+
+        <br/>
+
+        <p>
           <strong>Associated Device:</strong><br/>
           <% if !@alarm.device.nil?%>
             <%= @alarm.device.Name %>

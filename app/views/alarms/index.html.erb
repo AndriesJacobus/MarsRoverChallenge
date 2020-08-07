@@ -3,8 +3,8 @@
 
 <% if (current_user.usertype == "Sysadmin" || current_user.usertype == "Client Admin") %>
   <div style = "margin-top: 25px; margin-bottom: 25px;">
-    <p style = "font-size: 18px;">Alarm Actions:</p>
-    <hr style = "display: block; height: 1px; width: 95%; border: 0; border-top: 1px solid #ccc; margin: 1em 0; padding: 0;"/>
+    <%# <p style = "font-size: 18px;">Alarm Actions:</p>
+    <hr style = "display: block; height: 1px; width: 95%; border: 0; border-top: 1px solid #ccc; margin: 1em 0; padding: 0;"/> %>
 
     <%= button_to 'Delete all Entries', delete_all_alarms_path, method: :delete, data: { confirm: 'Are you sure?' }, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
 

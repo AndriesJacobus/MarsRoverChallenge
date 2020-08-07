@@ -64,6 +64,7 @@ class GoogleMap extends React.Component {
       perInfoTitle: "Perimeter",
       perInfoLat: 47.6307081,
       perInfoLng: -122.1434325,
+      perInfoState: "",
 
       // Data for adding new marker form treeview
       deviceFromTreeSelected: false,
@@ -96,6 +97,7 @@ class GoogleMap extends React.Component {
     this.onDeviceDragged = this.onDeviceDragged.bind(this);
 
     this.updateDeviceState = this.updateDeviceState.bind(this);
+    this.updatePerimState = this.updatePerimState.bind(this);
     // this.onlineMarker = this.onlineMarker.bind(this);
     // this.offlineMarker = this.offlineMarker.bind(this);
     this.handleAlarmReason = this.handleAlarmReason.bind(this);
@@ -221,6 +223,8 @@ class GoogleMap extends React.Component {
       perInfoLat: 47.6307081,
       perInfoLng: -122.1434325,
 
+      perInfoState: "",
+
       deviceFromTreeSelected: false,
       deviceFromTree: null,
     });
@@ -262,7 +266,7 @@ class GoogleMap extends React.Component {
       path={perimeter.path}
       editable={false}
       draggable={false}
-      options={{ strokeColor: "#42a5f5", strokeOpacity: 0.5, strokeWeight: 10, }}
+      options={{ strokeColor: (perimeter.state == "online") ? "#42a5f5" : "red", strokeOpacity: 0.5, strokeWeight: 10, }}
       onClick={() => this.setPerIndex(index)}
     />
   }
@@ -286,6 +290,8 @@ class GoogleMap extends React.Component {
 
       perInfoLat: 47.6307081,
       perInfoLng: -122.1434325,
+
+      perInfoState: "",
 
       perimeterIndex: null,
     });
@@ -346,6 +352,29 @@ class GoogleMap extends React.Component {
     }).then(response => response.json())
     .then(response => {
         console.log(response);
+    });
+  }
+
+  updatePerimState(perimName, newState) {
+    // update_map_group_state
+    let body = JSON.stringify({
+      MapGroupName: perimName,
+      MapGroupState: newState,
+      AlarmReason: this.state.alarmReason,
+      AlarmNote: this.state.alarmNotes,
+    });
+
+    fetch('/client_groups/' + this.props.curr_client_group + '/update_map_group_state', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': this.props.auth_token,
+      },
+      body: body,
+    }).then(response => response.json())
+    .then(response => {
+      // trigger refresh
+      window.location.reload(false);
     });
   }
 
@@ -416,9 +445,15 @@ class GoogleMap extends React.Component {
         'X-CSRF-Token': this.props.auth_token,
       },
       body: body,
-    }).then(response => response.json())
+    })
+    // .then(response => response.json())
     .then(response => {
       // console.log(response);
+      // For now just reload the page - 
+      // but in future what is still needed is
+      // to update perimeter states after
+      // a device state has been updated
+      window.location.reload(false);
     });
   }
 
@@ -436,6 +471,7 @@ class GoogleMap extends React.Component {
     this.setState({
       showPerDel: false,
       perimeterIndex: null,
+      perInfoState: "",
     });
   }
 
@@ -486,7 +522,7 @@ class GoogleMap extends React.Component {
             this.state.newPerimeterStart,
             this.state.newPerimeterEnd,
           ],
-          state: "",
+          state: "online",
         }
       ],
     });
@@ -533,6 +569,7 @@ class GoogleMap extends React.Component {
       MapGroupStartLon: perimeter.path[0].lng,
       MapGroupEndLat: perimeter.path[1].lat,
       MapGroupEndLon: perimeter.path[1].lng,
+      MapGroupState: perimeter.state,
     });
 
     fetch('/client_groups/' + this.props.curr_client_group + '/add_map_group', {
@@ -550,9 +587,9 @@ class GoogleMap extends React.Component {
 
   setPerIndex(index) {
     this.setState({
+      showPerDel: true,
       perimeterIndex: index,
       perInfoTitle: this.state.perimeters[index].name,
-      showPerDel: true,
 
       perInfoLat: this.getMidpoint(
         this.state.perimeters[index].path[0].lat,
@@ -562,7 +599,8 @@ class GoogleMap extends React.Component {
         this.state.perimeters[index].path[0].lng,
         this.state.perimeters[index].path[1].lng
       ),
-      state: "",
+
+      perInfoState: this.state.perimeters[index].state,
     });
 
     this.hideInfo();
@@ -577,9 +615,10 @@ class GoogleMap extends React.Component {
       perInfoLat: 47.6307081,
       perInfoLng: -122.1434325,
 
+      perInfoState: "",
+
       deviceFromTreeSelected: false,
       deviceFromTree: null,
-      state: "",
     });
   }
 
@@ -657,7 +696,7 @@ class GoogleMap extends React.Component {
         isDevice: false,
         treeIndex: 0,
         children: [],
-        state: "",
+        state: map_group.state,
       });
 
       if (map_group.devices.length >= 1) {
@@ -703,7 +742,7 @@ class GoogleMap extends React.Component {
                 lng: currPerim.endLon,
               }
             ],
-            state: "",
+            state: currPerim.state,
           }
         ],
       }, () => {
@@ -790,11 +829,11 @@ class GoogleMap extends React.Component {
             <i className="material-icons right">edit</i>
             Maintenance On
           </div>
-          <br/>
+          {/* <br/> */}
         </span>
       }
 
-      <div
+      {/* <div
         onClick={() => {
           // this.updateDeviceState(this.state.markerInfo.id, "offline");
           this.openAlarmAckWindow("offline");
@@ -806,7 +845,7 @@ class GoogleMap extends React.Component {
         Take Offline
       </div>
 
-      <br/>
+      <br/> */}
     </div>
   }
 
@@ -949,6 +988,33 @@ class GoogleMap extends React.Component {
     }
 
     ReactDOM.render(React.Children.only(content), document.getElementById("actionsContainer"));
+  }
+
+  alarmPerim() {
+    return <div>
+      <div
+        onClick={() => {
+          // this.updateDeviceState(this.state.markerInfo.id, "online");
+          this.openAlarmAckWindow("online");
+        }}
+        className={"green btn"}
+        style={infoActionButton} >
+
+        <i className="material-icons right">check</i>
+        Acknowledge All Alarms
+      </div>
+      <br/>
+    </div>
+  }
+
+  onPeirmInfoWindowOpen(props, e) {
+    let content;
+
+    if (this.state.perInfoState == "alarm") {
+      content = this.alarmPerim();
+    }
+
+    ReactDOM.render(React.Children.only(content), document.getElementById("perimActionsContainer"));
   }
 
   handleAckWindowClose() {
@@ -1112,7 +1178,12 @@ class GoogleMap extends React.Component {
           <div
             onClick={() => {
               // alert(this.state.markerInfo.id + " " + this.state.alarmReason + " " + this.state.alarmNotes);
-              this.updateDeviceState(this.state.markerInfo.id, this.state.stateToAck);
+              if (this.state.showInfo) {
+                this.updateDeviceState(this.state.markerInfo.id, this.state.stateToAck);
+              }
+              else if (this.state.showPerDel) {
+                this.updatePerimState(this.state.perInfoTitle, "online");
+              }
             }}
             className={"green btn"}
             style={{
@@ -1248,6 +1319,9 @@ class GoogleMap extends React.Component {
             visible={this.state.showPerDel}
             onCloseClick={this.hidePerimInfo}
             onClose={this.hidePerimInfo}
+            onOpen={e => {
+              this.onPeirmInfoWindowOpen(this.props, e);
+            }}
 
             position={{
               lat: this.state.perInfoLat,
@@ -1259,32 +1333,23 @@ class GoogleMap extends React.Component {
               <hr/>
               
               <p style={infoSubTitle}>State:</p>
-              <div className="chip" style = {circleStyle}>
-                Active, No alarm
+
+              {
+                (this.state.perInfoState == "online") ? (
+                  <div>
+                    <div className="chip" style = {circleStyleGreen}>
+                      Online, No alarm
+                    </div>
+                  </div>
+                ) :
+                  <div className="chip" style = {circleStyleRed}>
+                    Alarm has been Triggered
+                  </div>
+              }
+
+              <div id={"perimActionsContainer"}>
+                {/* Marker actions loaded on infowindow open */}
               </div>
-              
-              <br/>
-              <p style={infoSubTitle}>Actions:</p>
-
-              <a
-                className="waves-effect waves-light primary btn"
-                // onClick={this.toggleDrawPerimeter}
-                >
-
-                <i className="material-icons right">edit</i>
-                Maintenance On
-              </a>
-              <br/>
-
-              <a
-                className="waves-effect waves-light red btn"
-                style={infoActionButton}
-                // onClick={this.toggleDrawPerimeter}
-                >
-
-                <i className="material-icons right">alarm</i>
-                Alarm Off
-              </a>
               
             </div>
 
