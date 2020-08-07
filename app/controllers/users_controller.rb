@@ -100,7 +100,7 @@ class UsersController < ApplicationController
   # DELETE /users/1.json
   def destroy
     # Only Admins can delete
-    if current_user.usertype != "Sysadmin" || current_user.usertype != "Client Admin"
+    if current_user.usertype != "Sysadmin" && current_user.usertype != "Client Admin"
       redirect_to root_path, flash: {warning: 'Please log in as an Admin before deleting users' }
       return
     end

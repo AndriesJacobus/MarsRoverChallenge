@@ -263,18 +263,36 @@ class ClientGroupsController < ApplicationController
         @map_group.devices.where("state like ?", "%alarm%").each do |device|
           # Todo: see if alarm has been made before then
           # change that alarm in stead of making new one
-          @alarm = Alarm.new(
-            acknowledged: true,
-            date_acknowledged: Time.now,
-            alarm_reason: params[:AlarmReason],
-            note: params[:AlarmNote],
-            device_id: device.id,
-            user_id: current_user.id,
-            state_change_to: params[:MapGroupState],
-            state_change_from: device.state,
-          )
 
-          @alarm.save
+          # @alarms = Alarm.where(device_id: @device.id).where(acknowledged: false).where("state_change_from like ?", "%alarm%")
+          @alarm = Alarm.where(device_id: device.id).where(acknowledged: false).where("state_change_from like ?", "%alarm%").last
+
+          if @alarm
+            # @alarms.each do |alarm|
+              @alarm.update_attributes(
+                acknowledged: true,
+                date_acknowledged: Time.now,
+                alarm_reason: params[:AlarmReason],
+                note: params[:AlarmNote],
+                user_id: current_user.id,
+                state_change_to: params[:MapGroupState],
+              )
+            # end
+          else
+            @alarm = Alarm.new(
+              acknowledged: true,
+              date_acknowledged: Time.now,
+              alarm_reason: params[:AlarmReason],
+              note: params[:AlarmNote],
+              device_id: device.id,
+              user_id: current_user.id,
+              state_change_to: params[:MapGroupState],
+              state_change_from: device.state,
+            )
+  
+            @alarm.save
+
+          end
 
           # Can change this line to use params[:MapGroupState]
           # in stead of "online" to make states dynamic

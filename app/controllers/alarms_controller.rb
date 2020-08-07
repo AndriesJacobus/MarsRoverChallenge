@@ -11,7 +11,13 @@ class AlarmsController < ApplicationController
     else
       # Todo: filter Alarms to show only those with the same 'client'
       #       tag as the current Admin
-      @alarms = Alarm.all
+      @alarms = []
+
+      Alarm.all.each do |alarm|
+        if alarm.device && alarm.device.client_group &&  alarm.device.client_group.client == current_user.client
+          @alarms << alarm
+        end
+      end
     end
   end
 
@@ -32,44 +38,61 @@ class AlarmsController < ApplicationController
   # POST /alarms
   # POST /alarms.json
   def create
-    @alarm = Alarm.new(alarm_params)
+    # @alarms = Alarm.where(device_id: params[:device_id]).where(acknowledged: false).where("state_change_from like ?", "%alarm%")
+    @alarm = Alarm.where(device_id: params[:device_id]).where(acknowledged: false).where("state_change_from like ?", "%alarm%").last
 
-    # Link device to alarm
-    if !params[:device_id].nil?
-      @device = Device.where(id: params[:device_id]).take
+    if @alarm
+      # @alarms.each do |alarm|
+        @alarm.update_attributes(
+          acknowledged: params[:acknowledged],
+          date_acknowledged: params[:date_acknowledged],
+          alarm_reason: params[:alarm_reason],
+          note: params[:note],
+          user_id: current_user.id,
+          state_change_to: params[:state_change_to],
+        )
+      # end
+    else
+      @alarm = Alarm.new(alarm_params)
 
-      if @device
-        @alarm.device = @device
+      # Link device to alarm
+      if !params[:device_id].nil?
+        @device = Device.where(id: params[:device_id]).take
+
+        if @device
+          @alarm.device = @device
+        end
       end
-    end
 
-    # Link message to alarm
-    if !params[:message_id].nil?
-      @message = Message.where(id: params[:message_id]).take
+      # Link message to alarm
+      if !params[:message_id].nil?
+        @message = Message.where(id: params[:message_id]).take
 
-      if @device
-        @alarm.message = @message
+        if @device
+          @alarm.message = @message
+        end
       end
-    end
 
-    # Link user to alarm
-    if !params[:user_id].nil?
-      @user = User.where(id: params[:user_id]).take
+      # Link user to alarm
+      if !params[:user_id].nil?
+        @user = User.where(id: params[:user_id]).take
 
-      if @device
-        @alarm.user = @user
+        if @device
+          @alarm.user = @user
+        end
       end
-    end
 
-    respond_to do |format|
-      if @alarm.save
-        format.html { redirect_to @alarm, flash: {success: 'Alarm was successfully created' } }
-        format.json { render :show, status: :created, location: @alarm }
-      else
-        format.html { render :new }
-        format.json { render json: @alarm.errors, status: :unprocessable_entity }
+      respond_to do |format|
+        if @alarm.save
+          format.html { redirect_to @alarm, flash: {success: 'Alarm was successfully created' } }
+          format.json { render :show, status: :created, location: @alarm }
+        else
+          format.html { render :new }
+          format.json { render json: @alarm.errors, status: :unprocessable_entity }
+        end
       end
-    end
+
+    end    
   end
 
   # PATCH/PUT /alarms/1
