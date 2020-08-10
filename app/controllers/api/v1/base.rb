@@ -3,7 +3,9 @@ require "grape-swagger"
 module API
   module V1
     class Base < Grape::API
+      mount API::V1::Users
       mount API::V1::Messages
+      mount API::V1::Alarms
       # mount API::V1::AnotherResource
 
       add_swagger_documentation(

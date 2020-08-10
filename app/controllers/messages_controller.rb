@@ -54,9 +54,8 @@ class MessagesController < ApplicationController
         @device.update_attribute(:SigfoxDeviceTypeID, params[:sigfox_device_type_id])
       end
 
-      # Update device state
       if @message.Data.to_s[0...2] == "52"
-        # Not a keepalive
+        # Update device state to alarm (not a keepalive)
         
         m = @message.Data.to_s[13...14]   # Ignore first nibble between 12 and 13
         m = m.hex.to_s(2).rjust(m.size*4, '0')
@@ -69,6 +68,15 @@ class MessagesController < ApplicationController
           @device.update_attribute(:state, "Cut Alarm")
         elsif m.to_s[0...2] == "11"
           @device.update_attribute(:state, "Climb and Cut Alarm")
+        end
+        
+      elsif @message.Data.to_s[0...2] == "16"
+        # Update device state to online if need be (is a keepalive)
+
+        if @device.state == "offline"
+          @device.update_attribute(:state, "online")
+
+          # Todo: update alarm entry
         end
       end
 
