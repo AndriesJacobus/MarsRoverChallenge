@@ -79,7 +79,6 @@ module API
         #       status 422
         #       { :status => :unprocessable_entity, :message => "User with auth token #{permitted_params[:auth_token]} could not be found" }.as_json
         #     end
-            
         #   rescue ActiveRecord::RecordInvalid => error
         #     status 406
         #     { :status => :not_acceptable, :message => "User could not be Logged In because #{error}" }.as_json
@@ -115,7 +114,6 @@ module API
               status 422
               { :status => :unprocessable_entity, :message => "Email or password Incorrect" }.as_json
             end
-            
           rescue ActiveRecord::RecordInvalid => error
             status 406
             { :status => :not_acceptable, :message => "User could not be Logged In because #{error}" }.as_json
@@ -141,7 +139,6 @@ module API
         #       status 422
         #       { :status => :unprocessable_entity, :message => "User with auth token #{permitted_params[:auth_token]} could not be found" }.as_json
         #     end
-            
         #   rescue ActiveRecord::RecordInvalid => error
         #     status 406
         #     { :status => :not_acceptable, :message => "User could not be Logged Out because #{error}" }.as_json
@@ -172,7 +169,6 @@ module API
 
             # token = generate_auth_token
             # @user.update_attribute(:auth_token, token)
-  
             if @user.save!
               status 200
               { :status => :ok, :message => "User created successfully with new auth token" }.as_json
@@ -180,7 +176,6 @@ module API
               status 406
               { :status => :not_acceptable, :message => "User could not be created because #{@user.errors}" }.as_json
             end
-            
           rescue ActiveRecord::RecordInvalid => error
             status 406
             { :status => :not_acceptable, :message => "User could not be created because #{error}" }.as_json
@@ -221,7 +216,6 @@ module API
               status 422
               { :status => :unprocessable_entity, :message => "User with auth email #{permitted_params[:user][:email]} could not be found" }.as_json
             end
-            
           rescue ActiveRecord::RecordInvalid => error
             status 406
             { :status => :not_acceptable, :message => "User could not be updated because #{error}" }.as_json
@@ -245,7 +239,6 @@ module API
         #       status 422
         #       { :status => :unprocessable_entity, :message => "User with auth token #{permitted_params[:auth_token]} could not be found" }.as_json
         #     end
-            
         #   rescue ActiveRecord::RecordInvalid => error
         #     status 406
         #     { :status => :not_acceptable, :message => "User could not be deleted because #{error}" }.as_json
@@ -255,4 +248,4 @@ module API
       end
     end
   end
-end
+end 

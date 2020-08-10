@@ -12,6 +12,16 @@
           <strong>Name:</strong>
           <%= @map_group.Name %>
         </p>
+        <br/>
+
+        <p>
+          <strong>State:</strong>
+          <% if @map_group.state.downcase.include?("alarm") %>
+            <p style = "color: red"><%= @map_group.state %></p>
+          <% else %>
+            <p style = "color: lightgreen"><%= @map_group.state %></p>
+          <% end %>
+        </p>
 
         <br/>
       </div>

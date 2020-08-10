@@ -1,0 +1,155 @@
+
+<br/>
+
+<div class="row">
+  <div class="col s12 m6">
+    <div class="card blue white-text z-depth-5 hoverable">
+      <div class="card-content">
+        <span class="card-title">Alarm and State Update Information:</span>
+        <hr style = "display: block; height: 1px; border: 0; border-top: 1px solid #ccc; margin: 1em 0; padding: 0;"/>
+
+        <p>
+          <strong>Date Triggered:</strong><br/>
+          <%= @alarm.created_at %>
+        </p>
+
+        <br/>
+
+        <p>
+          <strong>Is Alarm:</strong><br/>
+          <% if @alarm.state_change_from.downcase.include?("alarm") %>
+              <p style = "color: red">Yes</p>
+            <% else %>
+              <p style = "color: lightgreen">No</p>
+            <% end %>
+        </p>
+
+        <br/>
+
+        <p>
+          <strong>Associated Device:</strong><br/>
+          <% if !@alarm.device.nil?%>
+            <%= @alarm.device.Name %>
+          <% else %>
+            N/A
+          <% end %>
+        </p>
+
+        <br/>
+
+        <p>
+          <strong>Associated Message:</strong><br/>
+          <% if !@alarm.message.nil?%>
+            <%= @alarm.message.Data %>
+          <% else %>
+            N/A
+          <% end %>
+        </p>
+
+        <br/>
+
+        <p>
+          <strong>Original Device State:</strong><br/>
+          <% if !@alarm.state_change_from.nil? && @alarm.state_change_from != "" %>
+            <% if @alarm.state_change_from == "online" %>
+              <p style = "color: lightgreen"><%= @alarm.state_change_from %></p>
+            <% elsif @alarm.state_change_from == "offline" %>
+              <p style = "color: lightgrey"><%= @alarm.state_change_from%></p>
+            <% elsif @alarm.state_change_from == "maintenance" %>
+              <p style = "color: orange"><%= @alarm.state_change_from %></p>
+            <% else %>
+              <p style = "color: red"><%= @alarm.state_change_from %></p>
+            <% end %>
+          <% else %>
+            N/A
+          <% end %>
+        </p>
+
+        <br/>
+
+        <p>
+          <strong>Device State Changed To:</strong><br/>
+          <% if !@alarm.state_change_to.nil? && @alarm.state_change_to != "" %>
+            <% if @alarm.state_change_to == "online" %>
+              <p style = "color: lightgreen"><%= @alarm.state_change_to %></p>
+            <% elsif @alarm.state_change_to == "offline" %>
+              <p style = "color: lightgrey"><%= @alarm.state_change_to%></p>
+            <% elsif @alarm.state_change_to == "maintenance" %>
+              <p style = "color: orange"><%= @alarm.state_change_to %></p>
+            <% else %>
+              <p style = "color: red"><%= @alarm.state_change_to %></p>
+            <% end %>
+          <% else %>
+            N/A
+          <% end %>
+        </p>
+
+        <br/>
+
+      </div>
+    </div>
+  </div>
+  
+  <div class="col s12 m6">
+    <div class="card blue white-text z-depth-5 hoverable">
+      <div class="card-content">
+        <span class="card-title">Acknowledgement Information:</span>
+        <hr style = "display: block; height: 1px; border: 0; border-top: 1px solid #ccc; margin: 1em 0; padding: 0;"/>
+
+        <p>
+          <strong>Acknowledged:</strong><br/>
+          <% if @alarm.acknowledged %>
+              <p style = "color: lightgreen;">Yes</p>
+            <% else %>
+              <p style = "color: red;">No</p>
+            <% end %>
+        </p>
+
+        <br/>
+
+        <p>
+          <strong>Acknowledged By:</strong>
+          <% if !@alarm.user.nil?%>
+              <%= link_to @alarm.user.name, @alarm.user, class: "waves-effect waves-light blue lighten-2 btn-small white-text" %>
+            <% else %>
+              <br/>N/A
+            <% end %>
+        </p>
+
+        <br/>
+
+        <p>
+          <strong>Date acknowledged:</strong><br/>
+          <%= @alarm.date_acknowledged %>
+        </p>
+
+        <br/>
+
+        <p>
+          <strong>Reason:</strong><br/>
+          <% if !@alarm.alarm_reason.nil? && @alarm.alarm_reason != "" %>
+              <%= @alarm.alarm_reason %>
+            <% else %>
+              N/A
+            <% end %>
+        </p>
+
+        <br/>
+
+        <p>
+          <strong>Note:</strong><br/>
+          <% if !@alarm.note.nil? && @alarm.note != "" %>
+              <%= @alarm.note %>
+            <% else %>
+              N/A
+            <% end %>
+        </p>
+
+        <br/>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%= link_to 'Edit', edit_alarm_path(@alarm), class: "waves-effect waves-light blue lighten-1 btn-small white-text" %> |
+<%= link_to 'Back to Alarms', alarms_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>

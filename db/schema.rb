@@ -10,7 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200705154906) do
+ActiveRecord::Schema.define(version: 20200806222701) do
+
+  create_table "alarms", force: :cascade do |t|
+    t.boolean "acknowledged"
+    t.datetime "date_acknowledged"
+    t.string "alarm_reason"
+    t.string "note"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "device_id"
+    t.integer "message_id"
+    t.integer "user_id"
+    t.string "state_change_to"
+    t.string "state_change_from"
+    t.index ["device_id"], name: "index_alarms_on_device_id"
+    t.index ["message_id"], name: "index_alarms_on_message_id"
+    t.index ["user_id"], name: "index_alarms_on_user_id"
+  end
 
   create_table "api_keys", force: :cascade do |t|
     t.string "username"
@@ -90,6 +107,7 @@ ActiveRecord::Schema.define(version: 20200705154906) do
     t.float "startLat"
     t.float "endLon"
     t.float "endLat"
+    t.string "state"
     t.index ["client_group_id"], name: "index_map_groups_on_client_group_id"
   end
 

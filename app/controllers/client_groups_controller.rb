@@ -9,12 +9,15 @@ class ClientGroupsController < ApplicationController
     if current_user.usertype == "Sysadmin"
       @client_groups = ClientGroup.all
 
-    elsif current_user.usertype == "Client Admin"
-      # Todo: filter client groups to show only those with the same 'client'
-      #       tag as the current Admin
+    # elsif current_user.usertype == "Client Admin"
+    #   # Todo: filter client groups to show only those with the same 'client'
+    #   #       tag as the current Admin
+    #   @client_groups = ClientGroup.where(client_id: current_user.client_id)
+    elsif current_user
       @client_groups = ClientGroup.where(client_id: current_user.client_id)
     else
-      redirect_to root_path, flash: {warning: 'Please log in as an Admin before viewing this page' }
+      # redirect_to root_path, flash: {warning: 'Please log in as an Admin before viewing this page' }
+      redirect_to root_path, flash: {warning: 'Please log in before viewing this page' }
     end
   end
 
@@ -63,11 +66,14 @@ class ClientGroupsController < ApplicationController
       @client_group = ClientGroup.find(params[:id])
 
       if current_user.usertype == "Sysadmin"
-        @map_group = MapGroup.create(:Name => params[:MapGroupName],
+        @map_group = MapGroup.create(
+          :Name => params[:MapGroupName],
           :startLon => params[:MapGroupStartLon],
           :startLat => params[:MapGroupStartLat],
           :endLon => params[:MapGroupEndLon],
-          :endLat => params[:MapGroupEndLat] )
+          :endLat => params[:MapGroupEndLat],
+          :state => params[:MapGroupState],
+        )
 
         @client_group.map_groups << @map_group
 
@@ -80,11 +86,14 @@ class ClientGroupsController < ApplicationController
         # Todo: change so that only users who belong to the same client as the
         # client_group can add map_groups
         
-        @map_group = MapGroup.create(:Name => params[:MapGroupName],
+        @map_group = MapGroup.create(
+          :Name => params[:MapGroupName],
           :startLon => params[:MapGroupStartLon],
           :startLat => params[:MapGroupStartLat],
           :endLon => params[:MapGroupEndLon],
-          :endLat => params[:MapGroupEndLat] )
+          :endLat => params[:MapGroupEndLat],
+          :state => params[:MapGroupState],
+        )
 
         @client_group.map_groups << @map_group
 
@@ -119,10 +128,39 @@ class ClientGroupsController < ApplicationController
           # Add device to map_group
           @device.client_group = @client_group
 
-          # Add device to map_group
+          # Maintain state of previous perimeter
+          # by checking if any other devices are in alarm state
+          # and setting the perimeter state to online if removed device
+          # was the device causing the perimeter to be in alarm state
+          if @device.map_group && @device.state.downcase.include?("alarm")
+
+            @old_perimeter = @device.map_group
+            @old_perimeter_new_state = "online"
+
+            @old_perimeter.devices.where.not(id: @device.id).each do |device|
+              if device.state.downcase.include?("alarm")
+                @old_perimeter_new_state = "alarm"
+                break
+              end
+            end
+
+            @old_perimeter.state = @old_perimeter_new_state
+            @old_perimeter.save
+
+          end
+
+          # Add device to new map_group
+          # (which also changes the current device's perimeter)
           @map_group.devices << @device
   
-          # Todo: remove device from all other map_groups
+          # Remove device from all other map_groups
+          # => taken care of by rails via the belongs_to association
+
+          # Update new perimeter's state in case of alarm
+          if @device.state.downcase.include?("alarm")
+            @map_group.state = "alarm"
+            @map_group.save
+          end
   
           message = "Device '#{@device.Name}' " + 
                     "with id #{params[:DeviceId]} " +
@@ -208,6 +246,85 @@ class ClientGroupsController < ApplicationController
     end
   end
 
+  # POST /client_groups/1/update_map_group_state
+  def update_map_group_state
+    @client_group = ClientGroup.find(params[:id])
+
+    if current_user
+    
+      # Get map group with current client_group and correct MapGroupName
+      @map_group = @client_group.map_groups.where(Name: params[:MapGroupName]).take
+
+      if @map_group
+        # Update perimeter state
+        @map_group.update_attribute(:state, params[:MapGroupState])
+
+        # Update state of all perimeter devices
+        @map_group.devices.where("state like ?", "%alarm%").each do |device|
+          # Todo: see if alarm has been made before then
+          # change that alarm in stead of making new one
+
+          # @alarms = Alarm.where(device_id: @device.id).where(acknowledged: false).where("state_change_from like ?", "%alarm%")
+          @alarm = Alarm.where(device_id: device.id).where(acknowledged: false).where("state_change_from like ?", "%alarm%").last
+
+          if @alarm
+            # @alarms.each do |alarm|
+              @alarm.update_attributes(
+                acknowledged: true,
+                date_acknowledged: Time.now,
+                alarm_reason: params[:AlarmReason],
+                note: params[:AlarmNote],
+                user_id: current_user.id,
+                state_change_to: params[:MapGroupState],
+              )
+            # end
+          else
+            @alarm = Alarm.new(
+              acknowledged: true,
+              date_acknowledged: Time.now,
+              alarm_reason: params[:AlarmReason],
+              note: params[:AlarmNote],
+              device_id: device.id,
+              user_id: current_user.id,
+              state_change_to: params[:MapGroupState],
+              state_change_from: device.state,
+            )
+  
+            @alarm.save
+
+          end
+
+          # Can change this line to use params[:MapGroupState]
+          # in stead of "online" to make states dynamic
+          device.update_attribute(:state, "online")
+        end
+
+        # Send response
+        message = "Map group '#{@map_group.Name}' " + 
+                  "successfully updated state to #{params[:MapGroupState]}"
+
+        respond_to do |format|
+          msg = { :status => "ok", :message => message }
+          format.json  { render :json => msg }
+        end
+
+      else
+        respond_to do |format|
+          msg = { :status => "bad_request", :message => "" }
+          format.json  { render :json => msg }
+        end
+
+      end
+
+    else
+      respond_to do |format|
+        msg = { :status => "bad_request", :message => "" }
+        format.json  { render :json => msg }
+      end
+    end
+
+  end
+
   # POST /client_groups/1/update_device_state
   def update_device_state
     if current_user
@@ -217,6 +334,28 @@ class ClientGroupsController < ApplicationController
       if @device
 
         @device.update_attribute(:state, params[:DeviceState])
+
+        # Update parimeter state
+        if @device.state.downcase.include?("alarm") && @device.map_group && !@device.map_group.state.downcase.include?("alarm")
+          @device.map_group.state = "alarm"
+          @device.map_group.save
+        end
+
+        # Update parimeter state if device is not alarm anymore
+        if @device.map_group
+          @map_group = @device.map_group
+          @map_group_new_state = "online"
+
+          @map_group.devices.where.not(id: @device.id).each do |device|
+            if device.state.downcase.include?("alarm")
+              @map_group_new_state = "alarm"
+              break
+            end
+          end
+
+          @map_group.state = @map_group_new_state
+          @map_group.save
+        end
 
         message = "Device '#{@device.Name}' " + 
                   "with id #{params[:DeviceId]} " +
@@ -399,11 +538,14 @@ class ClientGroupsController < ApplicationController
         :MapGroupStartLat,
         :MapGroupEndLon,
         :MapGroupEndLat,
+        :MapGroupState,
         :DeviceId,
         :DeviceLat,
         :DeviceLng,
         :DeviceState,
-        :ClientID
+        :ClientID,
+        :AlarmReason,
+        :AlarmNote,
       )
     end
 end

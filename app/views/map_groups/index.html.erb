@@ -1,11 +1,12 @@
 
-<h3><u>Map Groups</u></h3>
+<h3><u>Perimeters (Map Groups)</u></h3>
 
 <div class = "z-depth-5 hoverable scroller">
   <table>
     <thead>
       <tr>
         <th style = "padding-right: 35px;">Name</th>
+        <th style = "padding-right: 35px;">State</th>
         <th style = "padding-right: 35px;">Start Coordinate</th>
         <th style = "padding-right: 35px;">End Coordinate</th>
         <th style = "white-space: nowrap; padding-right: 35px;">Client Group Name</th>
@@ -17,6 +18,14 @@
       <% @map_groups.each do |map_group| %>
         <tr>
           <td style = "white-space: nowrap; padding-right: 35px;"><%= map_group.Name %></td>
+
+          <td style = "white-space: nowrap; padding-right: 35px;">
+            <% if map_group.state.downcase.include?("alarm") %>
+              <p style = "color: red"><%= map_group.state %></p>
+            <% else %>
+              <p style = "color: green"><%= map_group.state %></p>
+            <% end %>
+          </td>
 
           <% if map_group.startLat || map_group.startLon %>
             <td style = "padding-right: 35px;"><%= map_group.startLat %>, <%= map_group.startLon %></td>

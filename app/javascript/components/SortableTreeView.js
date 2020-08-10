@@ -147,8 +147,24 @@ class SortableTreeView extends Component {
   }
 
   render() {
+    let containerStyle;
+
+    if (this.props.hidden) {
+      containerStyle = {
+        opacity: 0,
+        height: 0,
+        width: 0,
+      };
+    }
+    else {
+      containerStyle = {
+        height: 300,
+        width: '20vw',
+      };
+    }
+
     return (
-      <div style={{ height: 300, width: '20vw', }}>
+      <div style={containerStyle}>
         <SortableTree
           treeData={this.state.treeData}
           onChange={treeData => this.setState({ treeData })}

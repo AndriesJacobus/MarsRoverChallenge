@@ -4,4 +4,5 @@ class Device < ApplicationRecord
 
     has_many :messages
     has_many :logs
+    has_many :alarms
 end

@@ -17,6 +17,6 @@ class ApplicationController < ActionController::Base
 
   def authorize_admin
     #redirects to home page
-    redirect_to root_path, flash: {warning: 'Please log in as an Admin before viewing this page' } unless current_user && (current_user.usertype == "Sysadmin" || current_user.usertype == "Admin")
+    redirect_to root_path, flash: {warning: 'Please log in as an Admin before viewing this page' } unless current_user && (current_user.usertype == "Sysadmin" || current_user.usertype == "Client Admin")
   end 
 end

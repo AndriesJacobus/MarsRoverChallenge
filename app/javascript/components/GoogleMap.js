@@ -5,6 +5,9 @@ import { Map, GoogleApiWrapper, Marker, Polyline, InfoWindow } from 'google-maps
 import CustomTreeView from './CustomTreeView';
 import SortableTreeView from './SortableTreeView';
 
+import Modal from '@material-ui/core/Modal';
+import TextField from '@material-ui/core/TextField';
+
 React.useLayoutEffect = React.useEffect
 
 class GoogleMap extends React.Component {
@@ -61,10 +64,17 @@ class GoogleMap extends React.Component {
       perInfoTitle: "Perimeter",
       perInfoLat: 47.6307081,
       perInfoLng: -122.1434325,
+      perInfoState: "",
 
       // Data for adding new marker form treeview
       deviceFromTreeSelected: false,
       deviceFromTree: null,
+
+      // Ack window show
+      showAckWindow: false,
+      stateToAck: "",
+      alarmReason: "",
+      alarmNotes: "",
     }
 
     this.domNode = null;
@@ -87,8 +97,13 @@ class GoogleMap extends React.Component {
     this.onDeviceDragged = this.onDeviceDragged.bind(this);
 
     this.updateDeviceState = this.updateDeviceState.bind(this);
+    this.updatePerimState = this.updatePerimState.bind(this);
     // this.onlineMarker = this.onlineMarker.bind(this);
     // this.offlineMarker = this.offlineMarker.bind(this);
+    this.handleAlarmReason = this.handleAlarmReason.bind(this);
+    this.handleAlarmNotes = this.handleAlarmNotes.bind(this);
+
+
   }
 
   componentDidMount(){
@@ -208,6 +223,8 @@ class GoogleMap extends React.Component {
       perInfoLat: 47.6307081,
       perInfoLng: -122.1434325,
 
+      perInfoState: "",
+
       deviceFromTreeSelected: false,
       deviceFromTree: null,
     });
@@ -249,7 +266,7 @@ class GoogleMap extends React.Component {
       path={perimeter.path}
       editable={false}
       draggable={false}
-      options={{ strokeColor: "#42a5f5", strokeOpacity: 0.5, strokeWeight: 10, }}
+      options={{ strokeColor: (perimeter.state == "online") ? "#42a5f5" : "red", strokeOpacity: 0.5, strokeWeight: 10, }}
       onClick={() => this.setPerIndex(index)}
     />
   }
@@ -273,6 +290,8 @@ class GoogleMap extends React.Component {
 
       perInfoLat: 47.6307081,
       perInfoLng: -122.1434325,
+
+      perInfoState: "",
 
       perimeterIndex: null,
     });
@@ -336,6 +355,29 @@ class GoogleMap extends React.Component {
     });
   }
 
+  updatePerimState(perimName, newState) {
+    // update_map_group_state
+    let body = JSON.stringify({
+      MapGroupName: perimName,
+      MapGroupState: newState,
+      AlarmReason: this.state.alarmReason,
+      AlarmNote: this.state.alarmNotes,
+    });
+
+    fetch('/client_groups/' + this.props.curr_client_group + '/update_map_group_state', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': this.props.auth_token,
+      },
+      body: body,
+    }).then(response => response.json())
+    .then(response => {
+      // trigger refresh
+      window.location.reload(false);
+    });
+  }
+
   updateDeviceState(deviceId, newState) {
     // console.log("Here FINALLY!");
 
@@ -358,7 +400,7 @@ class GoogleMap extends React.Component {
     }).then(response => response.json())
     .then(response => {
         // window.location.reload(false);
-        console.log(response);
+        // console.log(response);
 
         // Remove old entry
         this.state.markers.splice(this.state.markerInfo.markerIndex, 1);
@@ -373,7 +415,45 @@ class GoogleMap extends React.Component {
 
         // Add updated entry
         this.placeMarker(coord, this.state.markerInfo.id, this.state.markerInfo.title, newState);
+        
+        // Create Alarm entry
+        this.createAlarmEntry(deviceId, newState);
+
+        // Hide marker info window
         this.hideInfo();
+    });
+  }
+
+  createAlarmEntry(deviceId, stateChangedTo) {
+    let body = JSON.stringify({
+      acknowledged: true,
+      date_acknowledged: new Date(),
+      alarm_reason: this.state.alarmReason,
+      note: this.state.alarmNotes,
+      device_id: deviceId,
+      user_id: this.props.curr_user_i,
+      state_change_to: stateChangedTo,
+      state_change_from: this.state.markerInfo.state,
+    });
+    
+    this.handleAckWindowClose();
+
+    fetch('/alarms/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': this.props.auth_token,
+      },
+      body: body,
+    })
+    // .then(response => response.json())
+    .then(response => {
+      // console.log(response);
+      // For now just reload the page - 
+      // but in future what is still needed is
+      // to update perimeter states after
+      // a device state has been updated
+      window.location.reload(false);
     });
   }
 
@@ -391,6 +471,7 @@ class GoogleMap extends React.Component {
     this.setState({
       showPerDel: false,
       perimeterIndex: null,
+      perInfoState: "",
     });
   }
 
@@ -441,7 +522,7 @@ class GoogleMap extends React.Component {
             this.state.newPerimeterStart,
             this.state.newPerimeterEnd,
           ],
-          state: "",
+          state: "online",
         }
       ],
     });
@@ -488,6 +569,7 @@ class GoogleMap extends React.Component {
       MapGroupStartLon: perimeter.path[0].lng,
       MapGroupEndLat: perimeter.path[1].lat,
       MapGroupEndLon: perimeter.path[1].lng,
+      MapGroupState: perimeter.state,
     });
 
     fetch('/client_groups/' + this.props.curr_client_group + '/add_map_group', {
@@ -505,9 +587,9 @@ class GoogleMap extends React.Component {
 
   setPerIndex(index) {
     this.setState({
+      showPerDel: true,
       perimeterIndex: index,
       perInfoTitle: this.state.perimeters[index].name,
-      showPerDel: true,
 
       perInfoLat: this.getMidpoint(
         this.state.perimeters[index].path[0].lat,
@@ -517,7 +599,8 @@ class GoogleMap extends React.Component {
         this.state.perimeters[index].path[0].lng,
         this.state.perimeters[index].path[1].lng
       ),
-      state: "",
+
+      perInfoState: this.state.perimeters[index].state,
     });
 
     this.hideInfo();
@@ -532,9 +615,10 @@ class GoogleMap extends React.Component {
       perInfoLat: 47.6307081,
       perInfoLng: -122.1434325,
 
+      perInfoState: "",
+
       deviceFromTreeSelected: false,
       deviceFromTree: null,
-      state: "",
     });
   }
 
@@ -612,7 +696,7 @@ class GoogleMap extends React.Component {
         isDevice: false,
         treeIndex: 0,
         children: [],
-        state: "",
+        state: map_group.state,
       });
 
       if (map_group.devices.length >= 1) {
@@ -658,7 +742,7 @@ class GoogleMap extends React.Component {
                 lng: currPerim.endLon,
               }
             ],
-            state: "",
+            state: currPerim.state,
           }
         ],
       }, () => {
@@ -727,113 +811,164 @@ class GoogleMap extends React.Component {
 
   onlineMarker() {
     return <div>
-      <a onClick={() => this.updateDeviceState(this.state.markerInfo.id, "maintenance")}
-        className={"orange btn"} >
+  
+      {/* <br/> */}
+      {/* <p style={infoSubTitle}>Actions:</p> */}
+    
+      {
+        this.props.curr_user_type != "Operator" &&
+        <span>
+          <div
+            onClick={() => {
+              // this.updateDeviceState(this.state.markerInfo.id, "maintenance");
+              this.openAlarmAckWindow("maintenance");
+            }}
+            className={"orange btn"}
+            style={infoActionButton} >
 
-        <i className="material-icons right">edit</i>
-        Maintenance On
-      </a>
-        
-      <br/>
+            <i className="material-icons right">edit</i>
+            Maintenance On
+          </div>
+          {/* <br/> */}
+        </span>
+      }
 
-      <a
-        onClick={() => this.updateDeviceState(this.state.markerInfo.id, "offline")} 
+      {/* <div
+        onClick={() => {
+          // this.updateDeviceState(this.state.markerInfo.id, "offline");
+          this.openAlarmAckWindow("offline");
+        }}
         className={"grey btn"}
         style={infoActionButton} >
 
         <i className="material-icons right">edit</i>
         Take Offline
-      </a>
+      </div>
 
-      <br/>
+      <br/> */}
     </div>
   }
 
   offlineMarker() {
     return <div>
-    <div
-      onClick={() => {
-        this.updateDeviceState(this.state.markerInfo.id, "maintenance")
-      }}
-      className={"orange btn"}
-      >
+  
+      {/* <br/> */}
+      {/* <p style={infoSubTitle}>Actions:</p> */}
+            
+      {
+        this.props.curr_user_type != "Operator" &&    
+        <span>
+          <div
+            onClick={() => {
+              // this.updateDeviceState(this.state.markerInfo.id, "maintenance");
+              this.openAlarmAckWindow("maintenance");
+            }}
+            className={"orange btn"}
+            style={infoActionButton} >
 
-      <i className="material-icons right">edit</i>
-      Maintenance On
+            <i className="material-icons right">edit</i>
+            Maintenance On
+          </div>
+          <br/>
+        </span>
+      }
+
+      <div
+        onClick={() => {
+          // this.updateDeviceState(this.state.markerInfo.id, "online");
+          this.openAlarmAckWindow("online");
+        }}
+        className={"green btn"}
+        style={infoActionButton} >
+
+        <i className="material-icons right">edit</i>
+        Bring Online
+      </div>
+      <br/>
+
     </div>
-    <br/>
-
-    <div
-      onClick={() => {
-        this.updateDeviceState(this.state.markerInfo.id, "online")
-      }}
-      className={"green btn"}
-      style={infoActionButton} >
-
-      <i className="material-icons right">edit</i>
-      Bring Online
-    </div>
-    <br/>
-
-  </div>
   }
 
   maintMarker() {
     return <div>
-    <div
-      onClick={() => {
-        this.updateDeviceState(this.state.markerInfo.id, "offline")
-      }}
-      className={"grey btn"}
-      >
+  
+      {/* <br/> */}
+      {/* <p style={infoSubTitle}>Actions:</p> */}
 
-      <i className="material-icons right">edit</i>
-      Take Offline
+      {/* <div
+        onClick={() => {
+          // this.updateDeviceState(this.state.markerInfo.id, "offline");
+          this.openAlarmAckWindow("offline");
+        }}
+        className={"grey btn"}
+        style={infoActionButton} >
+
+        <i className="material-icons right">edit</i>
+        Take Offline
+      </div>
+      <br/> */}
+        
+      <div
+        onClick={() => {
+          // this.updateDeviceState(this.state.markerInfo.id, "online");
+          this.openAlarmAckWindow("online");
+        }}
+        className={"green btn"}
+        style={infoActionButton} >
+
+        <i className="material-icons right">edit</i>
+        Bring Online
+      </div>
+      <br/>
+
     </div>
-    <br/>
-      
-    <div
-      onClick={() => {
-        this.updateDeviceState(this.state.markerInfo.id, "online")
-      }}
-      className={"green btn"}
-      style={infoActionButton} >
-
-      <i className="material-icons right">edit</i>
-      Bring Online
-    </div>
-    <br/>
-
-  </div>
   }
 
   alarmMarker() {
     return <div>
-    <div
-      onClick={() => {
-        this.updateDeviceState(this.state.markerInfo.id, "maintenance")
-      }}
-      className={"orange btn"}
-      >
+  
+      {/* <br/> */}
+      {/* <p style={infoSubTitle}>Actions:</p> */}
 
-      <i className="material-icons right">edit</i>
-      Maintenance On
+      {
+        this.props.curr_user_type != "Operator" &&
+        <span>
+          <div
+            onClick={() => {
+              // this.updateDeviceState(this.state.markerInfo.id, "maintenance");
+              this.openAlarmAckWindow("maintenance");
+            }}
+            className={"orange btn"}
+            style={infoActionButton} >
+
+            <i className="material-icons right">edit</i>
+            Maintenance On
+          </div>
+          <br/>
+        </span>
+      }
+      
+      <div
+        onClick={() => {
+          // this.updateDeviceState(this.state.markerInfo.id, "online");
+          this.openAlarmAckWindow("online");
+        }}
+        className={"green btn"}
+        style={infoActionButton} >
+
+        <i className="material-icons right">check</i>
+        Acknowledge Alarm
+      </div>
+      <br/>
+
     </div>
-    <br/>
-
-    <div
-      onClick={() => {
-        this.updateDeviceState(this.state.markerInfo.id, "online")
-      }}
-      className={"green btn"}
-      style={infoActionButton} >
-
-      <i className="material-icons right">edit</i>
-      Alarm Off
-    </div>
-    <br/>
-
-  </div>
+  }
+  
+  openAlarmAckWindow(deviceState) {
+    this.setState({
+      showAckWindow: true,
+      stateToAck: deviceState,
+    });
   }
 
   onInfoWindowOpen(props, e) {
@@ -855,80 +990,237 @@ class GoogleMap extends React.Component {
     ReactDOM.render(React.Children.only(content), document.getElementById("actionsContainer"));
   }
 
+  alarmPerim() {
+    return <div>
+      <div
+        onClick={() => {
+          // this.updateDeviceState(this.state.markerInfo.id, "online");
+          this.openAlarmAckWindow("online");
+        }}
+        className={"green btn"}
+        style={infoActionButton} >
+
+        <i className="material-icons right">check</i>
+        Acknowledge All Alarms
+      </div>
+      <br/>
+    </div>
+  }
+
+  onPeirmInfoWindowOpen(props, e) {
+    let content;
+
+    if (this.state.perInfoState == "alarm") {
+      content = this.alarmPerim();
+    }
+
+    ReactDOM.render(React.Children.only(content), document.getElementById("perimActionsContainer"));
+  }
+
+  handleAckWindowClose() {
+    this.setState({
+      showAckWindow: false,
+      stateToAck: "",
+      alarmReason: "",
+      alarmNotes: "",
+    });
+  }
+
+  handleAlarmReason(event) {
+    this.setState({
+      alarmReason: event.target.value,
+    });
+  }
+
+  handleAlarmNotes(event) {
+    this.setState({
+      alarmNotes: event.target.value,
+    });
+  }
+
+  mapActions() {
+    return <div style={actionStyle}>
+      <span style={bannerTextStyle}>
+        Map Actions:
+      </span>
+
+      <div style={{ flexDirection: 'row' }}>
+        
+        <div style={deleteMarkerStyle}>
+          <a
+            className="waves-effect waves-light primary btn"
+            onClick={this.toggleDrawPerimeter} >
+
+            {
+              (this.state.drawPerimeter) ? (
+                <i className="material-icons right">cancel</i>
+              ) :
+                <i className="material-icons right">add_circle</i>
+            }
+            
+            Draw Perimeter
+          </a>
+        </div>
+
+        {
+          (this.state.showPerDel) ? (
+            <div style={deleteMarkerStyle}>
+              <a
+                className="waves-effect waves-light red btn"
+                onClick={this.deletePerimeter} >
+
+                <i className="material-icons right">delete</i>
+                Delete Perimeter
+              </a>
+            </div>
+          ) :
+            <div style={deleteMarkerStyle}>
+              <div
+                className="btn disabled" style={disabledActionStyle}>
+
+                <i className="material-icons right">delete</i>
+                Delete Perimeter
+              </div>
+            </div>
+        }
+
+        {
+          (this.state.showInfo) ? (
+            <div style={deleteMarkerStyle}>
+              <a
+                className="waves-effect waves-light red btn"
+                onClick={this.deleteMarker} >
+
+                <i className="material-icons right">delete</i>
+                Delete Marker
+              </a>
+            </div>
+          ) :
+            <div style={deleteMarkerStyle}>
+              <div
+                className="btn disabled" style={disabledActionStyle}>
+
+                <i className="material-icons right">delete</i>
+                Delete Marker
+              </div>
+            </div>
+        }
+      </div>
+
+    </div>
+  }
+
+  reasonModal() {
+    return <Modal
+      open={this.state.showAckWindow}
+      onClose={() => {
+        this.handleAckWindowClose();
+      }}
+      aria-labelledby="simple-modal-title"
+      aria-describedby="simple-modal-description" >
+
+      <div style = {modalStyle}>
+        {
+          (this.state.stateToAck == "online") ? (
+            <p style = {infoTitle}>Bring Online:</p>
+          ) :
+          (this.state.stateToAck == "offline") ? (
+            <p style = {infoTitle}>Take Offline:</p>
+          ) :
+          (this.state.stateToAck == "maintenance") ? (
+            <p style = {infoTitle}>Put into Maintenance:</p>
+          ) :
+            <p style = {infoTitle}>Acknowledge Alarm:</p>
+        }
+        
+        <hr style = {hrStyle} />
+
+        <div
+          style = {{
+            flexDirection: "row",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center"
+          }} >
+
+          <TextField
+            id="standard-multiline-flexible"
+            label={(this.state.stateToAck.includes("alarm")) ? "Reason for Alarm" : "Reason"}
+            multiline
+            rowsMax={4}
+            value={this.state.alarmReason}
+            onChange={this.handleAlarmReason}
+          />
+
+          <TextField
+            id="standard-multiline-flexible"
+            label="Notes"
+            multiline
+            rowsMax={4}
+            value={this.state.alarmNotes}
+            onChange={this.handleAlarmNotes}
+            style = {{
+              marginLeft: 15,
+            }}
+          />
+        </div>
+
+        <br/>
+
+        <div
+          style = {{
+            flexDirection: "row", 
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center"
+          }} >
+
+          <div
+            onClick={() => {
+              // alert(this.state.markerInfo.id + " " + this.state.alarmReason + " " + this.state.alarmNotes);
+              if (this.state.showInfo) {
+                this.updateDeviceState(this.state.markerInfo.id, this.state.stateToAck);
+              }
+              else if (this.state.showPerDel) {
+                this.updatePerimState(this.state.perInfoTitle, "online");
+              }
+            }}
+            className={"green btn"}
+            style={{
+              marginTop: 15,
+            }} >
+
+            <i className="material-icons right">check</i>
+            Submit
+          </div>
+
+          <div
+            onClick={() => {
+              this.handleAckWindowClose();
+            }}
+            className={"grey btn"}
+            style = {{
+              marginTop: 15,
+              marginLeft: 15,
+            }} >
+
+            <i className="material-icons right">close</i>
+            Cancel
+          </div>
+        </div>
+
+      </div>
+    </Modal>
+  }
+
   render() {
     return (
       <div className="wrapper" onKeyUp={this.handleKey}>
 
-        <div style={actionStyle}>
-
-          <span style={bannerTextStyle}>
-            Map Actions:
-          </span>
-
-          <div style={{ lex: 1, flexDirection: 'row' }}>
-            
-            <div style={deleteMarkerStyle}>
-              <a
-                className="waves-effect waves-light primary btn"
-                onClick={this.toggleDrawPerimeter} >
-
-                {
-                  (this.state.drawPerimeter) ? (
-                    <i className="material-icons right">cancel</i>
-                  ) :
-                    <i className="material-icons right">add_circle</i>
-                }
-                
-                Draw Perimeter
-              </a>
-            </div>
-
-            {
-              (this.state.showPerDel) ? (
-                <div style={deleteMarkerStyle}>
-                  <a
-                    className="waves-effect waves-light red btn"
-                    onClick={this.deletePerimeter} >
-
-                    <i className="material-icons right">delete</i>
-                    Delete Perimeter
-                  </a>
-                </div>
-              ) :
-                <div style={deleteMarkerStyle}>
-                  <div
-                    className="btn disabled" style={disabledActionStyle}>
-
-                    <i className="material-icons right">delete</i>
-                    Delete Perimeter
-                  </div>
-                </div>
-            }
-
-            {
-              (this.state.showInfo) ? (
-                <div style={deleteMarkerStyle}>
-                  <a
-                    className="waves-effect waves-light red btn"
-                    onClick={this.deleteMarker} >
-
-                    <i className="material-icons right">delete</i>
-                    Delete Marker
-                  </a>
-                </div>
-              ) :
-                <div style={deleteMarkerStyle}>
-                  <div
-                    className="btn disabled" style={disabledActionStyle}>
-
-                    <i className="material-icons right">delete</i>
-                    Delete Marker
-                  </div>
-                </div>
-            }
-          </div>
-
-        </div>
+        {
+          this.props.curr_user_type != "Operator" && 
+          this.mapActions()
+        }
 
         <Map
           ref={node => this.domNode = node}
@@ -1011,9 +1303,6 @@ class GoogleMap extends React.Component {
                         {this.state.markerInfo.state}
                       </div>
                   }
-                  
-                  <br/>
-                  <p style={infoSubTitle}>Actions:</p>
 
                   <div id={"actionsContainer"}>
                     {/* Marker actions loaded on infowindow open */}
@@ -1030,6 +1319,9 @@ class GoogleMap extends React.Component {
             visible={this.state.showPerDel}
             onCloseClick={this.hidePerimInfo}
             onClose={this.hidePerimInfo}
+            onOpen={e => {
+              this.onPeirmInfoWindowOpen(this.props, e);
+            }}
 
             position={{
               lat: this.state.perInfoLat,
@@ -1041,32 +1333,23 @@ class GoogleMap extends React.Component {
               <hr/>
               
               <p style={infoSubTitle}>State:</p>
-              <div className="chip" style = {circleStyle}>
-                Active, No alarm
+
+              {
+                (this.state.perInfoState == "online") ? (
+                  <div>
+                    <div className="chip" style = {circleStyleGreen}>
+                      Online, No alarm
+                    </div>
+                  </div>
+                ) :
+                  <div className="chip" style = {circleStyleRed}>
+                    Alarm has been Triggered
+                  </div>
+              }
+
+              <div id={"perimActionsContainer"}>
+                {/* Marker actions loaded on infowindow open */}
               </div>
-              
-              <br/>
-              <p style={infoSubTitle}>Actions:</p>
-
-              <a
-                className="waves-effect waves-light primary btn"
-                // onClick={this.toggleDrawPerimeter}
-                >
-
-                <i className="material-icons right">edit</i>
-                Maintenance On
-              </a>
-              <br/>
-
-              <a
-                className="waves-effect waves-light red btn"
-                style={infoActionButton}
-                // onClick={this.toggleDrawPerimeter}
-                >
-
-                <i className="material-icons right">alarm</i>
-                Alarm Off
-              </a>
               
             </div>
 
@@ -1074,21 +1357,33 @@ class GoogleMap extends React.Component {
 
         </Map>
 
-        <div style={elementsStyle}>
+        {
+          (this.props.curr_user_type != "Operator") ? (
+            <div style={elementsStyle}>
+              <span style={bannerTextStyle}>
+                Map Elements:
+              </span>
 
-          <span style={bannerTextStyle}>
-            Map Elements:
-          </span>
+              <div style={{ margin: 15, }} />
+              
+              <SortableTreeView
+                ref={tree => this.tree = tree}
+                onDeviceClicked={this.onDeviceClicked}
+                onDeviceDragged={this.onDeviceDragged}
+              />
+            </div>
+          ) :
+          <div style={elementsStyleBlank}>  
+            <SortableTreeView
+              hidden={true}
+              ref={tree => this.tree = tree}
+              onDeviceClicked={this.onDeviceClicked}
+              onDeviceDragged={this.onDeviceDragged}
+            />
+          </div>
+        }
 
-          <div style={{ margin: 15, }} />
-          
-          <SortableTreeView
-            ref={tree => this.tree = tree}
-            onDeviceClicked={this.onDeviceClicked}
-            onDeviceDragged={this.onDeviceDragged}
-          />
-
-        </div>
+        {this.reasonModal()}
 
       </div>
     );
@@ -1120,7 +1415,9 @@ const circleStyleRed = {
   color: "white",
   background: "red",
 };
-
+const infoActionButton = {
+  marginTop: 15,
+};
 const mapStyles = {
   width: "60vw",
   height: '60%',
@@ -1165,8 +1462,37 @@ const elementsStyle = {
   marginLeft: 5,
   borderRadius: 5,
 };
-const infoActionButton = {
-  marginTop: 5,
+const elementsStyleBlank = {
+  position: 'relative',
+  // width: '24.6vw',
+  // left: '60vw',
+  height: '60vh',
+  // padding: 20,
+  // marginLeft: 5,
+  // borderRadius: 5,
+};
+const modalStyle = {
+  position: 'relative',
+  top: "40vh",
+  left: "30vw",
+  width: "40vw",
+  borderWidth: 0.1,
+  borderRadius: 15,
+  padding: 25,
+  backgroundColor: "white",
+};
+const hrStyle = {
+  display: "block",
+  height: 1,
+  border: 0,
+  borderTop: "1px solid #ccc",
+  margin: "1em 0",
+  padding: 0,
+};
+const hiddenStyle = {
+  opacity: 0,
+  height: 0,
+  width: 0
 };
 
 GoogleMap.propTypes = {

@@ -147,7 +147,7 @@ The functional requirements of the MVP Phase One include:
   - Cloud server
     - Connected to SigFox back end to handle callbacks
     - Passes on packets received from SigFox devices to local server
-    - Synchronization with local server
+    - Synchronization with local server
 
 ---
 
@@ -179,7 +179,7 @@ The functional requirements of the MVP Phase One include:
      - Heading filters
    - Controller Setup
      - Installation of server on local controller
-     - Synchronization of packets received from SigFox devices to local server
+     - Synchronization of packets received from SigFox devices to local server
 
 ---
 
@@ -305,7 +305,7 @@ The functional requirements of the MVP Phase One include:
   - [ ]  Cloud server
     - [x]  Connected to SigFox back end to handle callbacks
     - [ ]  Passes on packets received from SigFox devices to local server
-    - [ ]  Synchronization with local server
+    - [ ]  Synchronization with local server
 
 ---
 
