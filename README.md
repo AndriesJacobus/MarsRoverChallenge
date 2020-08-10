@@ -25,7 +25,7 @@ then:
 rails server
 ```  
 
-together with (in another terminal):
+together with webpack for automatic reloads when updating React code (in another terminal):
 
 ```
 ./bin/webpack-dev-server
@@ -173,7 +173,7 @@ The functional requirements of the MVP Phase One include:
      - List groups, devices currently configured on system
      - Actions
      - New added devices configured with default rules
-3. Month 3 - Cloud to Local
+3. ~~Month 3 - Cloud to Local~~
    - Log
      - List view
      - Heading filters
@@ -194,35 +194,41 @@ The functional requirements of the MVP Phase One include:
 
 ---
 
-## Possible Additional Functional Requirements
-- [ ] Device create via Message callback:
-  - [x] if message comes in from device with sigfox ID not registered on wi-i, create new device and link message to device
-  - [ ] enable users to merge current devices with automatically created devices (copy over device name, client, client_group, map_group) 
-- [ ] Message Controller and View Updates
+## Additional Functional Requirements
+- [x] Message Controller and View Updates
   - [x] Add Sigfox Device ID to Message
   - [x] Add wi-i device Name to Message
-  - [ ] Add deconstructed packet to Message
-- [ ] Client Admin
+  - [x] Add deconstructed packet to Message
+- [x] Client Admin
   - [x] Create new User Type: Client Admin
   - [x] Rename Admin User Type to Sysadmin
   - [x] Transfer Operator privileges to Client Admin
-  - [ ] New Operator Privileges
+  - [x] New Operator Privileges
     - [x] View own user info
-    - [ ] Map View
-    - [ ] No Logs
-- [ ] Client Groups
+    - [x] Map View
+    - [x] No Logs
+- [x] Client Groups
   - [x] Create new Controller and View: Clients (= sifg DeviceType like Wi-i Platform Testing)
   - [x] Create new Controller and View: Client Groups (= sifg Group like MyTestGroup)
   - [x] Clients View Styling Updates
   - [x] Client Groups View Styling Updates
   - [x] Link Clients Controller and View in Dashboard
   - [x] Link Client Groups Controller and View in Dashboard
-  - [ ] Create Dashboard process to setup a Client (according to Project View Hierarchy)
-    - [ ] Create Client
-    - [ ] Create/Link Client Admin
-    - [ ] Create/Link Operator
-    - [ ] Create/Link Client Group
-    - [ ] Create/Link Devices
+- [x] View for Device State updates including Alarms
+  - [x] View all currently active alarms
+  - [x] View users that acknowledge alarm states
+  - [x] See acknowledgement reasons and notes for acknowledged alarm states
+  - [x] Show when devices change state
+  - [x] Filter according to logged in user type
+- [ ] Device create via Message callback:
+  - [x] if message comes in from device with sigfox ID not registered on wi-i, create new device and link message to device
+  - [ ] enable users to merge current devices with automatically created devices (copy over device name, client, client_group, map_group) 
+- [ ] Create Dashboard process to setup a Client (according to Project View Hierarchy)
+  - [ ] Create Client
+  - [ ] Create/Link Client Admin
+  - [ ] Create/Link Operator
+  - [ ] Create/Link Client Group
+  - [ ] Create/Link Devices
 - [ ] Create Client hierarchy view in Dashboard (according to Project View Hierarchy)
 - [ ] User Create Update
   - [ ] Only Sysadmins can create Client Admins
@@ -255,45 +261,45 @@ The functional requirements of the MVP Phase One include:
     - [x]  Rename groups
     - [x]  Tree list view of devices and groups already configured
   
-- [ ] 2. Log
+- [x] 2. Log
   - [x]  List view
-  - [ ]  Heading filters
+  - [x]  Heading filters
 
-- [ ] 3. Map View
+- [x] 3. Map View
   - [x]  Static map (integrated a dynamic map)
   - [x]  Graphical representation of layout of perimeter
     - [x]  Groups allowing access to individual bridges and devices
   - [x]  Editable
     - [x]  Provide a list of configured groups and devices
     - [x]  Groups and devices can be placed on map
-  - [ ]  Indication of device events/states using colour, icons
-    - [ ]  Alarm
-    - [ ]  Online/offline
-    - [ ]  Maintenance (low battery, device inhibited)
-    - [ ]  States propagate onto parent groups
-  - [ ]  Operator interaction
-    - [ ]  Inhibit devices, groups
-    - [ ]  Provide reason for inhibit
-    - [ ]  Acknowledgement of events
-    - [ ]  Provide reason for event
+  - [x]  Indication of device events/states using colour, icons
+    - [x]  Alarm
+    - [x]  Online/offline
+    - [x]  Maintenance (low battery, device inhibited)
+    - [x]  States propagate onto parent groups
+  - [x]  Operator interaction
+    - [x]  Inhibit devices, groups
+    - [x]  Provide reason for inhibit
+    - [x]  Acknowledgement of events
+    - [x]  Provide reason for event
   
 - [ ] 4. Business Rules
-  - [ ]  Events
-    - [ ]  Type of events
-      - [ ]  Alarm
-      - [ ]  Maintenance
-      - [ ]  Device Online/Offline
+  - [x]  Events
+    - [x]  Type of events
+      - [x]  Alarm
+      - [x]  Maintenance
+      - [x]  Device Online/Offline
     - [x]  List groups, devices currently configured on system
   - [ ]  Actions
-    - [ ]  Notify
-      - [ ]  Allow notifications to be set on individual devices or group of devices
-      - [ ]  Group notification settings apply to devices in group as well
+    - [x]  Notify
+      - [x]  Allow notifications to be set on individual devices or group of devices
+      - [x]  Group notification settings apply to devices in group as well
       - [x]  Notification options
         - [x]  Map view
     - [ ]  Ignore (Prevent individual devices in a group from sending notifications)
       - [ ]  Same options as notify
-  - [ ]  New added devices configured with default rules
-    - [ ]  Notify via map view on alarms, maintenance, offline devices
+  - [x]  New added devices configured with default rules
+    - [x]  Notify via map view on alarms, maintenance, offline devices
   
 - [ ] 5. Controller Deliverables
   - [ ]  Cloud server
