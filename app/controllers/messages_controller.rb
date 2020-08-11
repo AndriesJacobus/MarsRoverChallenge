@@ -71,13 +71,29 @@ class MessagesController < ApplicationController
         end
         
       elsif @message.Data.to_s[0...2] == "16"
-        # Update device state to online if need be (is a keepalive)
+        # Message is is a keepalive
 
+        # Update device state to online if need be
         if @device.state == "offline"
+
           @device.update_attribute(:state, "online")
 
-          # Todo: update alarm entry
+          # Update alarm entry
+          @alarm = Alarm.where(device_id: @device.id).where(acknowledged: false).where(state_change_from: "offline").last
+          
+          if @alarm
+
+            @alarm.update_attributes(
+              acknowledged: true,
+              date_acknowledged: Time.now,
+              alarm_reason: "Keepalive received",
+              state_change_to: "online",
+            )
+
+          end
+
         end
+
       end
 
       # Create log entry

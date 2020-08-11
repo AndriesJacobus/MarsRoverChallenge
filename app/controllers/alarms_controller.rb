@@ -14,7 +14,7 @@ class AlarmsController < ApplicationController
       @alarms = []
 
       Alarm.all.each do |alarm|
-        if alarm.device && alarm.device.client_group &&  alarm.device.client_group.client == current_user.client
+        if alarm.device && alarm.device.client_group && alarm.device.client_group.client == current_user.client
           @alarms << alarm
         end
       end
@@ -41,20 +41,6 @@ class AlarmsController < ApplicationController
     if current_user.usertype == "Sysadmin"
       @alarms = Alarm.all
 
-      @alarms.each do |alarm|
-        alarm.update_attributes(
-          acknowledged: true,
-          date_acknowledged: Time.now,
-          alarm_reason: "Admin bulk Acknowledge",
-          user_id: current_user.id,
-          state_change_to: "online",
-        )
-      end
-
-      respond_to do |format|
-        format.html { redirect_to alarms_url, flash: {success: 'Alarms were successfully acknowledged' } }
-      end
-
     else
       # Todo: filter Alarms to show only those with the same 'client'
       #       tag as the current Admin
@@ -66,31 +52,39 @@ class AlarmsController < ApplicationController
         end
       end
 
-      @alarms.each do |alarm|
-        alarm.update_attributes(
-          acknowledged: true,
-          date_acknowledged: Time.now,
-          alarm_reason: "Admin bulk Acknowledge",
-          user_id: current_user.id,
-          state_change_to: "online",
-        )
-      end
-
-      respond_to do |format|
-        format.html { redirect_to alarms_url, flash: {success: 'Alarms were successfully acknowledged' } }
-      end
-
     end
+
+    @alarms.each do |alarm|
+      alarm.update_attributes(
+        acknowledged: true,
+        date_acknowledged: Time.now,
+        alarm_reason: "Admin bulk Acknowledge",
+        user_id: current_user.id,
+        state_change_to: "online",
+      )
+    end
+
+    respond_to do |format|
+      format.html { redirect_to alarms_url, flash: {success: 'Alarms were successfully acknowledged' } }
+    end
+
   end
 
   # POST /alarms
   # POST /alarms.json
   def create
-    # @alarms = Alarm.where(device_id: params[:device_id]).where(acknowledged: false).where("state_change_from like ?", "%alarm%")
-    @alarm = Alarm.where(device_id: params[:device_id]).where(acknowledged: false).where("state_change_from like ?", "%alarm%").last
+
+    puts ""
+    puts params[:state_change_from]
+    
+    if params[:state_change_from] == "offline"
+      @alarm = Alarm.where(device_id: params[:device_id]).where(acknowledged: false).where(state_change_from: "offline").last
+    else
+      @alarm = Alarm.where(device_id: params[:device_id]).where(acknowledged: false).where("state_change_from like ?", "%alarm%").last
+    end
 
     if @alarm
-      # @alarms.each do |alarm|
+      # Alarm is in alarm of is offline
         @alarm.update_attributes(
           acknowledged: params[:acknowledged],
           date_acknowledged: params[:date_acknowledged],
