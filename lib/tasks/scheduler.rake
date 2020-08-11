@@ -29,7 +29,7 @@ task :check_device_keepalives => :environment do
       puts "Device '" + device.Name + "' missed its keepalive."
       puts "Switching '" + device.Name + "' offline."
 
-      device.update_attribute(state: "offline")
+      device.update_attribute(:state, "offline")
 
       # Create a new alarm entry for device state update to offline
 
