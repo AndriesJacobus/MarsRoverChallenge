@@ -74,13 +74,13 @@ class AlarmsController < ApplicationController
   # POST /alarms.json
   def create
 
-    puts ""
-    puts params[:state_change_from]
+    # puts ""gi
+    # puts params[:state_change_from]
     
     if params[:state_change_from] == "offline"
       @alarm = Alarm.where(device_id: params[:device_id]).where(acknowledged: false).where(state_change_from: "offline").last
     else
-      @alarm = Alarm.where(device_id: params[:device_id]).where(acknowledged: false).where("state_change_from like ?", "%alarm%").last
+      @alarm = Alarm.where(device_id: params[:device_id]).where(acknowledged: false).where("lower(state_change_from) like ?", "%alarm%").last
     end
 
     if @alarm
