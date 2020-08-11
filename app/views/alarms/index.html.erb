@@ -130,7 +130,13 @@
             <% end %>
           </td>
 
-          <td style = "padding-right: 35px;"><%= alarm.date_acknowledged %></td>
+          <td style = "padding-right: 35px;">
+            <% if alarm.date_acknowledged%>
+              <%= alarm.date_acknowledged %>
+            <% else %>
+              N/A
+            <% end %>
+          </td>
 
           <td><%= link_to 'Show', alarm, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
           <td><%= link_to 'Edit', edit_alarm_path(alarm), class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
