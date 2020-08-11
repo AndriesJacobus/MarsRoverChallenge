@@ -260,12 +260,12 @@ class ClientGroupsController < ApplicationController
         @map_group.update_attribute(:state, params[:MapGroupState])
 
         # Update state of all perimeter devices
-        @map_group.devices.where("state like ?", "%alarm%").each do |device|
+        @map_group.devices.where("lower(state) like ?", "%alarm%").each do |device|
           # Todo: see if alarm has been made before then
           # change that alarm in stead of making new one
 
           # @alarms = Alarm.where(device_id: @device.id).where(acknowledged: false).where("state_change_from like ?", "%alarm%")
-          @alarm = Alarm.where(device_id: device.id).where(acknowledged: false).where("state_change_from like ?", "%alarm%").last
+          @alarm = Alarm.where(device_id: device.id).where(acknowledged: false).where("lower(state_change_from) like ?", "%alarm%").last
 
           if @alarm
             # @alarms.each do |alarm|
