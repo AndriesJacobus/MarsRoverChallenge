@@ -27,7 +27,17 @@
   </div>
 
   <div class="field">
-    <%= form.input :usertype, collection: ['Sysadmin', 'Client Admin', 'Operator'], id: :user_usertype %>
+    <% if !current_user || current_user.usertype == "Operator" %>
+      <% types = []%>
+    <% else %>
+      <% if current_user.usertype == "Sysadmin" %>
+        <% types = ['Sysadmin', 'Client Admin', 'Operator']%>
+      <% elsif current_user.usertype == "Client Admin" %>
+        <% types = ['Client Admin', 'Operator']%>
+      <% end %>
+    <% end %>
+
+    <%= form.input :usertype, collection: types, id: :user_usertype %>
   </div>
 
   <div class="field">

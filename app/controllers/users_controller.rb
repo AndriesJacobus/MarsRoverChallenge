@@ -35,21 +35,25 @@ class UsersController < ApplicationController
   # POST /users
   # POST /users.json
   def create
-    @user = User.new(user_params)
+    if is_curr_user_admin()
+      @user = User.new(user_params)
 
-    respond_to do |format|
-      if @user.save
-        # Create log entry
-        @log = Log.new(trigger_by_bot: "user_bot", action_type: "user_created")
-        @log.user = @user
-        @log.save
+      respond_to do |format|
+        if @user.save
+          # Create log entry
+          @log = Log.new(trigger_by_bot: "user_bot", action_type: "user_created")
+          @log.user = @user
+          @log.save
 
-        format.html { redirect_to @user, flash: {success: 'User was successfully created' } }
-        format.json { render :show, status: :created, location: @user }
-      else
-        format.html { render :new }
-        format.json { render json: @user.errors, status: :unprocessable_entity }
+          format.html { redirect_to @user, flash: {success: 'User was successfully created' } }
+          format.json { render :show, status: :created, location: @user }
+        else
+          format.html { render :new }
+          format.json { render json: @user.errors, status: :unprocessable_entity }
+        end
       end
+    else
+      redirect_to root_path, flash: {warning: 'Please log in as an Admin before creating users' }
     end
   end
   

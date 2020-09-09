@@ -203,6 +203,8 @@ The functional requirements of the MVP Phase One include:
   - [x] Create new User Type: Client Admin
   - [x] Rename Admin User Type to Sysadmin
   - [x] Transfer Operator privileges to Client Admin
+  - [x] Only Sysadmins and Client Admins can create users
+  - [x] Client Admins can't create Sysadmin users
   - [x] New Operator Privileges
     - [x] View own user info
     - [x] Map View
