@@ -288,30 +288,36 @@ The functional requirements of the MVP Phase One include:
     - [x]  Acknowledgement of events
     - [x]  Provide reason for event
   
-- [ ] 4. Business Rules
+- [x] 4. Business Rules
   - [x]  Events
     - [x]  Type of events
       - [x]  Alarm
       - [x]  Maintenance
       - [x]  Device Online/Offline
     - [x]  List groups, devices currently configured on system
-  - [ ]  Actions
+  - [x]  Actions
     - [x]  Notify
       - [x]  Allow notifications to be set on individual devices or group of devices
       - [x]  Group notification settings apply to devices in group as well
       - [x]  Notification options
         - [x]  Map view
-    - [ ]  Ignore (Prevent individual devices in a group from sending notifications)
-      - [ ]  Same options as notify
   - [x]  New added devices configured with default rules
     - [x]  Notify via map view on alarms, maintenance, offline devices
   
-- [ ] 5. Controller Deliverables
-  - [ ]  Cloud server
+- [x] 5. Controller Deliverables
+  - [x]  Cloud server
     - [x]  Connected to SigFox back end to handle callbacks
-    - [ ]  Passes on packets received from SigFox devices to local server
-    - [ ]  Synchronization with local server
+
+- [ ]  6. Assigned to Phase Two
+  - [ ]  Business Rules
+    - [ ]  Actions
+      - [ ]  Ignore (Prevent individual devices in a group from sending notifications)
+  - [ ]  Controller Deliverables
+    - [ ]  Cloud server
+      - [ ]  Passes on packets received from SigFox devices to local server
+      - [ ]  Synchronization with local server
+
 
 ---
 
-**Created with 💚 by _<a href = "www.ivy-innovation.com" target = "_blank" style = "color: green;">Ivy Innovation</a>_**
+**Created with 💚 by _<u><a href = "www.ivy-innovation.com" target = "_blank" style = "color: green;">Ivy Innovation</a></u>_**
