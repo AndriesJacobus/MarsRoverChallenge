@@ -944,9 +944,9 @@ class GoogleMap extends React.Component {
   
       {/* <br/> */}
       {/* <p style={infoSubTitle}>Actions:</p> */}
-            
+      
       {
-        this.props.curr_user_type != "Operator" &&    
+        this.props.curr_user_type != "Operator" &&
         <span>
           <div
             onClick={() => {
@@ -963,18 +963,23 @@ class GoogleMap extends React.Component {
         </span>
       }
 
-      <div
-        onClick={() => {
-          // this.updateDeviceState(this.state.markerInfo.id, "online");
-          this.openAlarmAckWindow("online");
-        }}
-        className={"green btn"}
-        style={infoActionButton} >
-
-        <i className="material-icons right">edit</i>
-        Bring Online
-      </div>
-      <br/>
+      {
+        this.props.curr_user_type != "Operator" &&
+        <span>
+          <div
+            onClick={() => {
+              // this.updateDeviceState(this.state.markerInfo.id, "online");
+              this.openAlarmAckWindow("online");
+            }}
+            className={"green btn"}
+            style={infoActionButton} >
+  
+            <i className="material-icons right">edit</i>
+            Bring Online
+          </div>
+          <br/>
+        </span>
+      }
 
     </div>
   }
