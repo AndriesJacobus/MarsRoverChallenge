@@ -258,6 +258,16 @@ class ClientGroupsController < ApplicationController
       if @map_group
         # Update perimeter state
         @map_group.update_attribute(:state, params[:MapGroupState])
+        # ActionCable.server.broadcast("live_map_1", "Hello World")
+
+        # Send action cable message to update relevant map_group's state
+        data = {
+          "update": "map_group",
+          "id": @map_group.id,
+          "attribute": "state",
+          "to": params[:MapGroupState],
+        }
+        ActionCable.server.broadcast("live_map_#{@client_group.id}", data)
 
         # Update state of all perimeter devices
         @map_group.devices.where("lower(state) like ?", "%alarm%").each do |device|
@@ -297,6 +307,16 @@ class ClientGroupsController < ApplicationController
           # Can change this line to use params[:MapGroupState]
           # in stead of "online" to make states dynamic
           device.update_attribute(:state, "online")
+
+          # Send action cable message to update relevant device's state
+          data = {
+            "update": "device",
+            "id": device.id,
+            "attribute": "state",
+            "to": "online",
+          }
+          ActionCable.server.broadcast("live_map_#{@client_group.id}", data)
+
         end
 
         # Send response
@@ -335,10 +355,28 @@ class ClientGroupsController < ApplicationController
 
         @device.update_attribute(:state, params[:DeviceState])
 
+        # Send action cable message to update relevant device's state
+        data = {
+          "update": "device",
+          "id": @device.id,
+          "attribute": "state",
+          "to": params[:DeviceState],
+        }
+        ActionCable.server.broadcast("live_map_#{params[:id]}", data.as_json)
+
         # Update parimeter state
         if @device.state.downcase.include?("alarm") && @device.map_group && !@device.map_group.state.downcase.include?("alarm")
           @device.map_group.state = "alarm"
           @device.map_group.save
+
+          # Send action cable message to update relevant device's state
+          data = {
+            "update": "map_group",
+            "id": @device.map_group.id,
+            "attribute": "state",
+            "to": "alarm",
+          }
+          ActionCable.server.broadcast("live_map_#{params[:id]}", data)
         end
 
         # Update parimeter state if device is not alarm anymore
@@ -355,6 +393,15 @@ class ClientGroupsController < ApplicationController
 
           @map_group.state = @map_group_new_state
           @map_group.save
+
+          # Send action cable message to update relevant device's state
+          data = {
+            "update": "map_group",
+            "id": @map_group.id,
+            "attribute": "state",
+            "to": @map_group_new_state,
+          }
+          ActionCable.server.broadcast("live_map_#{params[:id]}", data)
         end
 
         message = "Device '#{@device.Name}' " + 

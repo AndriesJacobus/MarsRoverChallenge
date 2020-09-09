@@ -22,6 +22,19 @@ module API
           def logger
             Rails.logger
           end
+
+          def send_action_cable_update(update_type, id, attribute, new_attribute, client_group_id)
+            
+            # Send action cable message to update relevant device's state
+            data = {
+              update: update_type,
+              id: id,
+              attribute: attribute,
+              to: new_attribute,
+            }
+            ActionCable.server.broadcast("live_map_#{client_group_id}", data.as_json)
+
+          end
         end
 
         rescue_from ActiveRecord::RecordNotFound do |e|

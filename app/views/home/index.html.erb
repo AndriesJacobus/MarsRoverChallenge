@@ -1,6 +1,7 @@
-<h3 style = "display: inline-block;"><u>Home Page</u></h3>
+<%# <h3 style = "display: inline-block;"><u>Home Page</u></h3> %>
 
 <% if current_user %>
+<h4 style = "display: inline-block;"><u>Dashboard</u></h4>
   
   <div style = "display: inline-block; float: right;">
     <br/>
@@ -25,7 +26,7 @@
   <br/>
   <br/>
 
-  <h4><u>Server Dashboard</u></h4>
+  <%# <h4><u>Dashboard</u></h4> %>
 
   <br/>
 
@@ -141,7 +142,7 @@
           <%= react_component("DashboardCard",
             {
               title:
-                "Perimeters",
+                "Map Groups",
               content:
                 "Devices are arranged on a map via map groups. A map group is
                 a group of devices coupled together to form a section of a perimeter.",
@@ -150,7 +151,7 @@
               link:
                 map_groups_path,
               linkText:
-                "Go to Perimeters",
+                "Go to Map Groups",
             })
           %>
         <% end %>
@@ -178,26 +179,6 @@
       </div>
 
       <div class="col s4">
-        <%= link_to api_keys_path do %>
-          <%= react_component("DashboardCard",
-            {
-              title:
-                "API Keys",
-              content:
-                "API Keys manage the connection to the Sigfox backend and allows
-                communication such that the Wi-I server can pull in information automatically.",
-              resource:
-                asset_path("api_keys.jpg"),
-              link:
-                api_keys_path,
-              linkText:
-                "Go to API Keys",
-            })
-          %>
-        <% end %>
-      </div>
-
-      <div class="col s4">
         <%= link_to logs_path do %>
           <%= react_component("DashboardCard",
             {
@@ -212,6 +193,26 @@
                 logs_path,
               linkText:
                 "Go to Logs",
+            })
+          %>
+        <% end %>
+      </div>
+
+      <div class="col s4">
+        <%= link_to api_keys_path do %>
+          <%= react_component("DashboardCard",
+            {
+              title:
+                "API Keys",
+              content:
+                "API Keys manage the connection to the Sigfox backend and allows
+                communication such that the Wi-I server can pull in information automatically.",
+              resource:
+                asset_path("api_keys.jpg"),
+              link:
+                api_keys_path,
+              linkText:
+                "Go to API Keys",
             })
           %>
         <% end %>
@@ -283,6 +284,8 @@
   </div>    
   
 <% else %>
+
+  <h4 style = "display: inline-block;"><u>Home Page</u></h4>
   
   <p>
     Nothing much to see here yet, so go ahead and <br/><br/>
