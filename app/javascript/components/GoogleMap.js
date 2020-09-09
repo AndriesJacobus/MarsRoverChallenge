@@ -163,6 +163,7 @@ class GoogleMap extends React.Component {
           state: data.to
         }
         
+        // First set to empty location
         newArray[elementsIndex] = {
           ...newArray[elementsIndex],
           path: [
@@ -176,6 +177,8 @@ class GoogleMap extends React.Component {
           perimeters: newArray,
         }, () => {
         
+          // Now set to original location
+          // This is needed for the polyline's redraw to get triggered
           newArray[elementsIndex] = {
             ...newArray[elementsIndex],
             path: copyPath
@@ -1318,13 +1321,15 @@ class GoogleMap extends React.Component {
           className="map"
           google={this.props.google}
           zoom={8}
-          style={mapStyles}
+          style={
+            (this.props.curr_user_type == "Operator") ? mapStylesOperator : mapStyles
+          }
           initialCenter={{ 
             lat: this.props.map_lat,
             lng: this.props.map_lng,
           }}
           mapTypeControl={true}
-          streetViewControl={false}
+          streetViewControl={true}
           onClick={this.onClick} >
 
           {
@@ -1513,6 +1518,14 @@ const mapStyles = {
   width: "60vw",
   height: '60%',
   marginLeft: '10%',
+};
+const mapStylesOperator = {
+  // flex: 0,
+  // top: "-15%",
+  left: 0,
+  position: "fixed",
+  width: "100vw",
+  height:  "75%",
 };
 const infoTitle = {
   fontSize: 18,
