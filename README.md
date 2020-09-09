@@ -223,6 +223,12 @@ The functional requirements of the MVP Phase One include:
 - [ ] Device create via Message callback:
   - [x] if message comes in from device with sigfox ID not registered on wi-i, create new device and link message to device
   - [ ] enable users to merge current devices with automatically created devices (copy over device name, client, client_group, map_group) 
+- [ ] Map View
+  - [x] Live updates
+  - [ ] Admin view of all clients on map
+    - [ ] Each client group
+    - [ ] Each client group perimeter
+    - [ ] Each perimeter device
 - [ ] Create Dashboard process to setup a Client (according to Project View Hierarchy)
   - [ ] Create Client
   - [ ] Create/Link Client Admin
@@ -233,11 +239,6 @@ The functional requirements of the MVP Phase One include:
 - [ ] User Create Update
   - [ ] Only Sysadmins can create Client Admins
   - [ ] Only Sysadmins and Client Admins can create Operators
-- [ ] Map View
-  - [ ] Admin view of all clients on map
-    - [ ] Each client group
-    - [ ] Each client group perimeter
-    - [ ] Each perimeter device
 
 ---
 
