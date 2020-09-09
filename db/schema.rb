@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200806222701) do
+ActiveRecord::Schema.define(version: 20200909073349) do
 
   create_table "alarms", force: :cascade do |t|
     t.boolean "acknowledged"
@@ -34,6 +34,16 @@ ActiveRecord::Schema.define(version: 20200806222701) do
     t.string "password"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "client_details", force: :cascade do |t|
+    t.string "name"
+    t.string "company_name"
+    t.string "business_address"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "client_id"
+    t.index ["client_id"], name: "index_client_details_on_client_id"
   end
 
   create_table "client_groups", force: :cascade do |t|

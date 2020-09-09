@@ -207,6 +207,7 @@ The functional requirements of the MVP Phase One include:
     - [x] View own user info
     - [x] Map View
     - [x] No Logs
+    - [x] Landing page redirect to Map View
 - [x] Client Groups
   - [x] Create new Controller and View: Clients (= sifg DeviceType like Wi-i Platform Testing)
   - [x] Create new Controller and View: Client Groups (= sifg Group like MyTestGroup)

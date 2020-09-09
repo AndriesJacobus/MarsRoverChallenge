@@ -55,7 +55,7 @@
       </div>
 
       <div class="col s4">
-        <%= link_to clients_path do %>
+        <%= link_to client_details_path do %>
           <%= react_component("DashboardCard",
             {
               title:
@@ -70,6 +70,26 @@
                 clients_path,
               linkText:
                 "Go to Clients",
+            })
+          %>
+        <% end %>
+      </div>
+
+      <div class="col s4">
+        <%= link_to clients_path do %>
+          <%= react_component("DashboardCard",
+            {
+              title:
+                "Sites",
+              content:
+                "A client's Users, Groups, Devices, etc are organised based on various sites.
+                These represent real-live premesis that devices are located on.",
+              resource:
+                asset_path("sites.jpg"),
+              link:
+                clients_path,
+              linkText:
+                "Go to Sites",
             })
           %>
         <% end %>
@@ -101,7 +121,7 @@
           <%= react_component("DashboardCard",
             {
               title:
-                "Client Groups",
+                "Groups",
               content:
                 "Groups that devices get organised into.
                 Equivalent to Sigfox's 'Group'.",
@@ -110,7 +130,7 @@
               link:
                 client_groups_path,
               linkText:
-                "Go to Client Groups",
+                "Go to Groups",
             })
           %>
         <% end %>

@@ -14,7 +14,12 @@ class SessionsController < ApplicationController
 
       # Set session
       session[:user_id] = user.id
-      redirect_to user, flash: {success: "Logged in" }
+
+      if user.usertype == "Operator" && user.client.client_groups.first
+        redirect_to "/client_groups/#{user.client.client_groups.first.id}/map_view", flash: {success: "Logged in" }
+      else
+        redirect_to user, flash: {success: "Logged in" }
+      end
     else
       flash.now[:alert] = "Email or password is invalid"
       render "new"

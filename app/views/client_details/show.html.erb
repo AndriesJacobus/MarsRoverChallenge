@@ -1,0 +1,40 @@
+
+<br/>
+
+<div class="row">
+  <div class="col s12 m6">
+    <div class="card blue white-text z-depth-5 hoverable">
+      <div class="card-content">
+        <span class="card-title">Client Information:</span>
+        <hr style = "display: block; height: 1px; border: 0; border-top: 1px solid #ccc; margin: 1em 0; padding: 0;"/>
+
+        <p class = "cardSubTitle">Basic Information:</p>
+        
+        <p>
+          <strong>Name:</strong><br/>
+          <%= @client_detail.name %>
+        </p>
+
+        <br/>
+
+        <p>
+          <strong>Company name:</strong><br/>
+          <%= @client_detail.company_name %>
+        </p>
+
+        <br/>
+
+        <p>
+          <strong>Business address:</strong><br/>
+          <%= @client_detail.business_address %>
+        </p>
+
+        <br/>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<%= link_to 'Edit', edit_client_detail_path(@client_detail), class: "waves-effect waves-light blue lighten-1 btn-small white-text" %> |
+<%= link_to 'Back to Clients', client_details_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
