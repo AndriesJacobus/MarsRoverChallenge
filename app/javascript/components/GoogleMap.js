@@ -2,11 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import { Map, GoogleApiWrapper, Marker, Polyline, InfoWindow } from 'google-maps-react';
-import CustomTreeView from './CustomTreeView';
-import SortableTreeView from './SortableTreeView';
-
 import Modal from '@material-ui/core/Modal';
 import TextField from '@material-ui/core/TextField';
+import ActionCable from 'actioncable';
+import CustomTreeView from './CustomTreeView';
+import SortableTreeView from './SortableTreeView';
 
 React.useLayoutEffect = React.useEffect
 
@@ -79,6 +79,7 @@ class GoogleMap extends React.Component {
 
     this.domNode = null;
     this.tree = null,
+    this.sub = null;
 
     this.onClick = this.onClick.bind(this);
     this.hideInfo = this.hideInfo.bind(this);
@@ -103,12 +104,91 @@ class GoogleMap extends React.Component {
     this.handleAlarmReason = this.handleAlarmReason.bind(this);
     this.handleAlarmNotes = this.handleAlarmNotes.bind(this);
 
-
+    this.handleLiveData = this.handleLiveData.bind(this);
+    
   }
 
   componentDidMount(){
     // Load devices
     this.addInitialDevicesAndPerimeters();
+
+    // Setup ActionCable
+
+    let cable = ActionCable.createConsumer('ws://localhost:3000/cable')
+    this.sub = cable.subscriptions.create({
+        channel: 'LiveMapChannel',
+        id: this.props.curr_client_group
+      }, {
+        received: this.handleLiveData
+      }
+    );
+
+    // this.sub.send({ text: "Test 3", id: 1 });
+    
+  }
+
+  handleLiveData = (data) => {
+    console.log(data);
+
+    if (data.attribute == "state") {
+      if (data.update == "device") {
+        // Find device to update
+        let elementsIndex = this.state.markers.findIndex(e => e.id == data.id);
+
+        // Make copy of markers
+        let newArray = [...this.state.markers];
+
+        // Update device
+        newArray[elementsIndex] = {
+          ...newArray[elementsIndex],
+          state: data.to
+        }
+
+        // Update state
+        this.setState({
+          markers: newArray,
+        });
+      }
+      if (data.update == "map_group") {
+        // Find map_groups to update
+        let elementsIndex = this.state.perimeters.findIndex(e => e.id == data.id);
+
+        // Make copy of perimeters
+        let newArray = [...this.state.perimeters];
+        let copyPath = newArray[elementsIndex].path
+
+        // Update map_groups
+        newArray[elementsIndex] = {
+          ...newArray[elementsIndex],
+          state: data.to
+        }
+        
+        newArray[elementsIndex] = {
+          ...newArray[elementsIndex],
+          path: [
+            { lat: 0.00, lng: 1.00 },
+            { lat: 0.00, lng: 1.00 }
+          ]
+        }
+
+        // Update state
+        this.setState({
+          perimeters: newArray,
+        }, () => {
+        
+          newArray[elementsIndex] = {
+            ...newArray[elementsIndex],
+            path: copyPath
+          }
+
+          // Update state
+          this.setState({
+            perimeters: newArray,
+          });
+        });
+      }
+    }
+    
   }
 
   handleKey(e) {
@@ -160,8 +240,8 @@ class GoogleMap extends React.Component {
   };
 
   placeMarker(coord, id = 0, name = "", state = "online") {
-    console.log("Coord:");
-    console.log(coord);
+    // console.log("Coord:");
+    // console.log(coord);
 
     const { latLng } = coord;
     const lat = latLng.lat();
@@ -251,14 +331,6 @@ class GoogleMap extends React.Component {
     />
   }
 
-  onMarkerDragEnd(coord, id, name, index, state) {
-    // Remove old entry
-    this.state.markers.splice(index, 1);
-
-    // Add updated entry
-    this.placeMarker(coord, id, name, state);
-  }
-
   drawPerimeter = (perimeter, index) => {
     return <Polyline
       key={index}
@@ -269,6 +341,109 @@ class GoogleMap extends React.Component {
       options={{ strokeColor: (perimeter.state == "online") ? "#42a5f5" : "red", strokeOpacity: 0.5, strokeWeight: 10, }}
       onClick={() => this.setPerIndex(index)}
     />
+  }
+
+  onMarkerDragEnd(coord, id, name, index, state) {
+    // Remove old entry
+    this.state.markers.splice(index, 1);
+
+    // Add updated entry
+    this.placeMarker(coord, id, name, state);
+  }
+
+  onDeviceDragged(device, perimeter) {
+    if (perimeter.id == 'root') {
+      // Todo: Publish to delete device from perimeter
+
+    } else {
+      // Device added to perimeter
+
+      let body = JSON.stringify({
+        MapGroupName: perimeter.title,
+        DeviceId: device.id,
+      });
+  
+      fetch('/client_groups/' + this.props.curr_client_group + '/add_device_to_map_group', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': this.props.auth_token,
+        },
+        body: body,
+      }).then(response => response.json())
+      .then(response => {
+          // console.log(response);
+      });
+    }
+  }
+
+  onDeviceClicked(e, isDevice, item) {
+    e.preventDefault();
+    
+    // console.log(e);
+    // console.log(item);
+
+    if (isDevice) {
+      this.setState({
+        deviceFromTreeSelected: true,
+        deviceFromTree: {
+          id: item.id,
+          name: item.title,
+          state: item.state,
+        },
+      });
+
+      // Find marker and show
+      
+    } else {
+      // Todo: Show perimeter info
+    }
+  }
+
+  updateDeviceState(deviceId, newState) {
+    // console.log("Here FINALLY!");
+
+    if (!deviceId || !newState) {
+      return;
+    }
+
+    let body = JSON.stringify({
+      DeviceId: deviceId,
+      DeviceState: newState,
+    });
+
+    fetch('/client_groups/' + this.props.curr_client_group + '/update_device_state', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': this.props.auth_token,
+      },
+      body: body,
+    }).then(response => response.json())
+    .then(response => {
+        // window.location.reload(false);
+        // console.log(response);
+
+        // Remove old entry
+        this.state.markers.splice(this.state.markerInfo.markerIndex, 1);
+
+        // Make call fit with other placeMarker calls
+        let coord = {
+          latLng: {
+            lat: () => { return this.state.markerInfo.position.lat},
+            lng: () => { return this.state.markerInfo.position.lng},
+          }
+        };
+
+        // Add updated entry
+        this.placeMarker(coord, this.state.markerInfo.id, this.state.markerInfo.title, newState);
+        
+        // Create Alarm entry
+        this.createAlarmEntry(deviceId, newState);
+
+        // Hide marker info window
+        this.hideInfo();
+    });
   }
 
   showInfo = (marker, index) => {
@@ -351,7 +526,7 @@ class GoogleMap extends React.Component {
       body: body,
     }).then(response => response.json())
     .then(response => {
-        console.log(response);
+        // console.log(response);
     });
   }
 
@@ -374,53 +549,7 @@ class GoogleMap extends React.Component {
     }).then(response => response.json())
     .then(response => {
       // trigger refresh
-      window.location.reload(false);
-    });
-  }
-
-  updateDeviceState(deviceId, newState) {
-    // console.log("Here FINALLY!");
-
-    if (!deviceId || !newState) {
-      return;
-    }
-
-    let body = JSON.stringify({
-      DeviceId: deviceId,
-      DeviceState: newState,
-    });
-
-    fetch('/client_groups/' + this.props.curr_client_group + '/update_device_state', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-Token': this.props.auth_token,
-      },
-      body: body,
-    }).then(response => response.json())
-    .then(response => {
-        // window.location.reload(false);
-        // console.log(response);
-
-        // Remove old entry
-        this.state.markers.splice(this.state.markerInfo.markerIndex, 1);
-
-        // Make call fit with other placeMarker calls
-        let coord = {
-          latLng: {
-            lat: () => { return this.state.markerInfo.position.lat},
-            lng: () => { return this.state.markerInfo.position.lng},
-          }
-        };
-
-        // Add updated entry
-        this.placeMarker(coord, this.state.markerInfo.id, this.state.markerInfo.title, newState);
-        
-        // Create Alarm entry
-        this.createAlarmEntry(deviceId, newState);
-
-        // Hide marker info window
-        this.hideInfo();
+      // window.location.reload(false);
     });
   }
 
@@ -454,6 +583,11 @@ class GoogleMap extends React.Component {
       // to update perimeter states after
       // a device state has been updated
       window.location.reload(false);
+
+      // At the moment the modal doesn't want to close??
+      // this.handleAckWindowClose();
+      // this.hideInfo();
+      // this.hidePerimInfo();
     });
   }
 
@@ -489,7 +623,7 @@ class GoogleMap extends React.Component {
       body: body,
     }).then(response => response.json())
     .then(response => {
-        console.log(response);
+        // console.log(response);
     });
   }
 
@@ -581,7 +715,7 @@ class GoogleMap extends React.Component {
       body: body,
     }).then(response => response.json())
     .then(response => {
-        console.log(response);
+        // console.log(response);
     });
   }
 
@@ -606,6 +740,10 @@ class GoogleMap extends React.Component {
     this.hideInfo();
   }
 
+  getMidpoint(p1, p2) {
+    return (p1 + p2) / 2;
+  }
+
   hidePerimInfo() {
     this.setState({
       showPerDel: false,
@@ -620,33 +758,6 @@ class GoogleMap extends React.Component {
       deviceFromTreeSelected: false,
       deviceFromTree: null,
     });
-  }
-
-  getMidpoint(p1, p2) {
-    return (p1 + p2) / 2;
-  }
-
-  onDeviceClicked(e, isDevice, item) {
-    e.preventDefault();
-    
-    // console.log(e);
-    // console.log(item);
-
-    if (isDevice) {
-      this.setState({
-        deviceFromTreeSelected: true,
-        deviceFromTree: {
-          id: item.id,
-          name: item.title,
-          state: item.state,
-        },
-      });
-
-      // Find marker and show
-      
-    } else {
-      // Todo: Show perimeter info
-    }
   }
 
   triggerPerimAdd(title = "Perimeter") {
@@ -692,6 +803,7 @@ class GoogleMap extends React.Component {
     this.props.map_groups.forEach(map_group => {
 
       devicesAndPerimeters.push({
+        id: map_group.id,
         title: map_group.Name,
         isDevice: false,
         treeIndex: 0,
@@ -731,6 +843,7 @@ class GoogleMap extends React.Component {
         perimeters: [
           ...this.state.perimeters,
           {
+            id: currPerim.id,
             name: currPerim.Name,
             path: [
               {
@@ -780,32 +893,6 @@ class GoogleMap extends React.Component {
         // console.log("Only added to tree: " + currDevice.Name);
         this.placeDevicesFromProps(i + 1);
       }
-    }
-  }
-
-  onDeviceDragged(device, perimeter) {
-    if (perimeter.id == 'root') {
-      // Todo: Publish to delete device from perimeter
-
-    } else {
-      // Device added to perimeter
-
-      let body = JSON.stringify({
-        MapGroupName: perimeter.title,
-        DeviceId: device.id,
-      });
-  
-      fetch('/client_groups/' + this.props.curr_client_group + '/add_device_to_map_group', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-Token': this.props.auth_token,
-        },
-        body: body,
-      }).then(response => response.json())
-      .then(response => {
-          console.log(response);
-      });
     }
   }
 
@@ -987,6 +1074,8 @@ class GoogleMap extends React.Component {
       content = this.alarmMarker();
     }
 
+    // Need to render InfoWindow contents manually via the DOM like this, otherwise
+    // the contents get loaded onPageLoad, meaning the onClicks won't work
     ReactDOM.render(React.Children.only(content), document.getElementById("actionsContainer"));
   }
 
@@ -1215,7 +1304,9 @@ class GoogleMap extends React.Component {
 
   render() {
     return (
-      <div className="wrapper" onKeyUp={this.handleKey}>
+      <div
+        className="wrapper"
+        onKeyUp={this.handleKey} >
 
         {
           this.props.curr_user_type != "Operator" && 
@@ -1464,12 +1555,7 @@ const elementsStyle = {
 };
 const elementsStyleBlank = {
   position: 'relative',
-  // width: '24.6vw',
-  // left: '60vw',
   height: '60vh',
-  // padding: 20,
-  // marginLeft: 5,
-  // borderRadius: 5,
 };
 const modalStyle = {
   position: 'relative',

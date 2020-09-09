@@ -59,18 +59,62 @@ module API
                 
                 if m.to_s[0...2] == "00"
                   @device.update_attribute(:state, "Legacy Alarm")
+
+                  send_action_cable_update(
+                    "device",
+                    @device.id,
+                    "state",
+                    "Legacy Alarm",
+                    @device.client_group.id
+                  )
+
                 elsif m.to_s[0...2] == "01"
                   @device.update_attribute(:state, "Climb Alarm")
+                  
+                  send_action_cable_update(
+                    "device",
+                    @device.id,
+                    "state",
+                    "Climb Alarm",
+                    @device.client_group.id
+                  )
+
                 elsif m.to_s[0...2] == "10"
                   @device.update_attribute(:state, "Cut Alarm")
+                  
+                  send_action_cable_update(
+                    "device",
+                    @device.id,
+                    "state",
+                    "Cut Alarm",
+                    @device.client_group.id
+                  )
+
                 elsif m.to_s[0...2] == "11"
                   @device.update_attribute(:state, "Climb and Cut Alarm")
+                  
+                  send_action_cable_update(
+                    "device",
+                    @device.id,
+                    "state",
+                    "Climb and Cut Alarm",
+                    @device.client_group.id
+                  )
+
                 end
 
                 # Update parimeter state
                 if @device.state.downcase.include?("alarm") && @device.map_group && !@device.map_group.state.downcase.include?("alarm")
                   @device.map_group.state = "alarm"
                   @device.map_group.save
+                  
+                  send_action_cable_update(
+                    "map_group",
+                    @device.map_group.id,
+                    "state",
+                    "alarm",
+                    @device.client_group.id
+                  )
                 end
 
                 # Todo: create Alarm entry (with acknowledged = false)
@@ -91,6 +135,14 @@ module API
                 if @device.state == "offline"
                   
                   @device.update_attribute(:state, "online")
+                  
+                  send_action_cable_update(
+                    "device",
+                    @device.id,
+                    "state",
+                    "online",
+                    @device.client_group.id
+                  )
 
                   # Update alarm entry
                   @alarm = Alarm.where(device_id: @device.id).where(acknowledged: false).where(state_change_from: "offline").last
@@ -137,12 +189,48 @@ module API
                 
                 if m.to_s[0...2] == "00"
                   @device.update_attribute(:state, "Legacy Alarm")
+
+                  send_action_cable_update(
+                    "device",
+                    @device.id,
+                    "state",
+                    "Legacy Alarm",
+                    @device.client_group.id
+                  )
+
                 elsif m.to_s[0...2] == "01"
                   @device.update_attribute(:state, "Climb Alarm")
+
+                  send_action_cable_update(
+                    "device",
+                    @device.id,
+                    "state",
+                    "Climb Alarm",
+                    @device.client_group.id
+                  )
+                  
                 elsif m.to_s[0...2] == "10"
                   @device.update_attribute(:state, "Cut Alarm")
+
+                  send_action_cable_update(
+                    "device",
+                    @device.id,
+                    "state",
+                    "Cut Alarm",
+                    @device.client_group.id
+                  )
+                  
                 elsif m.to_s[0...2] == "11"
                   @device.update_attribute(:state, "Climb and Cut Alarm")
+
+                  send_action_cable_update(
+                    "device",
+                    @device.id,
+                    "state",
+                    "Climb and Cut Alarm",
+                    @device.client_group.id
+                  )
+                  
                 end
 
                 # Update parimeter state
