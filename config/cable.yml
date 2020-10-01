@@ -3,10 +3,10 @@ development:
   adapter: redis
   url: redis://localhost:6379/1
 
-test:
-  adapter: async
-
 production:
   adapter: redis
-  url: redis://localhost:6379/1
-  channel_prefix: Wi_I_Cloud_production
+  url: redis://redistogo:9c6d1c73483de26ea5e7f3513bbf8141@pike.redistogo.com:11841/
+  # channel_prefix: Wi_I_Cloud_production
+
+test:
+  adapter: async
