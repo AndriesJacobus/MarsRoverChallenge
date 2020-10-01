@@ -74,8 +74,13 @@ class ClientGroupsController < ApplicationController
           :endLat => params[:MapGroupEndLat],
           :state => params[:MapGroupState],
         )
-
+        
         @client_group.map_groups << @map_group
+
+        # Set client group location if not set already
+        if @client_group.longitude == nil || @client_group.latitude == nil
+          @client_group.update_attributes(:longitude => params[:MapGroupStartLon], :latitude => params[:MapGroupStartLat])
+        end
 
         respond_to do |format|
           msg = { :status => "ok", :message => "Perimeter map_group successfully added to client_group" }
@@ -94,8 +99,13 @@ class ClientGroupsController < ApplicationController
           :endLat => params[:MapGroupEndLat],
           :state => params[:MapGroupState],
         )
-
+        
         @client_group.map_groups << @map_group
+
+        # Set client group location if not set already
+        if @client_group.longitude == nil || @client_group.latitude == nil
+          @client_group.update_attributes(:longitude => params[:MapGroupStartLon], :latitude => params[:MapGroupStartLat])
+        end
 
         respond_to do |format|
           msg = { :status => "ok", :message => "Perimeter map_group successfully added to client_group" }
