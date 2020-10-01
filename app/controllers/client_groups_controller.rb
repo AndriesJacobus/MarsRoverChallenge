@@ -580,6 +580,8 @@ class ClientGroupsController < ApplicationController
         :Name,
         :SigfoxGroupID,       
         :SigfoxGroupName,
+        :longitude,
+        :latitude,
         :MapGroupName,
         :MapGroupStartLon,
         :MapGroupStartLat,
