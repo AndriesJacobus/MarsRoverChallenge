@@ -3,5 +3,5 @@ class ClientGroup < ApplicationRecord
 
     has_many :map_groups
     has_many :devices
-    has_many :logs
+    has_many :logs, dependent: :nullify
 end
