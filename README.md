@@ -47,11 +47,11 @@ together with webpack for automatic reloads when updating React code (in another
 ### Pushing Updates
 To push updates to Heroku:
 
-1. Precompile all assets locally:  
+1. Precompile all assets locally:
    ```
    RAILS_ENV=production rake assets:precompile
    ```
-2. Precompile webserver assets locally:  
+2. Precompile webserver assets locally:
    ```
    RAILS_ENV=production bundle exec rails webpacker:compile
    ```
@@ -67,6 +67,19 @@ To push updates to Heroku:
    ```
    git push heroku master
    ```
+
+### Note: Problems after Updates
+If after an update there are problems like pages not being loaded or being loaded with errors try the following (before logging a bug):
+
+1. In your project directory (local), run:
+   ```
+   rm -r public
+   ```
+2. Precompile all assets locally (again):
+   ```
+   RAILS_ENV=production bundle exec rails webpacker:compile
+   ```
+3. Follow steps 3. to 5. in the **Pushing Updates** section above
 
 ---
 
