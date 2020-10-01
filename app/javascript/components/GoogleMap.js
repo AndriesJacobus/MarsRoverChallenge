@@ -114,7 +114,8 @@ class GoogleMap extends React.Component {
 
     // Setup ActionCable
 
-    let cable = ActionCable.createConsumer('ws://localhost:3000/cable')
+    // let cable = ActionCable.createConsumer('ws://localhost:3000/cable');
+    let cable = ActionCable.createConsumer(this.props.cable_url);
     this.sub = cable.subscriptions.create({
         channel: 'LiveMapChannel',
         id: this.props.curr_client_group
