@@ -117,7 +117,7 @@ module API
                   )
                 end
 
-                # Todo: create Alarm entry (with acknowledged = false)
+                # Create Alarm entry (with acknowledged = false)
                 # to be updated later when alarms are acknowledged
 
                 @alarm = Alarm.new(
@@ -239,7 +239,7 @@ module API
                   @device.map_group.save
                 end
 
-                # Todo: create Alarm entry (with acknowledged = false)
+                # Create Alarm entry (with acknowledged = false)
                 # to be updated later when alarms are acknowledged
 
                 @alarm = Alarm.new(
