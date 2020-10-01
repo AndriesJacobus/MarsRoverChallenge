@@ -156,6 +156,14 @@ class ClientGroupsController < ApplicationController
 
             @old_perimeter.state = @old_perimeter_new_state
             @old_perimeter.save
+                  
+            send_action_cable_update(
+              "map_group",
+              @old_perimeter.id,
+              "state",
+              @old_perimeter_new_state,
+              @client_group.id
+            )
 
           end
 
@@ -170,6 +178,14 @@ class ClientGroupsController < ApplicationController
           if @device.state.downcase.include?("alarm")
             @map_group.state = "alarm"
             @map_group.save
+                  
+            send_action_cable_update(
+              "map_group",
+              @map_group.id,
+              "state",
+              "alarm",
+              @client_group.id
+            )
           end
   
           message = "Device '#{@device.Name}' " + 
@@ -268,7 +284,6 @@ class ClientGroupsController < ApplicationController
       if @map_group
         # Update perimeter state
         @map_group.update_attribute(:state, params[:MapGroupState])
-        # ActionCable.server.broadcast("live_map_1", "Hello World")
 
         # Send action cable message to update relevant map_group's state
         data = {

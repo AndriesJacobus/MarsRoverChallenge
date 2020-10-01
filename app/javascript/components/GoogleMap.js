@@ -150,6 +150,7 @@ class GoogleMap extends React.Component {
           markers: newArray,
         });
       }
+
       if (data.update == "map_group") {
         // Find map_groups to update
         let elementsIndex = this.state.perimeters.findIndex(e => e.id == data.id);
@@ -190,6 +191,8 @@ class GoogleMap extends React.Component {
             perimeters: newArray,
           });
         });
+
+        // Todo: update tree
       }
     }
     
@@ -554,6 +557,8 @@ class GoogleMap extends React.Component {
     .then(response => {
       // trigger refresh
       // window.location.reload(false);
+      this.handleAckWindowClose();
+      this.hidePerimInfo();
     });
   }
 

@@ -10,6 +10,19 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def send_action_cable_update(update_type, id, attribute, new_attribute, client_group_id)
+            
+    # Send action cable message to update relevant device's state
+    data = {
+      update: update_type,
+      id: id,
+      attribute: attribute,
+      to: new_attribute,
+    }
+    ActionCable.server.broadcast("live_map_#{client_group_id}", data.as_json)
+
+  end
+
   def authorize_user
     #redirects to home page
     redirect_to root_path, flash: {warning: 'Please log in before viewing this page' } unless current_user

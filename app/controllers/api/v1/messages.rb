@@ -233,12 +233,6 @@ module API
                   
                 end
 
-                # Update parimeter state
-                if @device.state.downcase.include?("alarm") && @device.map_group && !@device.map_group.state.downcase.include?("alarm")
-                  @device.map_group.state = "alarm"
-                  @device.map_group.save
-                end
-
                 # Create Alarm entry (with acknowledged = false)
                 # to be updated later when alarms are acknowledged
 
