@@ -83,7 +83,7 @@ class ClientGroupsController < ApplicationController
         end
 
         respond_to do |format|
-          msg = { :status => "ok", :message => "Perimeter map_group successfully added to client_group" }
+          msg = { :status => "ok", :message => "Perimeter map_group successfully added to client_group", :map_group_id => @map_group.id }
           format.json  { render :json => msg }
         end
 
@@ -108,7 +108,7 @@ class ClientGroupsController < ApplicationController
         end
 
         respond_to do |format|
-          msg = { :status => "ok", :message => "Perimeter map_group successfully added to client_group" }
+          msg = { :status => "ok", :message => "Perimeter map_group successfully added to client_group", :map_group_id => @map_group.id }
           format.json  { render :json => msg }
         end
 

@@ -652,31 +652,6 @@ class GoogleMap extends React.Component {
     }
   }
 
-  pushNewPerimeterAndClear() {
-    // Get per name
-    var perName = this.generatePerName();
-
-    this.setState({
-      perimeters: [
-        ...this.state.perimeters,
-        {
-          name: perName,
-          path: [
-            this.state.newPerimeterStart,
-            this.state.newPerimeterEnd,
-          ],
-          state: "online",
-        }
-      ],
-    });
-
-    // Todo: add perim state
-    this.triggerPerimAdd(perName);
-    this.toggleDrawPerimeter();
-
-    this.publishNewPerim(this.state.perimeters[this.state.perimeters.length - 1]);
-  }
-
   generatePerName(){
     let perI = 1;
     let visited = [];
@@ -705,6 +680,43 @@ class GoogleMap extends React.Component {
     return "Perimeter " + perI;
   }
 
+  pushNewPerimeterAndClear() {
+    // Get per name
+    var perName = this.generatePerName();
+
+    let newPerim = {
+      name: perName,
+      path: [
+        this.state.newPerimeterStart,
+        this.state.newPerimeterEnd,
+      ],
+      state: "online",
+    }
+
+    this.publishNewPerim(newPerim);
+
+    // this.publishNewPerim(this.state.perimeters[this.state.perimeters.length - 1]);
+
+    // this.setState({
+    //   perimeters: [
+    //     ...this.state.perimeters,
+    //     {
+    //       name: perName,
+    //       path: [
+    //         this.state.newPerimeterStart,
+    //         this.state.newPerimeterEnd,
+    //       ],
+    //       state: "online",
+    //     }
+    //   ],
+    // });
+
+    // // Todo: add perim state
+    // this.triggerPerimAdd(perName);
+    // this.toggleDrawPerimeter();
+
+  }
+
   publishNewPerim(perimeter) {
     let body = JSON.stringify({
       MapGroupName: perimeter.name,
@@ -724,8 +736,29 @@ class GoogleMap extends React.Component {
       body: body,
     }).then(response => response.json())
     .then(response => {
-        // console.log(response);
+        console.log(response);
+
+        this.addNewPerimToMap(perimeter, response.map_group_id);
     });
+  }
+
+  addNewPerimToMap(_perimeter, _id) {
+    this.setState({
+      perimeters: [
+        ...this.state.perimeters,
+        {
+          id: _id,
+          name: _perimeter.name,
+          title: _perimeter.name,
+          path: _perimeter.path,
+          state: _perimeter.state,
+        }
+      ],
+    });
+
+    // Todo: add perim state
+    this.triggerPerimAdd(_perimeter.name, _id);
+    this.toggleDrawPerimeter();
   }
 
   setPerIndex(index) {
@@ -769,11 +802,14 @@ class GoogleMap extends React.Component {
     });
   }
 
-  triggerPerimAdd(title = "Perimeter") {
+  triggerPerimAdd(_title = "Perimeter", _id = 0) {
     this.tree.addNewNode({
-      treeIndex: 0,
-      title: title,
+      title: _title,
+      id: _id,
       isDevice: false,
+      treeIndex: 0,
+      children: [],
+      state: "online",
     });
   }
 
@@ -1334,6 +1370,7 @@ class GoogleMap extends React.Component {
           zoom={8}
           style={
             (this.props.curr_user_type == "Operator") ? mapStylesOperator : mapStyles
+            // mapStyles
           }
           initialCenter={{ 
             lat: this.props.map_lat,
@@ -1535,7 +1572,7 @@ const mapStylesOperator = {
   // top: "-15%",
   left: 0,
   position: "fixed",
-  width: "100vw",
+  width: "100%",
   height:  "75%",
 };
 const infoTitle = {
@@ -1580,6 +1617,7 @@ const elementsStyle = {
 const elementsStyleBlank = {
   position: 'relative',
   height: '60vh',
+  width: 0,
 };
 const modalStyle = {
   position: 'relative',
