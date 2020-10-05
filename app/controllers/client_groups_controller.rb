@@ -508,16 +508,16 @@ class ClientGroupsController < ApplicationController
 
       respond_to do |format|
         if @client_group.save
-          format.html { redirect_to client_groups_path, flash: {success: 'Client was successfully added' } }
+          format.html { redirect_to @client_group, flash: {success: 'Site was successfully linked' } }
           format.json { render :index, status: :created, location: current_device }
         else
-          format.html { redirect_to client_groups_path, flash: {warning: 'Client could not be added' } }
+          format.html { redirect_to @client_group, flash: {warning: 'Site could not be linked' } }
           format.json { head :no_content }
         end
       end
     else
       respond_to do |format|
-        format.html { redirect_to client_groups_path, flash: {warning: 'Client could not be added' } }
+        format.html { redirect_to client_groups_path, flash: {warning: 'Site could not be linked' } }
         format.json { head :no_content }
       end
     end

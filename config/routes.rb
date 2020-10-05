@@ -5,8 +5,11 @@ Rails.application.routes.draw do
   resources :logs
   root 'home#index'
 
-  resources :client_groups
   resources :clients
+  # resources :sites, controller: "clients"
+  # get "/clients", to: redirect("/sites")
+
+  resources :client_groups
   resources :map_groups
   resources :devices
   resources :messages

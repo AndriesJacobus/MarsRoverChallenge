@@ -6,8 +6,8 @@
         <th>Name</th>
         <th style = "white-space: nowrap; padding-right: 35px;">Sigfox Group ID</th>
         <th style = "white-space: nowrap; padding-right: 35px;">Sigfox Group Name</th>
-        <th style = "white-space: nowrap; padding-right: 35px;">Client Name</th>
-        <th style = "white-space: nowrap; padding-right: 35px;">Client DeviceType</th>
+        <th style = "white-space: nowrap; padding-right: 35px;">Site Name</th>
+        <th style = "white-space: nowrap; padding-right: 35px;">Site DeviceType ID</th>
         <th colspan="4"></th>
       </tr>
     </thead>
@@ -26,12 +26,16 @@
           <% end %>
 
           <% if !client_group.client.nil? %>
-            <td style = "padding-right: 35px;"><%= client_group.client.SigfoxDeviceTypeName %></td>
+            <td style = "padding-right: 35px;"><%= client_group.client.SigfoxDeviceTypeID %></td>
           <% else %>
             <td style = "padding-right: 35px;"><i>N/A</i></td>
           <% end %>
 
-          <td><%= link_to 'Link Group', set_client_group_for_device_path(:ClientGroupID => client_group.id, :id => @device.id), class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
+          <% if @device.client_group.id != client_group.id %>
+            <td><%= link_to 'Link Group', set_client_group_for_device_path(:ClientGroupID => client_group.id, :id => @device.id), class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
+          <% else %>
+            <td><i>Currently Selected</i></td>
+          <% end %>
           
         </tr>
       <% end %>

@@ -34,6 +34,7 @@ class ClientsController < ApplicationController
   # POST /clients
   # POST /clients.json
   def create
+    # Todo: check to see if SigfoxDeviceTypeID is unique
     @client = Client.new(client_params)
 
     respond_to do |format|

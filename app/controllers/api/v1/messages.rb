@@ -51,6 +51,15 @@ module API
                 @device.update_attribute(:SigfoxDeviceTypeID, permitted_params[:callback_data][:sigfox_device_type_id])
               end
 
+              # See if we can automatically link a Client Site with this device
+              if @device.client_group.nil? && permitted_params[:callback_data][:sigfox_device_type_id]
+                # Create new client group that is linked with the correct client
+                # and link the device to the new client group
+                
+                client_and_client_group_quick_setup(@device.id, permitted_params[:callback_data][:sigfox_device_type_id])
+              end
+
+              # Set device and map_group states
               if @message.Data.to_s[0...2] == "52"
                 # Update device state to alarm (not a keepalive)
                 
@@ -180,7 +189,16 @@ module API
               
               @device.messages << @message
               @device.save
-              
+
+              # See if we can automatically link a Client Site with this device
+              if permitted_params[:callback_data][:sigfox_device_type_id]
+                # Create new client group that is linked with the correct client
+                # and link the device to the new client group
+                
+                client_and_client_group_quick_setup(@device.id, permitted_params[:callback_data][:sigfox_device_type_id])
+              end
+
+              # Set device and map_group states
               if @message.Data.to_s[0...2] == "52"
                 # Update device state to alarm (not a keepalive)
                 

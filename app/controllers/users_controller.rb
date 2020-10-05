@@ -66,16 +66,16 @@ class UsersController < ApplicationController
 
       respond_to do |format|
         if @user.save
-          format.html { redirect_to users_path, flash: {success: 'Client was successfully added' } }
+          format.html { redirect_to @user, flash: {success: 'Site was successfully linked' } }
           format.json { render :index, status: :created, location: current_device }
         else
-          format.html { redirect_to users_path, flash: {warning: 'Client could not be added' } }
+          format.html { redirect_to @user, flash: {warning: 'Site could not be linked' } }
           format.json { head :no_content }
         end
       end
     else
       respond_to do |format|
-        format.html { redirect_to users_path, flash: {warning: 'Client could not be added' } }
+        format.html { redirect_to users_path, flash: {warning: 'Site could not be linked' } }
         format.json { head :no_content }
       end
     end
