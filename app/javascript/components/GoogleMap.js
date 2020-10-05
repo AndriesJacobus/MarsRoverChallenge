@@ -591,7 +591,7 @@ class GoogleMap extends React.Component {
       // but in future what is still needed is
       // to update perimeter states after
       // a device state has been updated
-      window.location.reload(false);
+      // window.location.reload(false);
 
       // At the moment the modal doesn't want to close??
       // this.handleAckWindowClose();
