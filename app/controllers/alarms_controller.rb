@@ -42,16 +42,14 @@ class AlarmsController < ApplicationController
       @alarms = Alarm.all
 
     else
-      # Todo: filter Alarms to show only those with the same 'client'
-      #       tag as the current Admin
+      # Filter Alarms to show only those with the same 'client' tag as the current Admin
       @alarms = []
 
       Alarm.all.each do |alarm|
-        if alarm.device && alarm.device.client_group &&  alarm.device.client_group.client == current_user.client
+        if alarm.device && alarm.device.client_group && alarm.device.client_group.client == current_user.client
           @alarms << alarm
         end
       end
-
     end
 
     @alarms.each do |alarm|
@@ -62,6 +60,34 @@ class AlarmsController < ApplicationController
         user_id: current_user.id,
         state_change_to: "online",
       )
+
+      # Update livemaps if needed
+      if alarm.device && alarm.device.client_group && alarm.device.map_group
+        # Update device's live state
+        alarm.device.update_attribute(:state, "online")
+
+        data = {
+          "update": "device",
+          "id": alarm.device.id,
+          "attribute": "state",
+          "to": "online",
+        }
+        ActionCable.server.broadcast("live_map_#{alarm.device.client_group.id}", data.as_json)
+        
+        # Update device's live mapgroup state
+        if alarm.device.map_group.state != "online"
+          alarm.device.map_group.update_attribute(:state, "online")
+
+          data = {
+            "update": "map_group",
+            "id": alarm.device.map_group.id,
+            "attribute": "state",
+            "to": "online",
+          }
+
+          ActionCable.server.broadcast("live_map_#{alarm.device.client_group.id}", data)
+        end
+      end
     end
 
     respond_to do |format|
