@@ -8,7 +8,7 @@
         <th style = "white-space: nowrap; padding-right: 35px;">Surname</th>
         <th style = "white-space: nowrap; padding-right: 35px;">Type</th>
         <th style = "white-space: nowrap; padding-right: 35px;">Site Name</th>
-        <th style = "white-space: nowrap; padding-right: 35px;">Site DeviceType</th>
+        <th style = "white-space: nowrap; padding-right: 35px;">Site DeviceType ID</th>
         <th colspan="3"></th>
       </tr>
     </thead>
@@ -28,7 +28,7 @@
           <% end %>
 
           <% if !user.client.nil? %>
-            <td style = "padding-right: 35px;"><%= user.client.SigfoxDeviceTypeName %></td>
+            <td style = "padding-right: 35px;"><%= user.client.SigfoxDeviceTypeID %></td>
           <% else %>
             <td style = "padding-right: 35px;"><i>N/A</i></td>
           <% end %>

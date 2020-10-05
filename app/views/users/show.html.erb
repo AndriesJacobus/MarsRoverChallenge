@@ -36,7 +36,7 @@
         <p class = "cardSubTitle">Client Information:</p>
 
         <p>
-          <strong>Client Name:</strong><br/>
+          <strong>Site Name:</strong><br/>
           <% if !@user.client.nil? %>
             <%= @user.client.Name %>
           <% else %>
@@ -47,9 +47,9 @@
         <br/>
         
         <p>
-          <strong>Client DeviceType:</strong><br/>
+          <strong>Site DeviceType ID:</strong><br/>
           <% if !@user.client.nil? %>
-            <%= @user.client.SigfoxDeviceTypeName %>
+            <%= @user.client.SigfoxDeviceTypeID %>
           <% else %>
             <i>N/A</i>
           <% end %>

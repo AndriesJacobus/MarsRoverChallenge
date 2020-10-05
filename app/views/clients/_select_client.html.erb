@@ -6,8 +6,8 @@
         <th>Name</th>
         <th style = "white-space: nowrap; padding-left: 35px;">Longitude</th>
         <th style = "white-space: nowrap; padding-left: 35px;">Latitude</th>
-        <th>SigfoxDeviceTypeID</th>
-        <th>SigfoxDeviceTypeName</th>
+        <th style = "white-space: nowrap; padding-left: 35px;">Sigfox DeviceType ID</th>
+        <th style = "white-space: nowrap; padding-left: 35px;">Sigfox DeviceType Name</th>
         <th colspan="3"></th>
       </tr>
     </thead>
@@ -24,8 +24,8 @@
             N/A
           </td>
 
-          <td><%= client.SigfoxDeviceTypeID %></td>
-          <td><%= client.SigfoxDeviceTypeName %></td>
+          <td style = "padding-left: 35px;"><%= client.SigfoxDeviceTypeID %></td>
+          <td style = "padding-left: 35px;"><%= client.SigfoxDeviceTypeName %></td>
 
           <% if @client_group %>
             <% if @client_group.client.id != client.id %>
