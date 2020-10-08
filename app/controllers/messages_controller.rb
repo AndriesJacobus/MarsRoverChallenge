@@ -145,7 +145,6 @@ class MessagesController < ApplicationController
     # Create log entry
     @log = Log.new(trigger_by_bot: "message_bot", action_type: "message_deleted")
     @log.user = current_user
-    @log.message = @message
     @log.save
     
     @message.destroy
@@ -153,6 +152,44 @@ class MessagesController < ApplicationController
       format.html { redirect_to messages_url, flash: {warning: 'Message was successfully deleted' } }
       format.json { head :no_content }
     end
+  end
+
+  # DELETE /delete_all_messages
+  def delete_all_messages
+    
+    if !(current_user.usertype == "Sysadmin" || current_user.usertype == "Client Admin")
+
+      # Create log entry
+      @log = Log.new(trigger_by_bot: "message_bot", action_type: "all_messages_delete_blocked")
+      @log.user = current_user
+      @log.message = @message
+      @log.save
+
+      respond_to do |format|
+        format.html { redirect_to messages_url, flash: {warning: 'Only Admin users can perform this operation. A log has been made of your attempt' } }
+        format.json { head :no_content }
+      end
+
+    else
+      
+      # Create log entry
+      @log = Log.new(trigger_by_bot: "message_bot", action_type: "all_messages_deleted")
+      @log.user = current_user
+      @log.save
+
+      @messages = Message.all
+        
+      @messages.each do |message|
+        message.destroy
+      end
+      
+      respond_to do |format|
+        format.html { redirect_to messages_url, flash: {warning: 'Messages successfully deleted' } }
+        format.json { head :no_content }
+      end
+
+    end
+
   end
 
   # 

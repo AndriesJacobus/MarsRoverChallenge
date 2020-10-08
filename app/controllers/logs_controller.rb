@@ -65,6 +65,43 @@ class LogsController < ApplicationController
     end
   end
 
+  # DELETE /delete_all_logs
+  def delete_all_logs
+    
+    if !(current_user.usertype == "Sysadmin" || current_user.usertype == "Client Admin")
+
+      # Create log entry
+      @log = Log.new(trigger_by_bot: "log_bot", action_type: "all_logs_delete_blocked")
+      @log.user = current_user
+      @log.save
+
+      respond_to do |format|
+        format.html { redirect_to logs_url, flash: {warning: 'Only Admin users can perform this operation. A log has been made of your attempt' } }
+        format.json { head :no_content }
+      end
+
+    else
+      
+      @logs = Log.all
+      
+      @logs.each do |log|
+        log.destroy
+      end
+      
+      # Create log entry
+      @log = Log.new(trigger_by_bot: "log_bot", action_type: "all_logs_deleted")
+      @log.user = current_user
+      @log.save
+      
+      respond_to do |format|
+        format.html { redirect_to logs_url, flash: {warning: 'Logs successfully deleted' } }
+        format.json { head :no_content }
+      end
+
+    end
+
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_log

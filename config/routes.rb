@@ -35,8 +35,10 @@ Rails.application.routes.draw do
   get '/set_client_for_user', to: 'users#set_client_for_user', as: 'set_client_for_user'
   get '/set_client_group_for_device', to: 'devices#set_client_group_for_device', as: 'set_client_group_for_device'
 
-  delete '/delete_all_alarms', to: 'alarms#delete_all_alarms', as: 'delete_all_alarms'
   post '/acknowledge_all_alarms', to: 'alarms#acknowledge_all_alarms', as: 'acknowledge_all_alarms'
+  delete '/delete_all_alarms', to: 'alarms#delete_all_alarms', as: 'delete_all_alarms'
+  delete '/delete_all_messages', to: 'messages#delete_all_messages', as: 'delete_all_messages'
+  delete '/delete_all_logs', to: 'logs#delete_all_logs', as: 'delete_all_logs'
   
   get 'signup', to: 'users#new', as: 'signup'
   get 'login', to: 'sessions#new', as: 'login'

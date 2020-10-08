@@ -1,5 +1,34 @@
 <h3><u><%= @client_group.Name %> MapView</u></h3>
 
+<% if (current_user.usertype != "Operator" && ( @client_group.latitude.nil? || @client_group.longitude.nil? )) %>
+    <br/>
+    
+    <div class = "tip" style = "font-style: italic; color: grey; border-style: dashed; border-size: 1px; border-radius: 10px; padding: 15px;">
+
+        <button
+            class= "waves-effect waves-light blue lighten-1 btn-small white-text"
+            onclick="$('.tip').hide(250, 'linear', null);"
+            style = "float: right;" >
+            Close
+        </button>
+
+        <p>Please note: No location has been set for this Group yet.</p>
+        <p>To set a location, either:</p>
+        <ol>
+            <li>
+                Place a device:<br/>
+                - Click on a device from the list to the right of the map<br/>
+                - Click the map to set the location for the device as well as the Group<br/>
+            </li>
+            <li>
+                Create a perimeter:<br/>
+                - Click the "Draw Perimeter" button<br/>
+                - Click the map to set the start, and then the end of the perimeter<br/>
+            </li>
+        </ol>
+    </div>
+<% end %>
+
 <br/>
 <br/>
 

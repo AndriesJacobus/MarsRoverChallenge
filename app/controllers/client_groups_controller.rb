@@ -2,6 +2,8 @@ class ClientGroupsController < ApplicationController
   before_action :set_client_group, only: [:show, :edit, :update, :destroy]
   before_action :authorize_user, only: :index
 
+  @show_banner = false
+
   # GET /client_groups
   # GET /client_groups.json
   def index

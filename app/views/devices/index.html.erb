@@ -39,7 +39,7 @@
           <td style = "padding-left: 25px;"><%= device.Latitude %></td>
           <td style = "padding-left: 25px;"><%= device.SigfoxDeviceTypeID %></td>
 
-          <% if !device.client_group.client.nil? %>
+          <% if !device.client_group.nil? && !device.client_group.client.nil? %>
             <td style = "padding-left: 35px;"><%= device.client_group.client.Name %></td>
           <% else %>
             <td style = "padding-left: 35px;"><i>N/A</i></td>
