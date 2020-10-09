@@ -31,7 +31,7 @@
             <td style = "padding-right: 35px;"><i>N/A</i></td>
           <% end %>
 
-          <% if @device.client_group.id != client_group.id %>
+          <% if !@device.client_group.nil? && @device.client_group.id != client_group.id %>
             <td><%= link_to 'Link Group', set_client_group_for_device_path(:ClientGroupID => client_group.id, :id => @device.id), class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
           <% else %>
             <td><i>Currently Selected</i></td>
