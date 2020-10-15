@@ -7,7 +7,8 @@ class AlarmsController < ApplicationController
   def index
     # Only Admins can view index
     if current_user.usertype == "Sysadmin"
-      @alarms = Alarm.all
+      @alarms = Alarm.all.sort_by &:created_at
+      @alarms.reverse!
     else
       # Todo: filter Alarms to show only those with the same 'client'
       #       tag as the current Admin
@@ -18,6 +19,9 @@ class AlarmsController < ApplicationController
           @alarms << alarm
         end
       end
+
+      @alarms.sort_by &:created_at
+      @alarms.reverse!
     end
   end
 
