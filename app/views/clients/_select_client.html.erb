@@ -28,17 +28,21 @@
           <td style = "padding-left: 35px;"><%= client.SigfoxDeviceTypeName %></td>
 
           <% if @client_group %>
+
             <% if @client_group.client.nil? || @client_group.client.id != client.id %>
               <td><%= link_to 'Link Site', set_client_for_client_group_path(:ClientID => client.id, :id => @client_group.id), class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
             <% else %>
               <td><i>Currently Selected</i></td>
             <% end %>
-          <% elsif @user && @user.client %>
-            <% if @user.client.id != client.id %>
+
+          <% elsif @user %>
+
+            <% if @user.client.nil? || @user.client.id != client.id %>
               <td><%= link_to 'Link Site', set_client_for_user_path(:ClientID => client.id, :id => @user.id), class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
             <% else %>
               <td><i>Currently Selected</i></td>
             <% end %>
+
           <% end %>
           
         </tr>
