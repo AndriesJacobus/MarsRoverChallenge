@@ -4,7 +4,15 @@ class ClientDetailsController < ApplicationController
   # GET /client_details
   # GET /client_details.json
   def index
-    @client_details = ClientDetail.all
+    # Only Admins can view index
+    if current_user.usertype == "Sysadmin"
+      @client_details = ClientDetail.all
+    elsif current_user.usertype == "Client Admin"
+      @client_details = ClientDetail.all
+    else
+      # redirect_to root_path, flash: {warning: 'Please log in as an Admin before viewing this page' }
+      redirect_to root_path, flash: {warning: 'Please log in before viewing this page' }
+    end
   end
 
   # GET /client_details/1
