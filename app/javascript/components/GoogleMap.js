@@ -1377,6 +1377,7 @@ class GoogleMap extends React.Component {
             lng: this.props.map_lng,
           }}
           mapTypeControl={true}
+          mapType={"hybrid"}
           streetViewControl={true}
           onClick={this.onClick} >
 

@@ -15,7 +15,7 @@ class SessionsController < ApplicationController
       # Set session
       session[:user_id] = user.id
 
-      if user.usertype == "Operator" && user.client.client_groups.first
+      if user.usertype == "Operator" && user.client && user.client.client_groups && user.client.client_groups.first
         redirect_to "/client_groups/#{user.client.client_groups.first.id}/map_view", flash: {success: "Logged in" }
       else
         redirect_to root_path, flash: {success: "Logged in" }
