@@ -45,6 +45,7 @@ module API
 
             if @device
               @device.messages << @message
+              @device.save
 
               # Update device with message info, if not present
               if !@device.SigfoxDeviceTypeID || @device.SigfoxDeviceTypeID == ""
@@ -65,51 +66,41 @@ module API
                 
                 m = @message.Data.to_s[13...14]   # Ignore first nibble between 12 and 13
                 m = m.hex.to_s(2).rjust(m.size*4, '0')
+
+                alarm_type = ""
                 
                 if m.to_s[0...2] == "00"
                   @device.update_attribute(:state, "Legacy Alarm")
 
-                  send_action_cable_update(
-                    "device",
-                    @device.id,
-                    "state",
-                    "Legacy Alarm",
-                    @device.client_group.id
-                  )
+                  alarm_type = "Legacy Alarm"
 
                 elsif m.to_s[0...2] == "01"
                   @device.update_attribute(:state, "Climb Alarm")
-                  
-                  send_action_cable_update(
-                    "device",
-                    @device.id,
-                    "state",
-                    "Climb Alarm",
-                    @device.client_group.id
-                  )
+
+                  alarm_type = "Climb Alarm"
 
                 elsif m.to_s[0...2] == "10"
                   @device.update_attribute(:state, "Cut Alarm")
-                  
-                  send_action_cable_update(
-                    "device",
-                    @device.id,
-                    "state",
-                    "Cut Alarm",
-                    @device.client_group.id
-                  )
+
+                  alarm_type = "Cut Alarm"
 
                 elsif m.to_s[0...2] == "11"
                   @device.update_attribute(:state, "Climb and Cut Alarm")
-                  
+
+                  alarm_type = "Climb and Cut Alarm"
+
+                end
+
+                if @device.client_group
+                  # Update live maps if the sigfox_device_type_id was given
+                  # and thus a client_group was made for the device
                   send_action_cable_update(
                     "device",
                     @device.id,
                     "state",
-                    "Climb and Cut Alarm",
+                    alarm_type,
                     @device.client_group.id
                   )
-
                 end
 
                 # Update parimeter state
@@ -204,51 +195,41 @@ module API
                 
                 m = @message.Data.to_s[13...14]   # Ignore first nibble between 12 and 13
                 m = m.hex.to_s(2).rjust(m.size*4, '0')
+
+                alarm_type = ""
                 
                 if m.to_s[0...2] == "00"
                   @device.update_attribute(:state, "Legacy Alarm")
 
-                  send_action_cable_update(
-                    "device",
-                    @device.id,
-                    "state",
-                    "Legacy Alarm",
-                    @device.client_group.id
-                  )
+                  alarm_type = "Legacy Alarm"
 
                 elsif m.to_s[0...2] == "01"
                   @device.update_attribute(:state, "Climb Alarm")
 
-                  send_action_cable_update(
-                    "device",
-                    @device.id,
-                    "state",
-                    "Climb Alarm",
-                    @device.client_group.id
-                  )
+                  alarm_type = "Climb Alarm"
                   
                 elsif m.to_s[0...2] == "10"
                   @device.update_attribute(:state, "Cut Alarm")
 
-                  send_action_cable_update(
-                    "device",
-                    @device.id,
-                    "state",
-                    "Cut Alarm",
-                    @device.client_group.id
-                  )
+                  alarm_type = "Cut Alarm"
                   
                 elsif m.to_s[0...2] == "11"
                   @device.update_attribute(:state, "Climb and Cut Alarm")
 
+                  alarm_type = "Climb and Cut Alarm"
+                  
+                end
+
+                if @device.client_group
+                  # Update live maps if the sigfox_device_type_id was given
+                  # and thus a client_group was made for the device
                   send_action_cable_update(
                     "device",
                     @device.id,
                     "state",
-                    "Climb and Cut Alarm",
+                    alarm_type,
                     @device.client_group.id
                   )
-                  
                 end
 
                 # Create Alarm entry (with acknowledged = false)

@@ -4,5 +4,5 @@ class Device < ApplicationRecord
 
     has_many :messages
     has_many :logs, dependent: :nullify
-    has_many :alarms
+    has_many :alarms, dependent: :nullify
 end
