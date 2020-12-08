@@ -37,7 +37,10 @@
 
           <td><%= link_to 'Show', user, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
           <td><%= link_to 'Edit', edit_user_path(user), class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
-          <td><%= link_to 'Delete', user, method: :delete, data: { confirm: 'Are you sure?' }, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
+          
+          <% if user.usertype != "Sysadmin" || current_user.usertype ==  "Sysadmin" %>
+            <td><%= link_to 'Delete', user, method: :delete, data: { confirm: 'Are you sure?' }, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
+          <% end %>
         </tr>
       <% end %>
     </tbody>
