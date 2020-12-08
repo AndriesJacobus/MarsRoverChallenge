@@ -20,7 +20,17 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.json
   def show
-    @clients = Client.all
+    # @clients = Client.all
+
+    if current_user.usertype == "Sysadmin"
+      @clients = Client.all
+    elsif current_user.usertype == "Client Admin"
+      # Todo: filter clients to show only those with the same 'client'
+      #       tag as the current Admin
+      @clients = Client.where(id: current_user.client_id)
+    else
+      @clients = []
+    end
   end
 
   # GET /users/new
