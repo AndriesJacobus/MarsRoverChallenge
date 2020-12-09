@@ -159,7 +159,7 @@
           <%= react_component("DashboardCard",
             {
               title:
-                "Map Groups",
+                "Perimeterts",
               content:
                 "Devices are arranged on a map via map groups. A map group is
                 a group of devices coupled together to form a section of a perimeter.",
@@ -168,7 +168,7 @@
               link:
                 map_groups_path,
               linkText:
-                "Go to Map Groups",
+                "Go to Perimeterts",
             })
           %>
         <% end %>
@@ -277,24 +277,27 @@
         <% end %>
       </div>
 
-      <div class="col s4">
-        <%= link_to "/client_groups/#{current_user.client.client_groups.first.id}/map_view" do %>
-          <%= react_component("DashboardCard",
-            {
-              title:
-                "Map View",
-              content:
-                "Devices are arranged on a map via map groups. A map group is
-                a group of devices coupled together to form a section of a perimeter.",
-              resource:
-                asset_path("map_groups.jpg"),
-              link:
-                "/",
-              linkText:
-                "Go to Map Groups",
-            })
-          %>
-        <% end %>
+      <% if current_user && current_user.client && current_user.client.client_groups %>
+        <div class="col s4">
+          <%= link_to "/client_groups/#{current_user.client.client_groups.first.id}/map_view" do %>
+            <%= react_component("DashboardCard",
+              {
+                title:
+                  "Map View",
+                content:
+                  "Devices are arranged on a map via map groups. A map group is
+                  a group of devices coupled together to form a section of a perimeter.",
+                resource:
+                  asset_path("map_groups.jpg"),
+                link:
+                  "/",
+                linkText:
+                  "Go to Perimeterts",
+              })
+            %>
+          <% end %>
+        </div>
+      <% end %>
 
     <% end %>
     

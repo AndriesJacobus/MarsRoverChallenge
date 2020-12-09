@@ -30,7 +30,15 @@ class MapGroupsController < ApplicationController
 
   # GET /map_groups/new
   def new
-    @map_group = MapGroup.new
+    # @map_group = MapGroup.new
+    # @types = []
+
+    # current_user.client.client_groups.each do |client_group|
+    #   @t = ["#{client_group.id}", client_group.Name]
+    #   @types << @t
+    # end
+
+    redirect_to map_groups_path, flash: {warning: 'Please create Perimeters via drawing on the Map View' }
   end
 
   # GET /map_groups/1/edit
@@ -45,6 +53,15 @@ class MapGroupsController < ApplicationController
     if params[:state] == nil || params[:state] == ""
       @map_group.state = "online"
     end
+
+    # if params[:client_group_id] != nil && params[:client_group_id] != ""
+    #   @client_group = ClientGroup.find_by_id(:client_group_id)
+
+    #   if @client_group && @client_group.Longitude != nil && @client_group.Latitude != nil
+    #     # Client group exists and has loc data
+
+    #   end
+    # end
 
     respond_to do |format|
       if @map_group.save
@@ -112,6 +129,7 @@ class MapGroupsController < ApplicationController
       params.require(:map_group).permit(
         :Name,
         :state,
+        :client_group_id,
       )
     end
 end

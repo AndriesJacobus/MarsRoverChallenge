@@ -41,6 +41,8 @@ task :check_device_keepalives => :environment do
 
       @alarm.save
 
+      # Todo: update action_cable with offline status
+
       puts ""
 
     end

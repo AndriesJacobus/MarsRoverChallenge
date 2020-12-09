@@ -4,10 +4,14 @@ class LogsController < ApplicationController
   # GET /logs
   # GET /logs.json
   def index
-    if current_user.usertype == "Sysadmin"
-      @logs = Log.all
-    elsif current_user.usertype == "Client Admin"
-      @logs = Log.where(client_id: current_user.client_id)
+    if current_user
+      if current_user.usertype == "Sysadmin"
+        @logs = Log.all
+      elsif current_user.usertype == "Client Admin"
+        @logs = Log.where(client_id: current_user.client_id)
+      end
+    else
+      redirect_to root_path, flash: {warning: 'Please log in as an Admin before viewing this page.' }
     end
   end
 
