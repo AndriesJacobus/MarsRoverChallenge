@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20201006055240) do
+ActiveRecord::Schema.define(version: 20200909073349) do
 
   create_table "alarms", force: :cascade do |t|
     t.boolean "acknowledged"
@@ -42,8 +42,6 @@ ActiveRecord::Schema.define(version: 20201006055240) do
     t.string "business_address"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "client_id"
-    t.index ["client_id"], name: "index_client_details_on_client_id"
   end
 
   create_table "client_groups", force: :cascade do |t|
@@ -64,6 +62,8 @@ ActiveRecord::Schema.define(version: 20201006055240) do
     t.string "SigfoxDeviceTypeName"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "client_detail_id"
+    t.index ["client_detail_id"], name: "index_clients_on_client_detail_id"
   end
 
   create_table "devices", force: :cascade do |t|
@@ -106,15 +106,6 @@ ActiveRecord::Schema.define(version: 20201006055240) do
     t.index ["map_group_id"], name: "index_logs_on_map_group_id"
     t.index ["message_id"], name: "index_logs_on_message_id"
     t.index ["user_id"], name: "index_logs_on_user_id"
-  end
-
-  create_table "management_profiles", force: :cascade do |t|
-    t.integer "users_id"
-    t.integer "sites_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["sites_id"], name: "index_management_profiles_on_sites_id"
-    t.index ["users_id"], name: "index_management_profiles_on_users_id"
   end
 
   create_table "map_groups", force: :cascade do |t|

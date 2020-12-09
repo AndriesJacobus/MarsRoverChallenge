@@ -1,3 +1,3 @@
 class ClientDetail < ApplicationRecord
-    belongs_to :client, optional: true
+    has_many :clients, dependent: :nullify
 end
