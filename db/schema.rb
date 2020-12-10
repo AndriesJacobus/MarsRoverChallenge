@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200909073349) do
+ActiveRecord::Schema.define(version: 20201210085702) do
 
   create_table "alarms", force: :cascade do |t|
     t.boolean "acknowledged"
@@ -142,6 +142,8 @@ ActiveRecord::Schema.define(version: 20200909073349) do
     t.string "surname"
     t.string "usertype", default: "Operator"
     t.integer "client_id"
+    t.integer "client_detail_id"
+    t.index ["client_detail_id"], name: "index_users_on_client_detail_id"
     t.index ["client_id"], name: "index_users_on_client_id"
     t.index ["email"], name: "index_users_on_email", unique: true
   end
