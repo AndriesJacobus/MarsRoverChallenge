@@ -6,6 +6,7 @@ task :check_device_keepalives => :environment do
 
   Device.where.not(state: "offline").where.not(state: "maintenance").each do |device|
     # Check all devices that are not in maintenance or already offline
+    # Note: this this also puts devices that are in alarm state into offline state
 
     @received_keepalive = false
 
@@ -42,6 +43,16 @@ task :check_device_keepalives => :environment do
       @alarm.save
 
       # Todo: update action_cable with offline status
+      data = {
+        "update": "device",
+        "id": device.id,
+        "attribute": "state",
+        "to": "offline",
+      }
+      ActionCable.server.broadcast("live_map_#{device.client_group.id}", data.as_json)
+
+      # Todo: Check to see if all devices in current map_group is offline,
+      # in which case turn the map_group to offline as well
 
       puts ""
 
