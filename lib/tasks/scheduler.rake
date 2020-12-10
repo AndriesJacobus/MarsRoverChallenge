@@ -42,7 +42,7 @@ task :check_device_keepalives => :environment do
 
       @alarm.save
 
-      # Todo: update action_cable with offline status
+      # Update action_cable with offline status
       data = {
         "update": "device",
         "id": device.id,
@@ -53,6 +53,33 @@ task :check_device_keepalives => :environment do
 
       # Todo: Check to see if all devices in current map_group is offline,
       # in which case turn the map_group to offline as well
+      @map_group = device.map_group
+      
+      if @map_group
+        @has_online_device = false
+
+        @map_group.devices.where.not(id: device.id).each do |device|
+          if device.state.downcase != "offline"
+            @has_online_device = true
+            break
+          end
+        end
+
+        if @has_online_device == false
+          # No devices are online, turn map_group status to offline
+          @map_group.state = "offline"
+          @map_group.save
+
+          # Send action cable message to update relevant device's state
+          data = {
+            "update": "map_group",
+            "id": @map_group.id,
+            "attribute": "state",
+            "to": "offline",
+          }
+          ActionCable.server.broadcast("live_map_#{device.client_group.id}", data.as_json)
+        end
+      end
 
       puts ""
 

@@ -359,7 +359,11 @@ class GoogleMap extends React.Component {
       path={perimeter.path}
       editable={false}
       draggable={false}
-      options={{ strokeColor: (perimeter.state == "online") ? "#42a5f5" : "red", strokeOpacity: 0.5, strokeWeight: 10, }}
+      options={{
+        strokeColor: (perimeter.state == "online") ? "#42a5f5" : (perimeter.state == "offline") ? "lightgrey" : "red",
+        strokeOpacity: 0.5,
+        strokeWeight: 10,
+      }}
       onClick={() => this.setPerIndex(index)}
     />
   }
@@ -1554,6 +1558,13 @@ class GoogleMap extends React.Component {
                   <div>
                     <div className="chip" style = {circleStyleGreen}>
                       Online, No alarm
+                    </div>
+                  </div>
+                ) :
+                (this.state.perInfoState == "offline") ? (
+                  <div>
+                    <div className="chip" style = {circleStyleGrey}>
+                      Offline
                     </div>
                   </div>
                 ) :
