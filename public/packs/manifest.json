@@ -1,32 +1,26 @@
 {
-  "application.css": "/packs/css/application-415b09e5.css",
-  "application.js": "/packs/js/application-46200e0cbe6392adc825.js",
-  "application.js.map": "/packs/js/application-46200e0cbe6392adc825.js.map",
+  "application.js": "/packs/js/application-caa3b140cc38f9769eb6.js",
+  "application.js.map": "/packs/js/application-caa3b140cc38f9769eb6.js.map",
   "entrypoints": {
     "application": {
-      "css": [
-        "/packs/css/application-415b09e5.css"
-      ],
       "js": [
-        "/packs/js/application-46200e0cbe6392adc825.js"
+        "/packs/js/application-caa3b140cc38f9769eb6.js"
       ],
       "js.map": [
-        "/packs/js/application-46200e0cbe6392adc825.js.map"
+        "/packs/js/application-caa3b140cc38f9769eb6.js.map"
       ]
     },
     "server_rendering": {
-      "css": [
-        "/packs/css/server_rendering-415b09e5.css"
-      ],
       "js": [
-        "/packs/js/server_rendering-d2a56e5ea9dceac7fa01.js"
+        "/packs/js/server_rendering-fcaf2679d5c39d481228.js"
       ],
       "js.map": [
-        "/packs/js/server_rendering-d2a56e5ea9dceac7fa01.js.map"
+        "/packs/js/server_rendering-fcaf2679d5c39d481228.js.map"
       ]
     }
   },
-  "server_rendering.css": "/packs/css/server_rendering-415b09e5.css",
-  "server_rendering.js": "/packs/js/server_rendering-d2a56e5ea9dceac7fa01.js",
-  "server_rendering.js.map": "/packs/js/server_rendering-d2a56e5ea9dceac7fa01.js.map"
+  "media/sounds/device_offline_alarm.mp3": "/packs/media/sounds/device_offline_alarm-dc819d1a.mp3",
+  "media/sounds/perimeter_alarm.mp3": "/packs/media/sounds/perimeter_alarm-950499d5.mp3",
+  "server_rendering.js": "/packs/js/server_rendering-fcaf2679d5c39d481228.js",
+  "server_rendering.js.map": "/packs/js/server_rendering-fcaf2679d5c39d481228.js.map"
 }
