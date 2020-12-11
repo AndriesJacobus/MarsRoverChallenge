@@ -3,7 +3,8 @@
   <table>
     <thead>
       <tr>
-        <th>Name</th>
+        <th style = "white-space: nowrap;">Name</th>
+        <th style = "white-space: nowrap; padding-left: 35px;">Client Name</th>
         <th style = "white-space: nowrap; padding-left: 35px;">Longitude</th>
         <th style = "white-space: nowrap; padding-left: 35px;">Latitude</th>
         <th style = "white-space: nowrap; padding-left: 35px;">Sigfox DeviceType ID</th>
@@ -15,7 +16,15 @@
     <tbody>
       <% @clients.each do |client| %>
         <tr>
-          <td><%= client.Name %></td>
+          <td style = "white-space: nowrap;"><%= client.Name %></td>
+
+          <td style = "white-space: nowrap; padding-left: 35px;">
+            <% if client.client_detail && client.client_detail && client.client_detail.name.length > 0 %>
+              <%= client.client_detail.name %>
+            <% else %>
+              N/A
+            <% end %>
+          </td>
           
           <td style = "padding-left: 35px;">
             N/A

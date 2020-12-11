@@ -16,7 +16,17 @@ class ClientGroupsController < ApplicationController
     #   #       tag as the current Admin
     #   @client_groups = ClientGroup.where(client_id: current_user.client_id)
     elsif current_user
-      @client_groups = ClientGroup.where(client_id: current_user.client_id)
+      # @client_groups = ClientGroup.where(client_id: current_user.client_id)
+      @client_groups = []
+
+      if current_user.client_detail && current_user.client_detail.clients
+        current_user.client_detail.clients.each do |client|
+          @groups = ClientGroup.where(client_id: client.id)
+          @groups.each do |group|
+            @client_groups << group
+          end
+        end
+      end
     else
       # redirect_to root_path, flash: {warning: 'Please log in as an Admin before viewing this page' }
       redirect_to root_path, flash: {warning: 'Please log in before viewing this page' }
@@ -26,7 +36,19 @@ class ClientGroupsController < ApplicationController
   # GET /client_groups/1
   # GET /client_groups/1.json
   def show
-    @clients = Client.all
+    if current_user.usertype == "Sysadmin"
+      @clients = Client.all
+    else
+      @clients = []
+      
+      if current_user.client_detail 
+        @clients = current_user.client_detail.clients
+      end
+
+      if @client_group && @client_group.client
+        @clients << @client_group.client
+      end
+    end
   end
 
   # GET /client_groups/1/map_view

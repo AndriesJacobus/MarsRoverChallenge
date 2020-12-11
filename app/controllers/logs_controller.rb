@@ -8,7 +8,21 @@ class LogsController < ApplicationController
       if current_user.usertype == "Sysadmin"
         @logs = Log.all
       elsif current_user.usertype == "Client Admin"
-        @logs = Log.where(client_id: current_user.client_id)
+
+        # @logs = Log.where(client_id: current_user.client_id)
+        @logs = []
+
+        if current_user.client_detail && current_user.client_detail.clients
+
+          current_user.client_detail.clients.each do |client|
+            @ls = Log.where(client_id: client.id)
+            @ls.each do |log|
+              @logs << log
+            end
+          end
+
+        end
+        
       end
     else
       redirect_to root_path, flash: {warning: 'Please log in as an Admin before viewing this page.' }
@@ -85,8 +99,23 @@ class LogsController < ApplicationController
       end
 
     else
-      
-      @logs = Log.all
+
+      if current_user.usertype == "Sysadmin"
+        @logs = Log.all
+      elsif current_user.usertype == "Client Admin"
+        @logs = []
+
+        if current_user.client_detail 
+
+          current_user.client_detail.clients.each do |client|
+            @ls = Log.where(client_id: client.id)
+            @ls.each do |log|
+              @logs << log
+            end
+          end
+
+        end
+      end
       
       @logs.each do |log|
         log.destroy
@@ -95,6 +124,7 @@ class LogsController < ApplicationController
       # Create log entry
       @log = Log.new(trigger_by_bot: "log_bot", action_type: "all_logs_deleted")
       @log.user = current_user
+      @log.client = (current_user.client_detail && current_user.client_detail.clients && current_user.client_detail.clients.length > 0) ? current_user.client_detail.clients.first : nil
       @log.save
       
       respond_to do |format|

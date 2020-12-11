@@ -57,7 +57,7 @@ module API
                 # Create new client group that is linked with the correct client
                 # and link the device to the new client group
                 
-                client_and_client_group_quick_setup(@device.id, permitted_params[:callback_data][:sigfox_device_type_id])
+                quick_setup(@device.id, permitted_params[:callback_data][:sigfox_device_type_id])
               end
 
               # Set device and map_group states
@@ -166,6 +166,8 @@ module API
               @log = Log.new(trigger_by_bot: "device_bot", action_type: "message_linked_to_device")
               @log.message = @message
               @log.device = @device
+              @log.client_group = @device.client_group ? @device.client_group : nil
+              @log.client = (@device.client_group && @device.client_group.client ) ? @device.client_group.client : nil
               @log.save
               
             else
@@ -186,7 +188,7 @@ module API
                 # Create new client group that is linked with the correct client
                 # and link the device to the new client group
                 
-                client_and_client_group_quick_setup(@device.id, permitted_params[:callback_data][:sigfox_device_type_id])
+                quick_setup(@device.id, permitted_params[:callback_data][:sigfox_device_type_id])
               end
 
               # Set device and map_group states
@@ -250,6 +252,7 @@ module API
               @log = Log.new(trigger_by_bot: "device_bot", action_type: "device_created_for_message")
               @log.message = @message
               @log.device = @device
+              @log.client = (@device.client_group && @device.client_group.client ) ? @device.client_group.client : nil
               @log.save
               
             end

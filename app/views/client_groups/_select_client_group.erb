@@ -16,19 +16,19 @@
       <% @client_groups.each do |client_group| %>
         <tr>
           <td style = "white-space: nowrap; padding-right: 35px;"><%= client_group.Name %></td>
-          <td style = "padding-right: 35px;"><%= client_group.SigfoxGroupID %></td>
-          <td style = "padding-right: 35px;"><%= client_group.SigfoxGroupName %></td>
+          <td style = "white-space: nowrap; padding-right: 35px;"><%= client_group.SigfoxGroupID %></td>
+          <td style = "white-space: nowrap; padding-right: 35px;"><%= client_group.SigfoxGroupName %></td>
 
           <% if !client_group.client.nil? %>
-            <td style = "padding-right: 35px;"><%= client_group.client.Name %></td>
+            <td style = "white-space: nowrap; padding-right: 35px;"><%= client_group.client.Name %></td>
           <% else %>
-            <td style = "padding-right: 35px;"><i>N/A</i></td>
+            <td style = "white-space: nowrap; padding-right: 35px;"><i>N/A</i></td>
           <% end %>
 
           <% if !client_group.client.nil? %>
-            <td style = "padding-right: 35px;"><%= client_group.client.SigfoxDeviceTypeID %></td>
+            <td style = "white-space: nowrap; padding-right: 35px;"><%= client_group.client.SigfoxDeviceTypeID %></td>
           <% else %>
-            <td style = "padding-right: 35px;"><i>N/A</i></td>
+            <td style = "white-space: nowrap; padding-right: 35px;"><i>N/A</i></td>
           <% end %>
 
           <% if !@device.client_group.nil? && @device.client_group.id != client_group.id %>

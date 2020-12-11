@@ -17,7 +17,7 @@ class DevicesController < ApplicationController
       @devices = []
       
       Device.where.not(client_group_id: nil).each do |device|
-        if device.client_group.client == current_user.client
+        if device.client_group.client.client_detail == current_user.client.client_detail
           @devices << device
         end
       end
@@ -29,7 +29,26 @@ class DevicesController < ApplicationController
   # GET /devices/1
   # GET /devices/1.json
   def show
-    @client_groups = ClientGroup.all
+    # @client_groups = ClientGroup.all
+
+    @client_groups = []
+
+    if current_user.client_detail && current_user.client_detail.clients
+      current_user.client_detail.clients.each do |client|
+        @groups = ClientGroup.where(client_id: client.id)
+        @groups.each do |group|
+          @client_groups << group
+        end
+      end
+    end
+
+    if @device.client_group && @device.client_group.client
+      @groups = ClientGroup.where(client_id: @device.client_group.client.id)
+      @groups.each do |group|
+        @client_groups << group
+      end
+    end
+
   end
 
   # GET /devices/new

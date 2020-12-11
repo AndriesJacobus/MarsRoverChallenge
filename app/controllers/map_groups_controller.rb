@@ -14,7 +14,7 @@ class MapGroupsController < ApplicationController
       @map_groups = []
 
       MapGroup.where.not(client_group_id: nil).each do |map_group|
-        if map_group.client_group.client == current_user.client
+        if map_group.client_group.client.client_detail == current_user.client_detail
           @map_groups << map_group
         end
       end

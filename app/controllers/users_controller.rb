@@ -11,7 +11,9 @@ class UsersController < ApplicationController
     elsif current_user.usertype == "Client Admin"
       # Todo: filter users to show only those with the same 'client'
       #       tag as the current Admingo 
-      @users = User.where(client_id: current_user.client_id)
+      # @users = User.where(client_id: current_user.client_id)
+
+      @users = current_user.client_detail.users
     else
       redirect_to root_path, flash: {warning: 'Please log in as an Admin before viewing this page' }
     end

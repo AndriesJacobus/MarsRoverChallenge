@@ -107,7 +107,7 @@
   </div>
 </div>
 
-<% if current_user.usertype == "Sysdmin" || current_user.usertype == "Client Admin" %>
+<% if current_user.usertype == "Sysadmin" || current_user.usertype == "Client Admin" %>
 
   <%# Set the client for the current user %>
   <% if @user.client_detail.nil? %>
