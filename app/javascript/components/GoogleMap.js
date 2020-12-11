@@ -360,8 +360,8 @@ class GoogleMap extends React.Component {
       editable={false}
       draggable={false}
       options={{
-        strokeColor: (perimeter.state == "online") ? "#42a5f5" : (perimeter.state == "offline") ? "lightgrey" : "red",
-        strokeOpacity: 0.5,
+        strokeColor: (perimeter.state == "online") ? "#42a5f5" : (perimeter.state == "offline") ? "#CCCCCC" : "red",
+        strokeOpacity: (perimeter.state == "offline") ? 0.8 : 0.5,
         strokeWeight: 10,
       }}
       onClick={() => this.setPerIndex(index)}
@@ -977,7 +977,8 @@ class GoogleMap extends React.Component {
             style={infoActionButton} >
 
             <i className="material-icons right">edit</i>
-            Maintenance On
+            {/* Maintenance On */}
+            Disable Device
           </div>
           {/* <br/> */}
         </span>
@@ -1017,13 +1018,14 @@ class GoogleMap extends React.Component {
             style={infoActionButton} >
 
             <i className="material-icons right">edit</i>
-            Maintenance On
+            {/* Maintenance On */}
+            Disable Device
           </div>
           <br/>
         </span>
       }
 
-      {
+      {/* {
         this.props.curr_user_type != "Operator" &&
         <span>
           <div
@@ -1039,7 +1041,7 @@ class GoogleMap extends React.Component {
           </div>
           <br/>
         </span>
-      }
+      } */}
 
     </div>
   }
@@ -1072,7 +1074,8 @@ class GoogleMap extends React.Component {
         style={infoActionButton} >
 
         <i className="material-icons right">edit</i>
-        Bring Online
+        {/* Bring Online */}
+        Enable Device
       </div>
       <br/>
 
@@ -1097,7 +1100,8 @@ class GoogleMap extends React.Component {
             style={infoActionButton} >
 
             <i className="material-icons right">edit</i>
-            Maintenance On
+            {/* Maintenance On */}
+            Disable Device
           </div>
           <br/>
         </span>
@@ -1279,13 +1283,15 @@ class GoogleMap extends React.Component {
       <div style = {modalStyle}>
         {
           (this.state.stateToAck == "online") ? (
-            <p style = {infoTitle}>Bring Online:</p>
+            // <p style = {infoTitle}>Bring Online:</p>
+            <p style = {infoTitle}>Acknowledge Alarm:</p>
           ) :
           (this.state.stateToAck == "offline") ? (
             <p style = {infoTitle}>Take Offline:</p>
           ) :
           (this.state.stateToAck == "maintenance") ? (
-            <p style = {infoTitle}>Put into Maintenance:</p>
+            // <p style = {infoTitle}>Put into Maintenance:</p>
+            <p style = {infoTitle}>Disable Device:</p>
           ) :
             <p style = {infoTitle}>Acknowledge Alarm:</p>
         }
@@ -1503,7 +1509,8 @@ class GoogleMap extends React.Component {
                     ) :
                     (this.state.markerInfo.state == "maintenance") ? (
                       <div className="chip" style = {circleStyleYellow}>
-                        Maintenance
+                        {/* Maintenance */}
+                        Disabled
                       </div>
                     ) :
                       <div className="chip" style = {circleStyleRed}>

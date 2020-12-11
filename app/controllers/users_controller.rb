@@ -8,12 +8,14 @@ class UsersController < ApplicationController
     # Only Admins can view index
     if current_user.usertype == "Sysadmin"
       @users = User.all
+      @users = @users.all.sort_by(&:created_at).reverse
     elsif current_user.usertype == "Client Admin"
       # Todo: filter users to show only those with the same 'client'
       #       tag as the current Admingo 
       # @users = User.where(client_id: current_user.client_id)
 
       @users = current_user.client_detail.users
+      @users = @users.all.sort_by(&:created_at).reverse
     else
       redirect_to root_path, flash: {warning: 'Please log in as an Admin before viewing this page' }
     end
@@ -23,11 +25,23 @@ class UsersController < ApplicationController
   # GET /users/1.json
   def show
     # For now we show all clients
-    @client_details = ClientDetail.all
     
-    # Todo: change this to only show clients (sites)
-    # linked to current user's client_details
-    @clients = Client.all
+    if current_user.usertype == "Sysadmin"
+      @clients = Client.all
+      @client_details = ClientDetail.all
+    else
+      @client_details = []
+      @clients = []
+
+      if current_user.client_detail
+        @client_details << current_user.client_detail
+
+        current_user.client_detail.clients.each do |client|
+          @clients << client
+        end
+       
+      end
+    end
   end
 
   # GET /users/new
@@ -44,6 +58,11 @@ class UsersController < ApplicationController
   def create
     if is_curr_user_admin()
       @user = User.new(user_params)
+
+      # Link current client_details
+      if current_user.client_detail
+        @user.client_detail = current_user.client_detail
+      end
 
       respond_to do |format|
         if @user.save

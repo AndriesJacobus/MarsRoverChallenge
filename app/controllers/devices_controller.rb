@@ -45,7 +45,7 @@ class DevicesController < ApplicationController
     if @device.client_group && @device.client_group.client
       @groups = ClientGroup.where(client_id: @device.client_group.client.id)
       @groups.each do |group|
-        @client_groups << group
+        @client_groups << group unless @client_groups.include?(group)
       end
     end
 
@@ -66,6 +66,14 @@ class DevicesController < ApplicationController
     # Todo: make sure device names are unique
     @device = Device.new(device_params)
     @device.update_attribute(:state, "online")
+
+    if current_user.client_detail && current_user.client_detail.clients
+      @client = current_user.client_detail.clients.first
+
+      if @client && @client.client_groups && @client.client_groups.length > 0
+        @device.client_group = @client.client_groups.first
+      end
+    end
 
     respond_to do |format|
       if @device.save

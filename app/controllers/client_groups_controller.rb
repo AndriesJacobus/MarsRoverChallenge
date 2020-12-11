@@ -64,7 +64,7 @@ class ClientGroupsController < ApplicationController
         @devices = Device.where(client_group_id: nil).or(Device.where(client_group_id: params[:id]))
 
         # Filter - only show map_groups linked to current client_group
-        @map_groups= @client_group.map_groups.all.sort_by(&:Name)
+        @map_groups = @client_group.map_groups.all.sort_by(&:Name)
 
       elsif current_user
         # Todo: filter - only show devices linked to current client_group
@@ -560,6 +560,11 @@ class ClientGroupsController < ApplicationController
   # POST /client_groups.json
   def create
     @client_group = ClientGroup.new(client_group_params)
+
+    # Auto link a site for the group
+    if current_user.client_detail && current_user.client_detail.clients && current_user.client_detail.clients.length > 0
+      @client_group.client = current_user.client_detail.clients.first
+    end
 
     respond_to do |format|
       if @client_group.save
