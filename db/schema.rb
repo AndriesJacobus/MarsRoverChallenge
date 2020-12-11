@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20201006055240) do
+ActiveRecord::Schema.define(version: 20201210085702) do
 
   create_table "alarms", force: :cascade do |t|
     t.boolean "acknowledged"
@@ -42,8 +42,6 @@ ActiveRecord::Schema.define(version: 20201006055240) do
     t.string "business_address"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "client_id"
-    t.index ["client_id"], name: "index_client_details_on_client_id"
   end
 
   create_table "client_groups", force: :cascade do |t|
@@ -64,6 +62,8 @@ ActiveRecord::Schema.define(version: 20201006055240) do
     t.string "SigfoxDeviceTypeName"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "client_detail_id"
+    t.index ["client_detail_id"], name: "index_clients_on_client_detail_id"
   end
 
   create_table "devices", force: :cascade do |t|
@@ -108,15 +108,6 @@ ActiveRecord::Schema.define(version: 20201006055240) do
     t.index ["user_id"], name: "index_logs_on_user_id"
   end
 
-  create_table "management_profiles", force: :cascade do |t|
-    t.integer "users_id"
-    t.integer "sites_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["sites_id"], name: "index_management_profiles_on_sites_id"
-    t.index ["users_id"], name: "index_management_profiles_on_users_id"
-  end
-
   create_table "map_groups", force: :cascade do |t|
     t.string "Name"
     t.datetime "created_at", null: false
@@ -151,6 +142,8 @@ ActiveRecord::Schema.define(version: 20201006055240) do
     t.string "surname"
     t.string "usertype", default: "Operator"
     t.integer "client_id"
+    t.integer "client_detail_id"
+    t.index ["client_detail_id"], name: "index_users_on_client_detail_id"
     t.index ["client_id"], name: "index_users_on_client_id"
     t.index ["email"], name: "index_users_on_email", unique: true
   end

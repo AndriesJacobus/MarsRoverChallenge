@@ -11,7 +11,14 @@ class ClientsController < ApplicationController
     elsif current_user.usertype == "Client Admin"
       # Todo: filter clients to show only those with the same 'client'
       #       tag as the current Admin
-      @clients = Client.where(id: current_user.client_id)
+
+      @clients = []
+      
+      if current_user.client_detail 
+        @clients = current_user.client_detail.clients
+      end
+      
+      # @clients = Client.where(id: current_user.client_id)
     else
       redirect_to root_path, flash: {warning: 'Please log in as an Admin before viewing this page' }
     end
@@ -38,6 +45,11 @@ class ClientsController < ApplicationController
     # Todo: check to see if SigfoxDeviceTypeID is unique
     @client = Client.new(client_params)
 
+    if current_user.client_detail
+      # Link new site with currently selected client_detail
+      current_user.client_detail.clients << @client
+    end
+
     respond_to do |format|
       if @client.save
         # Create log entry
@@ -51,6 +63,41 @@ class ClientsController < ApplicationController
       else
         format.html { render :new }
         format.json { render json: @client.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+  
+  def set_client_detail_for_client
+    @client_detail = ClientDetail.find(params[:ClientDetailID])
+    @client = Client.find(params[:id])
+
+    if @client_detail && @client
+
+      # If client_detail already had a site, remove those users from client_details
+      if @client.client_detail != nil
+        @client.client_detail.users.delete(@client.users)
+      end
+
+      # Set the new client_detail
+      @client.client_detail = @client_detail
+
+      # Add all users of current site to the new client_detail
+      @client_detail.users << @client.users
+
+      respond_to do |format|
+        if @client.save
+          format.html { redirect_to @client, flash: {success: 'Client was successfully linked' } }
+          format.json { render :index, status: :created }
+        else
+          format.html { redirect_to @client, flash: {warning: 'Client could not be linked' } }
+          format.json { head :no_content }
+        end
+      end
+
+    else
+      respond_to do |format|
+        format.html { redirect_to clients_path, flash: {warning: 'Client could not be linked' } }
+        format.json { head :no_content }
       end
     end
   end
@@ -102,6 +149,13 @@ class ClientsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def client_params
-      params.require(:client).permit(:Name, :SigfoxDeviceTypeID, :SigfoxDeviceTypeName)
+      params.require(:client).permit(
+        :id,
+        :Name,
+        :SigfoxDeviceTypeID,
+        :SigfoxDeviceTypeName,
+        :ClientDetailID,
+        :OutgoingClientID,
+      )
     end
 end

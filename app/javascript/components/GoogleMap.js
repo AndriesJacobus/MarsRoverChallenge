@@ -7,6 +7,8 @@ import TextField from '@material-ui/core/TextField';
 import ActionCable from 'actioncable';
 import CustomTreeView from './CustomTreeView';
 import SortableTreeView from './SortableTreeView';
+import SoundPlayer from './SoundPlayer';
+import Sound from 'react-sound';
 
 React.useLayoutEffect = React.useEffect
 
@@ -75,11 +77,15 @@ class GoogleMap extends React.Component {
       stateToAck: "",
       alarmReason: "",
       alarmNotes: "",
+
+      offlinePlaying: Sound.status.STOPPED,
+      perimeterPlaying: Sound.status.STOPPED,
     }
 
     this.domNode = null;
     this.tree = null,
     this.sub = null;
+    this.spRef = null;
 
     this.onClick = this.onClick.bind(this);
     this.hideInfo = this.hideInfo.bind(this);
@@ -105,7 +111,6 @@ class GoogleMap extends React.Component {
     this.handleAlarmNotes = this.handleAlarmNotes.bind(this);
 
     this.handleLiveData = this.handleLiveData.bind(this);
-    
   }
 
   componentDidMount(){
@@ -132,6 +137,15 @@ class GoogleMap extends React.Component {
     console.log(data);
 
     if (data.attribute == "state") {
+      // Check to see if we need to start an alarm
+      if (data.to.includes("alarm")) {
+        this.playPerimeterAlarm();
+      }
+
+      if (data.to.includes("offline")) {
+        this.playOfflineAlarm();
+      }
+
       if (data.update == "device") {
         // Find device to update
         let elementsIndex = this.state.markers.findIndex(e => e.id == data.id);
@@ -345,7 +359,11 @@ class GoogleMap extends React.Component {
       path={perimeter.path}
       editable={false}
       draggable={false}
-      options={{ strokeColor: (perimeter.state == "online") ? "#42a5f5" : "red", strokeOpacity: 0.5, strokeWeight: 10, }}
+      options={{
+        strokeColor: (perimeter.state == "online") ? "#42a5f5" : (perimeter.state == "offline") ? "#CCCCCC" : "red",
+        strokeOpacity: (perimeter.state == "offline") ? 0.8 : 0.5,
+        strokeWeight: 10,
+      }}
       onClick={() => this.setPerIndex(index)}
     />
   }
@@ -959,7 +977,8 @@ class GoogleMap extends React.Component {
             style={infoActionButton} >
 
             <i className="material-icons right">edit</i>
-            Maintenance On
+            {/* Maintenance On */}
+            Disable Device
           </div>
           {/* <br/> */}
         </span>
@@ -999,13 +1018,14 @@ class GoogleMap extends React.Component {
             style={infoActionButton} >
 
             <i className="material-icons right">edit</i>
-            Maintenance On
+            {/* Maintenance On */}
+            Disable Device
           </div>
           <br/>
         </span>
       }
 
-      {
+      {/* {
         this.props.curr_user_type != "Operator" &&
         <span>
           <div
@@ -1021,7 +1041,7 @@ class GoogleMap extends React.Component {
           </div>
           <br/>
         </span>
-      }
+      } */}
 
     </div>
   }
@@ -1054,7 +1074,8 @@ class GoogleMap extends React.Component {
         style={infoActionButton} >
 
         <i className="material-icons right">edit</i>
-        Bring Online
+        {/* Bring Online */}
+        Enable Device
       </div>
       <br/>
 
@@ -1079,7 +1100,8 @@ class GoogleMap extends React.Component {
             style={infoActionButton} >
 
             <i className="material-icons right">edit</i>
-            Maintenance On
+            {/* Maintenance On */}
+            Disable Device
           </div>
           <br/>
         </span>
@@ -1261,13 +1283,15 @@ class GoogleMap extends React.Component {
       <div style = {modalStyle}>
         {
           (this.state.stateToAck == "online") ? (
-            <p style = {infoTitle}>Bring Online:</p>
+            // <p style = {infoTitle}>Bring Online:</p>
+            <p style = {infoTitle}>Acknowledge Alarm:</p>
           ) :
           (this.state.stateToAck == "offline") ? (
             <p style = {infoTitle}>Take Offline:</p>
           ) :
           (this.state.stateToAck == "maintenance") ? (
-            <p style = {infoTitle}>Put into Maintenance:</p>
+            // <p style = {infoTitle}>Put into Maintenance:</p>
+            <p style = {infoTitle}>Disable Device:</p>
           ) :
             <p style = {infoTitle}>Acknowledge Alarm:</p>
         }
@@ -1350,6 +1374,50 @@ class GoogleMap extends React.Component {
 
       </div>
     </Modal>
+  }
+
+  playOfflineAlarm() {
+    this.setState({
+      offlinePlaying: Sound.status.PLAYING,
+    }, () => {
+      setTimeout(() => {
+        this.setState({
+          offlinePlaying: Sound.status.STOPPED,
+        });
+    }, 2000);
+    });
+  }
+
+  playPerimeterAlarm() {
+    this.setState({
+      perimeterPlaying: Sound.status.PLAYING,
+    }, () => {
+      setTimeout(() => {
+        this.setState({
+          perimeterPlaying: Sound.status.STOPPED,
+        });
+    }, 2000);
+    });
+  }
+
+  addOfflineSound() {
+    return <Sound
+      url={this.props.offlineAlarmUrl}
+      playStatus={this.state.offlinePlaying}
+      playFromPosition={0}
+      loop={false}
+      volume={100}
+    />
+  }
+
+  addPerimeterSound() {
+    return <Sound
+    url={this.props.perimAlarmUrl}
+      playStatus={this.state.perimeterPlaying}
+      playFromPosition={0}
+      loop={false}
+      volume={100}
+    />
   }
 
   render() {
@@ -1441,7 +1509,8 @@ class GoogleMap extends React.Component {
                     ) :
                     (this.state.markerInfo.state == "maintenance") ? (
                       <div className="chip" style = {circleStyleYellow}>
-                        Maintenance
+                        {/* Maintenance */}
+                        Disabled
                       </div>
                     ) :
                       <div className="chip" style = {circleStyleRed}>
@@ -1452,6 +1521,18 @@ class GoogleMap extends React.Component {
                   <div id={"actionsContainer"}>
                     {/* Marker actions loaded on infowindow open */}
                   </div>
+
+                  <div style={deleteMarkerStyle}>
+                  <a
+                    href={"/devices/" + this.state.markerInfo.id}
+                    target="blank"
+                    className="waves-effect waves-light primary btn" >
+
+                    <i className="material-icons right">router</i>
+                    
+                    View Device
+                  </a>
+                </div>
                         
                 </div>
 
@@ -1484,6 +1565,13 @@ class GoogleMap extends React.Component {
                   <div>
                     <div className="chip" style = {circleStyleGreen}>
                       Online, No alarm
+                    </div>
+                  </div>
+                ) :
+                (this.state.perInfoState == "offline") ? (
+                  <div>
+                    <div className="chip" style = {circleStyleGrey}>
+                      Offline
                     </div>
                   </div>
                 ) :
@@ -1529,6 +1617,9 @@ class GoogleMap extends React.Component {
         }
 
         {this.reasonModal()}
+
+        {this.addOfflineSound()}
+        {this.addPerimeterSound()}
 
       </div>
     );

@@ -16,7 +16,7 @@ class MessagesController < ApplicationController
       @messages = []
 
       Message.where.not(device_id: nil).each do |message|
-        if message.device.client_group.client && message.device.client_group.client == current_user.client
+        if message.device.client_group.client && message.device.client_group.client.client_detail && message.device.client_group.client.client_detail == current_user.client_detail
           @messages << message
         end
       end

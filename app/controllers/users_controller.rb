@@ -8,10 +8,14 @@ class UsersController < ApplicationController
     # Only Admins can view index
     if current_user.usertype == "Sysadmin"
       @users = User.all
+      @users = @users.all.sort_by(&:created_at).reverse
     elsif current_user.usertype == "Client Admin"
       # Todo: filter users to show only those with the same 'client'
-      #       tag as the current Admin
-      @users = User.where(client_id: current_user.client_id)
+      #       tag as the current Admingo 
+      # @users = User.where(client_id: current_user.client_id)
+
+      @users = current_user.client_detail.users
+      @users = @users.all.sort_by(&:created_at).reverse
     else
       redirect_to root_path, flash: {warning: 'Please log in as an Admin before viewing this page' }
     end
@@ -20,7 +24,24 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.json
   def show
-    @clients = Client.all
+    # For now we show all clients
+    
+    if current_user.usertype == "Sysadmin"
+      @clients = Client.all
+      @client_details = ClientDetail.all
+    else
+      @client_details = []
+      @clients = []
+
+      if current_user.client_detail
+        @client_details << current_user.client_detail
+
+        current_user.client_detail.clients.each do |client|
+          @clients << client
+        end
+       
+      end
+    end
   end
 
   # GET /users/new
@@ -37,6 +58,11 @@ class UsersController < ApplicationController
   def create
     if is_curr_user_admin()
       @user = User.new(user_params)
+
+      # Link current client_details
+      if current_user.client_detail
+        @user.client_detail = current_user.client_detail
+      end
 
       respond_to do |format|
         if @user.save
@@ -67,7 +93,7 @@ class UsersController < ApplicationController
       respond_to do |format|
         if @user.save
           format.html { redirect_to @user, flash: {success: 'Site was successfully linked' } }
-          format.json { render :index, status: :created, location: current_device }
+          format.json { render :index, status: :created}
         else
           format.html { redirect_to @user, flash: {warning: 'Site could not be linked' } }
           format.json { head :no_content }
@@ -76,6 +102,30 @@ class UsersController < ApplicationController
     else
       respond_to do |format|
         format.html { redirect_to users_path, flash: {warning: 'Site could not be linked' } }
+        format.json { head :no_content }
+      end
+    end
+  end
+  
+  def set_client_detail_for_user
+    @client_detail = ClientDetail.find(params[:ClientDetailID])
+    @user = User.find(params[:id])
+
+    if @client_detail && @user
+      @user.client_detail = @client_detail
+
+      respond_to do |format|
+        if @user.save
+          format.html { redirect_to @user, flash: {success: 'Client was successfully linked' } }
+          format.json { render :index, status: :created }
+        else
+          format.html { redirect_to @user, flash: {warning: 'Client could not be linked' } }
+          format.json { head :no_content }
+        end
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to users_path, flash: {warning: 'Client could not be linked' } }
         format.json { head :no_content }
       end
     end
@@ -129,6 +179,14 @@ class UsersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
-      params.require(:user).permit(:email, :name, :surname, :usertype, :password, :password_confirmation, :ClientID)
+      params.require(:user).permit(:email,
+        :name,
+        :surname,
+        :usertype,
+        :password,
+        :password_confirmation,
+        :ClientID,
+        :ClientDetailID
+      )
     end
 end

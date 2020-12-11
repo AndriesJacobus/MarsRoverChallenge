@@ -16,7 +16,17 @@ class ClientGroupsController < ApplicationController
     #   #       tag as the current Admin
     #   @client_groups = ClientGroup.where(client_id: current_user.client_id)
     elsif current_user
-      @client_groups = ClientGroup.where(client_id: current_user.client_id)
+      # @client_groups = ClientGroup.where(client_id: current_user.client_id)
+      @client_groups = []
+
+      if current_user.client_detail && current_user.client_detail.clients
+        current_user.client_detail.clients.each do |client|
+          @groups = ClientGroup.where(client_id: client.id)
+          @groups.each do |group|
+            @client_groups << group
+          end
+        end
+      end
     else
       # redirect_to root_path, flash: {warning: 'Please log in as an Admin before viewing this page' }
       redirect_to root_path, flash: {warning: 'Please log in before viewing this page' }
@@ -26,7 +36,19 @@ class ClientGroupsController < ApplicationController
   # GET /client_groups/1
   # GET /client_groups/1.json
   def show
-    @clients = Client.all
+    if current_user.usertype == "Sysadmin"
+      @clients = Client.all
+    else
+      @clients = []
+      
+      if current_user.client_detail 
+        @clients = current_user.client_detail.clients
+      end
+
+      if @client_group && @client_group.client
+        @clients << @client_group.client
+      end
+    end
   end
 
   # GET /client_groups/1/map_view
@@ -42,7 +64,7 @@ class ClientGroupsController < ApplicationController
         @devices = Device.where(client_group_id: nil).or(Device.where(client_group_id: params[:id]))
 
         # Filter - only show map_groups linked to current client_group
-        @map_groups= @client_group.map_groups.all.sort_by(&:Name)
+        @map_groups = @client_group.map_groups.all.sort_by(&:Name)
 
       elsif current_user
         # Todo: filter - only show devices linked to current client_group
@@ -511,7 +533,7 @@ class ClientGroupsController < ApplicationController
       respond_to do |format|
         if @client_group.save
           format.html { redirect_to @client_group, flash: {success: 'Site was successfully linked' } }
-          format.json { render :index, status: :created, location: current_device }
+          format.json { render :index, status: :created }
         else
           format.html { redirect_to @client_group, flash: {warning: 'Site could not be linked' } }
           format.json { head :no_content }
@@ -538,6 +560,11 @@ class ClientGroupsController < ApplicationController
   # POST /client_groups.json
   def create
     @client_group = ClientGroup.new(client_group_params)
+
+    # Auto link a site for the group
+    if current_user.client_detail && current_user.client_detail.clients && current_user.client_detail.clients.length > 0
+      @client_group.client = current_user.client_detail.clients.first
+    end
 
     respond_to do |format|
       if @client_group.save

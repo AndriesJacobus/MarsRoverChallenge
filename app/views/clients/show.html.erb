@@ -28,34 +28,73 @@
           <strong>Sigfox DeviceType Name:</strong><br/>
           <%= @client.SigfoxDeviceTypeName %>
         </p>
+
+        <p class = "cardSubTitle">Client Details:</p>
+
+        <p>
+          <strong>Client Name:</strong><br/>
+          <% if @client.client_detail && @client.client_detail && @client.client_detail.name.length > 0 %>
+            <%= @client.client_detail.name %>
+          <% else %>
+            N/A
+          <% end %>
+        </p>
+
+        <br/>
+
+        <p>
+          <strong>Company name:</strong><br/>
+          <% if @client.client_detail && @client.client_detail.company_name && @client.client_detail.company_name.length > 0 %>
+            <%= @client.client_detail.company_name %>
+          <% else %>
+            N/A
+          <% end %>
+        </p>
+
+        <br/>
+
+        <p>
+          <strong>Business address:</strong><br/>
+          <% if @client.client_detail && @client.client_detail.business_address && @client.client_detail.business_address.length > 0 %>
+            <%= @client.client_detail.business_address %>
+          <% else %>
+            N/A
+          <% end %>
+        </p>
+
+        <br/>
+
       </div>
     </div>
   </div>
 </div>
 
-<% if @client.client_detail.nil? %>
-  <p style = "font-size: 28px;">Link a Client for <%= @client.Name %>:</p>
-<% else %>
-  <p style = "font-size: 28px;">Change the Client for <%= @client.Name %>:</p>
+<%# <% if current_user.usertype == "Sysadmin" || current_user.usertype == "Client Admin" %>
+<% if current_user.usertype == "Sysadmin" %>
+  <%# Set the client for the site %>
+  <% if @client.client_detail.nil? %>
+    <p style = "font-size: 28px;">Link a Client for <%= @client.Name %>:</p>
+  <% else %>
+    <p style = "font-size: 28px;">Change the Client for <%= @client.Name %>:</p>
+  <% end %>
+
+  <hr style = "display: block; height: 1px; border: 0; border-top: 1px solid #ccc; margin: 1em 0; padding: 0;"/>
+
+  <%= render partial: 'client_details/select_client_detail', locals: {client_details: @client_details, client: @client } %>
+
 <% end %>
 
+<%# Show the client group for the site %>
+<p style = "font-size: 28px;">Groups for <%= @client.Name %>:</p>
 <hr style = "display: block; height: 1px; border: 0; border-top: 1px solid #ccc; margin: 1em 0; padding: 0;"/>
 
-<%= render partial: 'client_details/select_client_detail', locals: {client_details: @client_details, } %>
+<%= render partial: 'client_groups/client_group_table', locals: {client_groups: @client.client_groups} %>
 
-<% if @client.client_groups.length >= 1 %>
-  <p style = "font-size: 28px;">Groups for <%= @client.Name %>:</p>
-  <hr style = "display: block; height: 1px; border: 0; border-top: 1px solid #ccc; margin: 1em 0; padding: 0;"/>
+<%# Show the users for the site %>
+<p style = "font-size: 28px;">Users for <%= @client.Name %>:</p>
+<hr style = "display: block; height: 1px; border: 0; border-top: 1px solid #ccc; margin: 1em 0; padding: 0;"/>
 
-  <%= render partial: 'client_groups/client_group_table', locals: {client_groups: @client.client_groups} %>
-<% end %>
-
-<% if @client.users.length >= 1 %>
-  <p style = "font-size: 28px;">Users for <%= @client.Name %>:</p>
-  <hr style = "display: block; height: 1px; border: 0; border-top: 1px solid #ccc; margin: 1em 0; padding: 0;"/>
-
-  <%= render partial: 'users/user_table', locals: {users: @client.users} %>
-<% end %>
+<%= render partial: 'users/user_table', locals: {users: @client.users} %>
 
 <br/>
 

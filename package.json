@@ -29,8 +29,10 @@
     "react-map-gl": "^5.2.5",
     "react-sortable-tree": "^2.7.1",
     "react-sortable-tree-theme-file-explorer": "^2.0.0",
+    "react-sound": "^1.2.0",
     "react_ujs": "^2.6.1",
     "typeface-roboto": "0.0.75",
+    "use-sound": "^2.0.1",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.5"
   },

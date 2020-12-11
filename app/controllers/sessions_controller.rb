@@ -29,8 +29,8 @@ class SessionsController < ApplicationController
   def destroy
     # Create log entry
     @log = Log.new(trigger_by_bot: "session_bot", action_type: "user_logout")
-    @log.user = User.find(session[:user_id])
-    @log.client = current_user.client
+    @log.user = User.find_by_id(session[:user_id])
+    @log.client = current_user.client unless current_user.nil?
     @log.save
 
     session[:user_id] = nil

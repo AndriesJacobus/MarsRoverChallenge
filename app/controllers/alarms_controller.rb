@@ -15,7 +15,7 @@ class AlarmsController < ApplicationController
       @alarms = []
 
       Alarm.all.each do |alarm|
-        if alarm.device && alarm.device.client_group && alarm.device.client_group.client == current_user.client
+        if alarm.device && alarm.device.client_group && alarm.device.client_group.client && alarm.device.client_group.client.client_detail && alarm.device.client_group.client.client_detail == current_user.client_detail
           @alarms << alarm
         end
       end

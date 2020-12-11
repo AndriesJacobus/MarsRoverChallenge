@@ -36,7 +36,7 @@ module API
 
           end
 
-          def client_and_client_group_quick_setup(device_id, sigfox_device_type_id)
+          def quick_setup(device_id, sigfox_device_type_id)
             # Create new client group that is linked with the correct client
             # and link the device to the new client group
 
@@ -45,7 +45,7 @@ module API
 
             if @device
 
-              # Find correct client
+              # Find correct client site
               @client = Client.where(SigfoxDeviceTypeID: sigfox_device_type_id).take
 
               if @client.nil?
@@ -55,6 +55,17 @@ module API
                 )
                 @client.save
               end
+
+              # Find correct client_detail
+              @client_detail = ClientDetail.includes(:clients).where( :clients => { :id => @client.id } ).take
+              if !@client_detail
+                # Create new client_detail
+                @client_detail = ClientDetail.create(name: "Client for #{sigfox_device_type_id}")
+                @client_detail.save
+              end
+
+              # Link client site with client_detail
+              @client_detail.clients << @client
 
               # Create new client group
               @new_client_group = ClientGroup.where(Name: "Group #{sigfox_device_type_id} from Sigfox").take

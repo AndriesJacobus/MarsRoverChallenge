@@ -8,7 +8,11 @@ class ClientDetailsController < ApplicationController
     if current_user.usertype == "Sysadmin"
       @client_details = ClientDetail.all
     elsif current_user.usertype == "Client Admin"
-      @client_details = ClientDetail.all
+      if current_user.client_detail
+        @client_details = ClientDetail.where(id: current_user.client_detail.id)
+      else
+        @client_details = []
+      end
     else
       # redirect_to root_path, flash: {warning: 'Please log in as an Admin before viewing this page' }
       redirect_to root_path, flash: {warning: 'Please log in before viewing this page' }

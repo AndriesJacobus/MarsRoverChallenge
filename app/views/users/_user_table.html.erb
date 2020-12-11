@@ -7,6 +7,7 @@
         <th style = "white-space: nowrap; padding-right: 35px;">Name</th>
         <th style = "white-space: nowrap; padding-right: 35px;">Surname</th>
         <th style = "white-space: nowrap; padding-right: 35px;">Type</th>
+        <th style = "white-space: nowrap; padding-right: 35px;">Client Name</th>
         <th style = "white-space: nowrap; padding-right: 35px;">Site Name</th>
         <th style = "white-space: nowrap; padding-right: 35px;">Site DeviceType ID</th>
         <th colspan="3"></th>
@@ -20,6 +21,12 @@
           <td style = "white-space: nowrap; padding-right: 35px;"><%= user.name %></td>
           <td style = "white-space: nowrap; padding-right: 35px;"><%= user.surname %></td>
           <td style = "white-space: nowrap; padding-right: 35px;"><%= user.usertype %></td>
+
+          <% if !user.client_detail.nil? %>
+            <td style = "padding-right: 35px;"><%= user.client_detail.name %></td>
+          <% else %>
+            <td style = "padding-right: 35px;"><i>N/A</i></td>
+          <% end %>
 
           <% if !user.client.nil? %>
             <td style = "padding-right: 35px;"><%= user.client.Name %></td>
@@ -39,4 +46,5 @@
   </table>
 </div>
 
+<br>
 <br>

@@ -21,6 +21,7 @@ Rails.application.routes.draw do
   get '/get_device_info', to: 'devices#get_device_info', as: 'get_device_info'
   post '/set_device_info', to: 'devices#set_device_info', as: 'set_device_info'
 
+  # MapView routes
   get '/client_groups/:id/map_view', to: 'client_groups#map_view', as: 'map_view'
 
   post '/client_groups/:id/add_map_group', to: 'client_groups#add_map_group', as: 'add_map_group'
@@ -31,10 +32,18 @@ Rails.application.routes.draw do
 
   delete '/client_groups/:id/delete_map_group', to: 'client_groups#delete_map_group', as: 'delete_map_group'
 
+  # Linking client for client_groups and users
   get '/set_client_for_client_group', to: 'client_groups#set_client_for_client_group', as: 'set_client_for_client_group'
   get '/set_client_for_user', to: 'users#set_client_for_user', as: 'set_client_for_user'
+
+  # Linking client_group for devices
   get '/set_client_group_for_device', to: 'devices#set_client_group_for_device', as: 'set_client_group_for_device'
 
+  # Linking client_details for clients (sites) and users
+  get '/set_client_detail_for_client', to: 'clients#set_client_detail_for_client', as: 'set_client_detail_for_client'
+  get '/set_client_detail_for_user', to: 'users#set_client_detail_for_user', as: 'set_client_detail_for_user'
+
+  # Alarm routes
   post '/acknowledge_all_alarms', to: 'alarms#acknowledge_all_alarms', as: 'acknowledge_all_alarms'
   delete '/delete_all_alarms', to: 'alarms#delete_all_alarms', as: 'delete_all_alarms'
   delete '/delete_all_messages', to: 'messages#delete_all_messages', as: 'delete_all_messages'

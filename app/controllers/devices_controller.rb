@@ -17,7 +17,7 @@ class DevicesController < ApplicationController
       @devices = []
       
       Device.where.not(client_group_id: nil).each do |device|
-        if device.client_group.client == current_user.client
+        if device.client_group.client.client_detail == current_user.client.client_detail
           @devices << device
         end
       end
@@ -29,7 +29,26 @@ class DevicesController < ApplicationController
   # GET /devices/1
   # GET /devices/1.json
   def show
-    @client_groups = ClientGroup.all
+    # @client_groups = ClientGroup.all
+
+    @client_groups = []
+
+    if current_user.client_detail && current_user.client_detail.clients
+      current_user.client_detail.clients.each do |client|
+        @groups = ClientGroup.where(client_id: client.id)
+        @groups.each do |group|
+          @client_groups << group
+        end
+      end
+    end
+
+    if @device.client_group && @device.client_group.client
+      @groups = ClientGroup.where(client_id: @device.client_group.client.id)
+      @groups.each do |group|
+        @client_groups << group unless @client_groups.include?(group)
+      end
+    end
+
   end
 
   # GET /devices/new
@@ -47,6 +66,14 @@ class DevicesController < ApplicationController
     # Todo: make sure device names are unique
     @device = Device.new(device_params)
     @device.update_attribute(:state, "online")
+
+    if current_user.client_detail && current_user.client_detail.clients
+      @client = current_user.client_detail.clients.first
+
+      if @client && @client.client_groups && @client.client_groups.length > 0
+        @device.client_group = @client.client_groups.first
+      end
+    end
 
     respond_to do |format|
       if @device.save
@@ -74,7 +101,7 @@ class DevicesController < ApplicationController
       respond_to do |format|
         if @device.save
           format.html { redirect_to devices_path, flash: {success: 'Client Group was successfully added' } }
-          format.json { render :index, status: :created, location: current_device }
+          format.json { render :index, status: :created }
         else
           format.html { redirect_to devices_path, flash: {warning: 'Client Group could not be added' } }
           format.json { head :no_content }
