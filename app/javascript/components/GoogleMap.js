@@ -137,15 +137,6 @@ class GoogleMap extends React.Component {
     console.log(data);
 
     if (data.attribute == "state") {
-      // Check to see if we need to start an alarm
-      if (data.to.includes("alarm")) {
-        this.playPerimeterAlarm();
-      }
-
-      if (data.to.includes("offline")) {
-        this.playOfflineAlarm();
-      }
-
       if (data.update == "device") {
         // Find device to update
         let elementsIndex = this.state.markers.findIndex(e => e.id == data.id);
@@ -162,6 +153,18 @@ class GoogleMap extends React.Component {
         // Update state
         this.setState({
           markers: newArray,
+        }, () => {
+          // alert("Data.to: " + data.to)
+          // Check to see if we need to start an alarm
+          if (data.to.toLowerCase().includes("alarm")) {
+            this.playPerimeterAlarm();
+          }
+          else if (data.to.toLowerCase().includes("offline")) {
+            this.playOfflineAlarm();
+          }
+          else if (data.to.toLowerCase().includes("online") || data.to.toLowerCase().includes("maintenance")) {
+            this.stopRelevantAlarm();
+          }
         });
       }
 
@@ -1376,28 +1379,87 @@ class GoogleMap extends React.Component {
     </Modal>
   }
 
+  stopRelevantAlarm() {
+    this.stopOfflineAlarm();
+    this.stopPerimeterAlarm();
+  }
+
   playOfflineAlarm() {
-    this.setState({
-      offlinePlaying: Sound.status.PLAYING,
-    }, () => {
-      setTimeout(() => {
-        this.setState({
-          offlinePlaying: Sound.status.STOPPED,
-        });
-    }, 2000);
-    });
+    if (this.state.perimeterPlaying != Sound.status.PLAYING) {
+      // If the perimeter alarm isn't already playing
+      this.setState({
+        offlinePlaying: Sound.status.PLAYING,
+      });
+    }
+  }
+
+  stopOfflineAlarm() {
+    // Go through devices and see
+    // if there is still an offline device
+    
+    let shouldStopAlarm = true;
+    let markers = this.state.markers;
+
+    for (let i = 0; i < markers.length; i++) {
+      let marker = markers[i];
+      if (marker.state.toLowerCase().includes("offline")) {
+        shouldStopAlarm = false;
+        break;
+      }
+    }
+
+    if (shouldStopAlarm == true) {
+      // Stop offline alarm tone
+      this.setState({
+        offlinePlaying: Sound.status.STOPPED,
+      });
+    }
   }
 
   playPerimeterAlarm() {
+    if (this.state.offlinePlaying == Sound.status.PLAYING) {
+      // If the offline alarm is already playing, stop it
+      // because perimeter alarm takes precedence
+      this.setState({
+        offlinePlaying: Sound.status.STOPPED,
+      });
+    }
+    
     this.setState({
       perimeterPlaying: Sound.status.PLAYING,
-    }, () => {
-      setTimeout(() => {
-        this.setState({
-          perimeterPlaying: Sound.status.STOPPED,
-        });
-    }, 2000);
     });
+  }
+
+  stopPerimeterAlarm() {
+    // Go through devices and see
+    // if there is still an alarm device
+    
+    let shouldStopAlarm = true;
+    let markers = this.state.markers;
+
+    for (let i = 0; i < markers.length; i++) {
+      let marker = markers[i];
+      if (marker.state.toLowerCase().includes("alarm")) {
+        shouldStopAlarm = false;
+        break;
+      }
+    }
+
+    if (shouldStopAlarm == true) {
+      // Stop perimeter alarm tone
+      this.setState({
+        perimeterPlaying: Sound.status.STOPPED,
+      });
+
+      // Check to see if offline alarm should now start playing
+      for (let i = 0; i < markers.length; i++) {
+        let marker = markers[i];
+        if (marker.state.toLowerCase().includes("offline")) {
+          this.playOfflineAlarm();
+          break;
+        }
+      }
+    }
   }
 
   addOfflineSound() {

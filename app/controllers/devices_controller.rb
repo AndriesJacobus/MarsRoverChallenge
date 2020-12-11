@@ -17,7 +17,8 @@ class DevicesController < ApplicationController
       @devices = []
       
       Device.where.not(client_group_id: nil).each do |device|
-        if device.client_group.client.client_detail == current_user.client.client_detail
+        # if device.client_group && device.client_group.client && device.client_group.client.client_detail && device.client_group.client.client_detail == current_user.client.client_detail
+        if device.client_group && device.client_group.client && device.client_group.client.client_detail && device.client_group.client.client_detail == current_user.client_detail
           @devices << device
         end
       end
