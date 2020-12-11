@@ -54,6 +54,30 @@ class ClientsController < ApplicationController
       end
     end
   end
+  
+  def set_client_detail_for_client
+    @client_detail = ClientDetail.find(params[:ClientDetailID])
+    @client = Client.find(params[:id])
+
+    if @client_detail && @client
+      @client.client_detail = @client_detail
+
+      respond_to do |format|
+        if @client.save
+          format.html { redirect_to @client, flash: {success: 'Client was successfully linked' } }
+          format.json { render :index, status: :created }
+        else
+          format.html { redirect_to @client, flash: {warning: 'Client could not be linked' } }
+          format.json { head :no_content }
+        end
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to clients_path, flash: {warning: 'Client could not be linked' } }
+        format.json { head :no_content }
+      end
+    end
+  end
 
   # PATCH/PUT /clients/1
   # PATCH/PUT /clients/1.json
@@ -102,6 +126,12 @@ class ClientsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def client_params
-      params.require(:client).permit(:Name, :SigfoxDeviceTypeID, :SigfoxDeviceTypeName)
+      params.require(:client).permit(
+        :id,
+        :Name,
+        :SigfoxDeviceTypeID,
+        :SigfoxDeviceTypeName,
+        :ClientDetailID,
+      )
     end
 end

@@ -20,17 +20,12 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.json
   def show
-    # @clients = Client.all
-
-    if current_user.usertype == "Sysadmin"
-      @clients = Client.all
-    elsif current_user.usertype == "Client Admin"
-      # Todo: filter clients to show only those with the same 'client'
-      #       tag as the current Admin
-      @clients = Client.where(id: current_user.client_id)
-    else
-      @clients = []
-    end
+    # For now we show all clients
+    @client_details = ClientDetail.all
+    
+    # Todo: change this to only show clients (sites)
+    # linked to current user's client_details
+    @clients = Client.all
   end
 
   # GET /users/new
@@ -77,7 +72,7 @@ class UsersController < ApplicationController
       respond_to do |format|
         if @user.save
           format.html { redirect_to @user, flash: {success: 'Site was successfully linked' } }
-          format.json { render :index, status: :created, location: current_device }
+          format.json { render :index, status: :created}
         else
           format.html { redirect_to @user, flash: {warning: 'Site could not be linked' } }
           format.json { head :no_content }
@@ -86,6 +81,30 @@ class UsersController < ApplicationController
     else
       respond_to do |format|
         format.html { redirect_to users_path, flash: {warning: 'Site could not be linked' } }
+        format.json { head :no_content }
+      end
+    end
+  end
+  
+  def set_client_detail_for_user
+    @client_detail = ClientDetail.find(params[:ClientDetailID])
+    @user = User.find(params[:id])
+
+    if @client_detail && @user
+      @user.client_detail = @client_detail
+
+      respond_to do |format|
+        if @user.save
+          format.html { redirect_to @user, flash: {success: 'Client was successfully linked' } }
+          format.json { render :index, status: :created }
+        else
+          format.html { redirect_to @user, flash: {warning: 'Client could not be linked' } }
+          format.json { head :no_content }
+        end
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to users_path, flash: {warning: 'Client could not be linked' } }
         format.json { head :no_content }
       end
     end
@@ -139,6 +158,14 @@ class UsersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
-      params.require(:user).permit(:email, :name, :surname, :usertype, :password, :password_confirmation, :ClientID)
+      params.require(:user).permit(:email,
+        :name,
+        :surname,
+        :usertype,
+        :password,
+        :password_confirmation,
+        :ClientID,
+        :ClientDetailID
+      )
     end
 end

@@ -74,7 +74,7 @@ class DevicesController < ApplicationController
       respond_to do |format|
         if @device.save
           format.html { redirect_to devices_path, flash: {success: 'Client Group was successfully added' } }
-          format.json { render :index, status: :created, location: current_device }
+          format.json { render :index, status: :created }
         else
           format.html { redirect_to devices_path, flash: {warning: 'Client Group could not be added' } }
           format.json { head :no_content }

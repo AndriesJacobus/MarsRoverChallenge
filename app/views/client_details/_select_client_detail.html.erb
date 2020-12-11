@@ -14,9 +14,32 @@
         <% @client_details.each do |client_detail| %>
           <tr>
             <td><%= client_detail.name %></td>
-            <td><%= client_detail.company_name %></td>
-            <td><%= client_detail.business_address %></td>
-            <td><%= link_to 'Link Client', "", class: "waves-effect waves-light blue lighten-1 btn-small white-text disabled" %></td>
+            <td>
+              <%= client_detail.company_name.length > 0 ? client_detail.company_name : "N/A" %>
+            </td>
+
+            <td>
+              <%= client_detail.business_address.length > 0 ? client_detail.business_address : "N/A" %>
+            </td>
+            
+            <% if @client %>
+            
+              <% if @client.client_detail.nil? || @client.client_detail.id != client_detail.id %>
+                <td><%= link_to 'Link Client', set_client_detail_for_client_path(:ClientDetailID => client_detail.id, :id => @client.id), class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
+              <% else %>
+                <td><i>Currently Selected</i></td>
+              <% end %>
+
+            <% elsif @user %>
+
+              <% if @user.client_detail.nil? || @user.client_detail.id != client_detail.id %>
+                <td><%= link_to 'Link Client', set_client_detail_for_user_path(:ClientDetailID => client_detail.id, :id => @user.id), class: "waves-effect waves-light blue lighten-1 btn-small white-text" %></td>
+              <% else %>
+                <td><i>Currently Selected</i></td>
+              <% end %>
+
+            <% end %>
+            
           </tr>
         <% end %>
       </tbody>

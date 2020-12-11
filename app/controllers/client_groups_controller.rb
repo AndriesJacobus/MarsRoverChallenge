@@ -511,7 +511,7 @@ class ClientGroupsController < ApplicationController
       respond_to do |format|
         if @client_group.save
           format.html { redirect_to @client_group, flash: {success: 'Site was successfully linked' } }
-          format.json { render :index, status: :created, location: current_device }
+          format.json { render :index, status: :created }
         else
           format.html { redirect_to @client_group, flash: {warning: 'Site could not be linked' } }
           format.json { head :no_content }

@@ -7,7 +7,7 @@ class User < ApplicationRecord
   has_many :logs, dependent: :nullify
   has_many :alarms, dependent: :nullify
 
-  belongs_to :client_details, optional: true
+  belongs_to :client_detail, optional: true
 
   validates :email, presence: true, uniqueness: true
   
