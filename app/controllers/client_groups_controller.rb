@@ -104,6 +104,14 @@ class ClientGroupsController < ApplicationController
         # Set client group location if not set already
         if @client_group.longitude == nil || @client_group.latitude == nil
           @client_group.update_attributes(:longitude => params[:MapGroupStartLon], :latitude => params[:MapGroupStartLat])
+          @client_group.save
+        end
+
+        # Set client site location if not set already
+        @client = @client_group.client
+        if @client && (@client.longitude == nil || @client.latitude == nil)
+          @client.update_attributes(:longitude => params[:MapGroupStartLon], :latitude => params[:MapGroupStartLat])
+          @client.save
         end
 
         respond_to do |format|
@@ -129,6 +137,14 @@ class ClientGroupsController < ApplicationController
         # Set client group location if not set already
         if @client_group.longitude == nil || @client_group.latitude == nil
           @client_group.update_attributes(:longitude => params[:MapGroupStartLon], :latitude => params[:MapGroupStartLat])
+          @client_group.save
+        end
+
+        # Set client site location if not set already
+        @client = @client_group.client
+        if @client && (@client.longitude == nil || @client.latitude == nil)
+          @client.update_attributes(:longitude => params[:MapGroupStartLon], :latitude => params[:MapGroupStartLat])
+          @client.save
         end
 
         respond_to do |format|
@@ -262,6 +278,17 @@ class ClientGroupsController < ApplicationController
 
           if @client_group.longitude == nil || @client_group.latitude == nil
             @client_group.update_attributes(:longitude => params[:DeviceLng], :latitude => params[:DeviceLat])
+            @client_group.save
+          end
+          
+          # Set client site location if not set already
+          @client = @client_group.client
+          puts @client
+          if @client && (@client.longitude == nil || @client.latitude == nil)
+
+            puts "\n\nHere"
+            @client.update_attributes(:longitude => params[:DeviceLng], :latitude => params[:DeviceLat])
+            @client.save
           end
         end
 
@@ -326,7 +353,6 @@ class ClientGroupsController < ApplicationController
           @alarm = Alarm.where(device_id: device.id).where(acknowledged: false).where("lower(state_change_from) like ?", "%alarm%").last
 
           if @alarm
-            # @alarms.each do |alarm|
               @alarm.update_attributes(
                 acknowledged: true,
                 date_acknowledged: Time.now,
@@ -335,7 +361,8 @@ class ClientGroupsController < ApplicationController
                 user_id: current_user.id,
                 state_change_to: params[:MapGroupState],
               )
-            # end
+  
+              @alarm.save
           else
             @alarm = Alarm.new(
               acknowledged: true,
