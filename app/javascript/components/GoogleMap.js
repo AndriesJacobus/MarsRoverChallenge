@@ -1473,7 +1473,7 @@ class GoogleMap extends React.Component {
       url={this.props.offlineAlarmUrl}
       playStatus={this.state.offlinePlaying}
       playFromPosition={0}
-      loop={false}
+      loop={true}
       volume={100}
     />
   }
@@ -1483,7 +1483,7 @@ class GoogleMap extends React.Component {
     url={this.props.perimAlarmUrl}
       playStatus={this.state.perimeterPlaying}
       playFromPosition={0}
-      loop={false}
+      loop={true}
       volume={100}
     />
   }
