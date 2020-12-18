@@ -26,8 +26,36 @@
 
         <p>
           <strong>Sigfox DeviceType Name:</strong><br/>
-          <%= @client.SigfoxDeviceTypeName %>
+          <% if @client.SigfoxDeviceTypeName %>
+            <%= @client.SigfoxDeviceTypeName %>
+          <% else %>
+            N/A
+          <% end %>
         </p>
+
+        <br/>
+
+        <p>
+          <strong>Longitude:</strong><br/>
+            <% if @client.longitude %>
+              <%= @client.longitude %>
+            <% else %>
+              N/A
+            <% end %>
+        </p>
+
+        <br/>
+
+        <p>
+          <strong>Latitude:</strong><br/>
+            <% if @client.latitude %>
+              <%= @client.latitude %>
+            <% else %>
+              N/A
+            <% end %>
+        </p>
+
+        <br/>
 
         <p class = "cardSubTitle">Client Details:</p>
 

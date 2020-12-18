@@ -27,6 +27,28 @@
         <br/>
 
         <p>
+          <strong>Associated Site:</strong><br/>
+          <% if !@alarm.device.nil? && !@alarm.device.client_group.nil? && !@alarm.device.client_group.client.nil? %>
+              <%= @alarm.device.client_group.client.Name %>
+            <% else %>
+              N/A
+            <% end %>
+        </p>
+
+        <br/>
+
+        <p>
+          <strong>Associated Group:</strong><br/>
+          <% if !@alarm.device.nil? && !@alarm.device.client_group.nil? %>
+              <%= @alarm.device.client_group.Name %>
+            <% else %>
+              N/A
+            <% end %>
+        </p>
+
+        <br/>
+
+        <p>
           <strong>Associated Device:</strong><br/>
           <% if !@alarm.device.nil?%>
             <%= @alarm.device.Name %>

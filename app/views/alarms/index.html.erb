@@ -25,6 +25,8 @@
         <th style = "white-space: nowrap; padding-right: 35px;">Date Triggered</th>
         <th style = "white-space: nowrap; padding-right: 35px;">Is Alarm</th>
         <th style = "white-space: nowrap; padding-right: 35px;">Acknowledged</th>
+        <th style = "white-space: nowrap; padding-right: 35px;">Associated Site</th>
+        <th style = "white-space: nowrap; padding-right: 35px;">Associated Group</th>
         <th style = "white-space: nowrap; padding-right: 35px;">Associated Device</th>
         <th style = "white-space: nowrap; padding-right: 35px;">Associated Message</th>
         <th style = "white-space: nowrap; padding-right: 35px;">Original Device State</th>
@@ -59,13 +61,29 @@
           </td>
 
           <td style = "padding-right: 35px;">
+            <% if !alarm.device.nil? && !alarm.device.client_group.nil? && !alarm.device.client_group.client.nil? %>
+              <%= alarm.device.client_group.client.Name %>
+            <% else %>
+              N/A
+            <% end %>
+          </td>
+
+          <td style = "padding-right: 35px;">
+            <% if !alarm.device.nil? && !alarm.device.client_group.nil? %>
+              <%= alarm.device.client_group.Name %>
+            <% else %>
+              N/A
+            <% end %>
+          </td>
+
+
+          <td style = "padding-right: 35px;">
             <% if !alarm.device.nil? %>
               <%= alarm.device.Name %>
             <% else %>
               N/A
             <% end %>
           </td>
-
           <td style = "padding-right: 35px;">
             <% if !alarm.message.nil? %>
               <%= alarm.message.Data %>
@@ -149,5 +167,8 @@
 
 <br>
 
-<%= link_to 'New Alarm', new_alarm_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %> |
+<% if current_user.usertype != "Operator" %>
+  <%= link_to 'New Alarm', new_alarm_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %> |
+<% end %>
+
 <%= link_to 'Back to Dashboard', root_path, class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>

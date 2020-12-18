@@ -111,6 +111,7 @@ class GoogleMap extends React.Component {
     this.handleAlarmNotes = this.handleAlarmNotes.bind(this);
 
     this.handleLiveData = this.handleLiveData.bind(this);
+    this.stopOrStartPerimeterAlarm = this.stopOrStartPerimeterAlarm.bind(this);
   }
 
   componentDidMount(){
@@ -118,8 +119,6 @@ class GoogleMap extends React.Component {
     this.addInitialDevicesAndPerimeters();
 
     // Setup ActionCable
-
-    // let cable = ActionCable.createConsumer('ws://localhost:3000/cable');
     let cable = ActionCable.createConsumer(this.props.cable_url);
     this.sub = cable.subscriptions.create({
         channel: 'LiveMapChannel',
@@ -134,8 +133,7 @@ class GoogleMap extends React.Component {
   }
 
   handleLiveData = (data) => {
-    console.log(data);
-
+    // console.log(data);
     if (data.attribute == "state") {
       if (data.update == "device") {
         // Find device to update
@@ -340,7 +338,7 @@ class GoogleMap extends React.Component {
       id={index}
       title={marker.title}
       position={marker.position}
-      draggable={true}
+      draggable={this.props.curr_user_type != "Operator"}
       icon={{
         url: (
           marker.state == "online" ? this.props.markerIconOnline :
@@ -1381,12 +1379,13 @@ class GoogleMap extends React.Component {
 
   stopRelevantAlarm() {
     this.stopOfflineAlarm();
-    this.stopPerimeterAlarm();
+    this.stopOrStartPerimeterAlarm();
   }
 
   playOfflineAlarm() {
-    if (this.state.perimeterPlaying != Sound.status.PLAYING) {
+    if (this.state.perimeterPlaying != Sound.status.PLAYING && this.state.offlinePlaying != Sound.status.PLAYING) {
       // If the perimeter alarm isn't already playing
+      // and the offline alarm isn't already playing
       this.setState({
         offlinePlaying: Sound.status.PLAYING,
       });
@@ -1424,13 +1423,16 @@ class GoogleMap extends React.Component {
         offlinePlaying: Sound.status.STOPPED,
       });
     }
-    
-    this.setState({
-      perimeterPlaying: Sound.status.PLAYING,
-    });
+
+    if (this.state.perimeterPlaying != Sound.status.PLAYING) {
+      this.setState({
+        perimeterPlaying: Sound.status.PLAYING,
+      });
+    }
+  
   }
 
-  stopPerimeterAlarm() {
+  stopOrStartPerimeterAlarm() {
     // Go through devices and see
     // if there is still an alarm device
     
@@ -1459,6 +1461,10 @@ class GoogleMap extends React.Component {
           break;
         }
       }
+    }
+    else {
+      // Play perimeter alarm if it isn't already
+      this.playPerimeterAlarm();
     }
   }
 
@@ -1509,6 +1515,10 @@ class GoogleMap extends React.Component {
           mapTypeControl={true}
           mapType={"hybrid"}
           streetViewControl={true}
+          onReady={() => {
+            // Play relevant alarms
+            this.stopOrStartPerimeterAlarm();
+          }}
           onClick={this.onClick} >
 
           {

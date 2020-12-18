@@ -156,6 +156,8 @@ class ClientsController < ApplicationController
         :SigfoxDeviceTypeName,
         :ClientDetailID,
         :OutgoingClientID,
+        :longitude,
+        :latitude
       )
     end
 end
