@@ -57,7 +57,7 @@ class AlarmsController < ApplicationController
     end
 
     @alarms.each do |alarm|
-      alarm.update_attributes(
+      alarm.update(
         acknowledged: true,
         date_acknowledged: Time.now,
         alarm_reason: "Admin bulk Acknowledge",
@@ -115,7 +115,7 @@ class AlarmsController < ApplicationController
 
     if @alarm
       # Alarm is in alarm of is offline
-        @alarm.update_attributes(
+        @alarm.update(
           acknowledged: params[:acknowledged],
           date_acknowledged: params[:date_acknowledged],
           alarm_reason: params[:alarm_reason],

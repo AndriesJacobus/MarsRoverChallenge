@@ -26,7 +26,7 @@ class GoogleMap extends React.Component {
     this.state = {
 
       // Marker Data
-      // markers: [
+      // markersFormat: [
       //   {
       //     title: "Device 3AB6DA",
       //     position: { lat: 47.6307081, lng: -122.1434325 },
@@ -49,7 +49,7 @@ class GoogleMap extends React.Component {
 
       // Perim Data
       drawPerimeter: false,
-      // perimeters: [
+      // perimetersFormat: [
       //   {
       //     name: "Perimeter 1",
       //     path: [
@@ -87,6 +87,8 @@ class GoogleMap extends React.Component {
       mapRef: null,
       currentZoom: this.props.saved_zoom,
       snackOpen: false,
+      fullscreenActive: false,
+      showReasonInfoWindow: false,
 
       offlinePlaying: Sound.status.STOPPED,
       perimeterPlaying: Sound.status.STOPPED,
@@ -96,6 +98,8 @@ class GoogleMap extends React.Component {
     this.tree = null,
     this.sub = null;
     this.spRef = null;
+    this.infoModalInput1Ref = null;
+    this.infoModalInput2Ref = null;
 
     this.onClick = this.onClick.bind(this);
     this.hideInfo = this.hideInfo.bind(this);
@@ -124,7 +128,10 @@ class GoogleMap extends React.Component {
     this.stopOrStartPerimeterAlarm = this.stopOrStartPerimeterAlarm.bind(this);
 
     this.saveZoomLevel = this.saveZoomLevel.bind(this);
-    this.handleSnackClose = this.handleSnackClose.bind(this);
+    this.handleSnackClose = this.handleSnackClose.bind(this);    
+    this.handleFullscreenChange = this.handleFullscreenChange.bind(this);
+    this.handleAckWindowClose = this.handleAckWindowClose.bind(this);
+    this.renderInfoModal = this.renderInfoModal.bind(this);
   }
 
   componentDidMount(){
@@ -141,8 +148,42 @@ class GoogleMap extends React.Component {
       }
     );
 
-    // this.sub.send({ text: "Test 3", id: 1 });
+    // Full screen Listeners
+    document.addEventListener('webkitfullscreenchange', this.handleFullscreenChange, false)
+    document.addEventListener('mozfullscreenchange', this.handleFullscreenChange, false)
+    document.addEventListener('msfullscreenchange', this.handleFullscreenChange, false)
+    document.addEventListener('MSFullscreenChange', this.handleFullscreenChange, false) //IE11
+    document.addEventListener('fullscreenchange', this.handleFullscreenChange, false)
     
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('webkitfullscreenchange', this.handleFullscreenChange)
+    document.removeEventListener('mozfullscreenchange', this.handleFullscreenChange)
+    document.removeEventListener('msfullscreenchange', this.handleFullscreenChange)
+    document.removeEventListener('MSFullscreenChange', this.handleFullscreenChange)
+    document.removeEventListener('fullscreenchange', this.handleFullscreenChange)
+  }
+
+  handleFullscreenChange = (e) => {
+    let fullscreen = false;
+
+    if (document.fullscreenElement ||
+      document.mozFullScreenElement||
+      document.webkitFullscreenElement ||
+      document.msFullscreenElement ||
+      document.fullscreen ||
+      document.mozFullScreen ||
+      document.webkitIsFullScreene ||
+      document.fullScreenMode ) {
+      fullscreen = true
+    }
+
+    // console.log(fullscreen);
+
+    this.setState ({
+      fullscreenActive: fullscreen,
+    })
   }
 
   handleLiveData = (data) => {
@@ -328,6 +369,7 @@ class GoogleMap extends React.Component {
       //  Click on map - Hide infowindow
       this.setState({
         showInfo: false,
+        showReasonInfoWindow: false,
       });
     }
 
@@ -488,6 +530,7 @@ class GoogleMap extends React.Component {
   showInfo = (marker, index) => {
     // alert(JSON.stringify(marker.position));
     this.setState({
+      showReasonInfoWindow: false,
       showInfo: true,
       markerInfo: {
         id: marker.id,
@@ -497,9 +540,8 @@ class GoogleMap extends React.Component {
         position: marker.position,
         state: marker.state,
       },
-    });
 
-    this.setState({
+      // 
       showPerDel: false,
 
       perInfoLat: 47.6307081,
@@ -570,6 +612,8 @@ class GoogleMap extends React.Component {
   }
 
   updatePerimState(perimName, newState) {
+    console.log(this.state.alarmReason)
+
     // update_map_group_state
     let body = JSON.stringify({
       MapGroupName: perimName,
@@ -1138,10 +1182,29 @@ class GoogleMap extends React.Component {
   }
   
   openAlarmAckWindow(deviceState) {
-    this.setState({
-      showAckWindow: true,
-      stateToAck: deviceState,
-    });
+    let fullScreen = this.state.fullscreenActive;
+    
+    if (fullScreen == true) {
+      // Full screen, rather use InfoWindow
+      this.setState({
+        showInfo: false,
+        showPerDel: false,
+        stateToAck: deviceState,
+        showReasonInfoWindow: true,
+      }, () => {
+        this.setState({
+          showReasonInfoWindow: true,
+        });
+      });
+    }
+    else {
+      this.setState({
+        showReasonInfoWindow: false,
+        showAckWindow: true,
+        stateToAck: deviceState,
+      });
+    }
+
   }
 
   onInfoWindowOpen(props, e) {
@@ -1194,6 +1257,7 @@ class GoogleMap extends React.Component {
 
   handleAckWindowClose() {
     this.setState({
+      showReasonInfoWindow: false,
       showAckWindow: false,
       stateToAck: "",
       alarmReason: "",
@@ -1543,6 +1607,128 @@ class GoogleMap extends React.Component {
     });
   };
 
+  infoModalActions = () => {
+    return <div>
+      <div
+        style = {{
+          flexDirection: "row",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center"
+        }} >
+
+        <TextField
+          id="standard-multiline-flexible"
+          label={(this.state.stateToAck.includes("alarm")) ? "Reason for Alarm" : "Reason"}
+          multiline
+          rowsMax={4}
+          value={this.state.alarmReason}
+          onChange={this.handleAlarmReason}
+        />
+
+        <TextField
+          ref={infoModalInput1Ref => this.infoModalInput1Ref = infoModalInput1Ref}
+          id="standard-multiline-flexible"
+          label="Notes"
+          multiline
+          rowsMax={4}
+          value={this.state.alarmNotes}
+          onChange={this.handleAlarmNotes}
+          style = {{
+            marginLeft: 15,
+          }}
+        />
+      </div>
+
+      <div
+      style = {{
+        flexDirection: "row", 
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center"
+      }} >
+
+      <div
+        onClick={() => {
+          // alert(this.state.markerInfo.id + " " + this.state.alarmReason + " " + this.state.alarmNotes);
+          if (this.state.markerInfo.id) {
+            this.updateDeviceState(this.state.markerInfo.id, this.state.stateToAck);
+          }
+          else if (this.state.showPerDel || (this.state.perInfoLat != null && this.state.perInfoLat != null)) {
+            this.updatePerimState(this.state.perInfoTitle, "online");
+          }
+        }}
+        className={"green btn"}
+        style={{
+          marginTop: 15,
+        }} >
+
+        <i className="material-icons right">check</i>
+        Submit
+      </div>
+
+      <div
+        onClick={this.handleAckWindowClose}
+        className={"grey btn"}
+        style = {{
+          marginTop: 15,
+          marginLeft: 15,
+        }} >
+
+        <i className="material-icons right">close</i>
+        Cancel
+      </div>
+    </div>
+    </div>
+  }
+
+  onInfoModalOpen(props, e) {
+    let content = this.infoModalActions();
+
+    ReactDOM.render(React.Children.only(content), document.getElementById("modalActionsContainer"));
+  }
+
+  renderInfoModal() {
+    return <InfoWindow
+      visible={this.state.showReasonInfoWindow}
+      onCloseClick={this.handleAckWindowClose}
+      onClose={this.handleAckWindowClose}
+      onOpen={e => {
+        this.onInfoModalOpen(this.props, e);
+      }}
+
+      position={{
+        lat: this.state.markerInfo.id ? this.state.markerInfo.position.lat : this.state.perInfoLat,
+        lng: this.state.markerInfo.id ? this.state.markerInfo.position.lng : this.state.perInfoLng,
+      }} >
+
+      <div style = {infoModalStyle}>
+        {
+          (this.state.stateToAck == "online") ? (
+            <p style = {infoTitle}>Acknowledge Alarm:</p>
+          ) :
+          (this.state.stateToAck == "offline") ? (
+            <p style = {infoTitle}>Take Offline:</p>
+          ) :
+          (this.state.stateToAck == "maintenance") ? (
+            <p style = {infoTitle}>Disable Device:</p>
+          ) :
+            <p style = {infoTitle}>Acknowledge Alarm:</p>
+        }
+        
+        <hr style = {hrStyle} />
+
+        <br/>
+        
+        <div id={"modalActionsContainer"}>
+          {/* Marker actions loaded on infowindow open */}
+        </div>
+
+      </div>
+
+    </InfoWindow>
+  }
+
   render() {
     return (
       <div
@@ -1561,7 +1747,6 @@ class GoogleMap extends React.Component {
           zoom={this.state.currentZoom}
           style={
             (this.props.curr_user_type == "Operator") ? mapStylesOperator : mapStyles
-            // mapStyles
           }
           initialCenter={{ 
             lat: this.props.map_lat,
@@ -1574,7 +1759,6 @@ class GoogleMap extends React.Component {
             // Play relevant alarms
             this.stopOrStartPerimeterAlarm();
           }}
-          // onZoomChanged={this.zoomChanged}
           onClick={this.onClick} >
 
           {
@@ -1668,6 +1852,8 @@ class GoogleMap extends React.Component {
             ) :
               null
           }
+
+          {this.renderInfoModal()}
           
           <InfoWindow
             visible={this.state.showPerDel}
@@ -1862,6 +2048,13 @@ const modalStyle = {
   position: 'relative',
   top: "40vh",
   left: "30vw",
+  width: "40vw",
+  borderWidth: 0.1,
+  borderRadius: 15,
+  padding: 25,
+  backgroundColor: "white",
+};
+const infoModalStyle = {
   width: "40vw",
   borderWidth: 0.1,
   borderRadius: 15,

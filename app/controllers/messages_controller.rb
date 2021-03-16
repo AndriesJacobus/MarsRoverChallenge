@@ -83,7 +83,7 @@ class MessagesController < ApplicationController
           
           if @alarm
 
-            @alarm.update_attributes(
+            @alarm.update(
               acknowledged: true,
               date_acknowledged: Time.now,
               alarm_reason: "Keepalive received",

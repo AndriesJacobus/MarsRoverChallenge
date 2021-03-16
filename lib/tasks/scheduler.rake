@@ -15,7 +15,7 @@ task :check_device_keepalives => :environment do
 
       if message.Data.to_s[0...2] == "16" && Time.at(message.Time) > 24.hours.ago
         # Message is a keepalive and the time 
-        # of the message is in the last 24 hours
+        # of the message is in the last 24 hours (23.hours.ago.to_i > 24.hours.ago.to_i)
 
         @received_keepalive = true
         break

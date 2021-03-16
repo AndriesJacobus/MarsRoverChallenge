@@ -182,7 +182,7 @@ class DevicesController < ApplicationController
       puts resp.as_json
       puts resp.as_json["name"]
 
-      current_device.update_attributes(
+      current_device.update(
         :SigfoxName => resp["name"],
         :SigfoxDeviceTypeID => resp["deviceType"]["id"],
         :SigfoxGroupID => resp["group"]["id"],
