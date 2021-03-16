@@ -61,7 +61,8 @@ module API
               end
 
               # Set device and map_group states
-              if @message.Data.to_s[0...2] == "52"
+              if @message.Data.to_s[0...2] == "52" && @device.state != "maintenance"
+                # If the message is an alarm and the device is not in maintenance 
                 # Update device state to alarm (not a keepalive)
                 
                 m = @message.Data.to_s[13...14]   # Ignore first nibble between 12 and 13
@@ -129,7 +130,8 @@ module API
       
                 @alarm.save
 
-              elsif @message.Data.to_s[0...2] == "16"
+              elsif @message.Data.to_s[0...2] == "16" && @device.state != "maintenance"
+                # If the message is an offline alarm and the device is not in maintenance 
                 # Update device state to online if need be (is a keepalive)
 
                 if @device.state == "offline"
