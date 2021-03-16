@@ -6,7 +6,8 @@ git_source(:github) do |repo_name|
 end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.1.7'
+# gem 'rails', '~> 5.1.7'
+gem 'rails'
 
 # Use Puma as the app server
 gem 'puma', '~> 3.7'
@@ -58,6 +59,18 @@ gem 'rack-cors', :require => 'rack/cors'
 gem 'grape-active_model_serializers'
 gem 'grape-swagger'
 gem 'grape-swagger-rails'
+
+# Admin panel
+gem "administrate", '0.13.0'
+
+# Pagination
+gem 'will_paginate', '~> 3.3.0'
+
+# Ransack to help with adminsearching
+gem 'ransack'
+
+# Admin export
+gem 'administrate_exportable', '0.3.1'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development

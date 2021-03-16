@@ -1,5 +1,40 @@
 Rails.application.routes.draw do
 
+  namespace :admin do
+    resources :alarms do
+      get :export, on: :collection
+    end
+    resources :api_keys do
+      get :export, on: :collection
+    end
+    resources :clients do
+      get :export, on: :collection
+    end
+    resources :client_details do
+      get :export, on: :collection
+    end
+    resources :client_groups do
+      get :export, on: :collection
+    end
+    resources :devices do
+      get :export, on: :collection
+    end
+    resources :logs do
+      get :export, on: :collection
+    end
+    resources :map_groups do
+      get :export, on: :collection
+    end
+    resources :messages do
+      get :export, on: :collection
+    end
+    resources :users do
+      get :export, on: :collection
+    end
+
+    root to: "alarms#index"
+  end
+
   resources :client_details
   resources :alarms
   resources :logs

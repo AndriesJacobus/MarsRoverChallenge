@@ -29,6 +29,32 @@
 
   <div class="row">
   
+    <% if current_user.usertype == "Sysadmin"%>
+
+      <div class="col s4">
+        <%= link_to "/admin" do %>
+          <%= react_component("DashboardCard",
+            {
+              title:
+                "Admin Panel",
+              content:
+                "View the overall admin panel for the Wi-I Cloud.
+                From the Admin panel, a System Administrator can view
+                all information about the various models of the Wi-I Cloud.
+                All data is displayed in a searchable dashboard.",
+              resource:
+                asset_path("admin.jpg"),
+              link:
+                "/admin",
+              linkText:
+                "Go to the Admin Panel",
+            })
+          %>
+        <% end %>
+      </div>
+
+    <% end %>
+  
     <% if current_user.usertype == "Sysadmin" || current_user.usertype == "Client Admin" %>
 
       <div class="col s4">
@@ -71,7 +97,9 @@
           %>
         <% end %>
       </div>
-
+    </div>
+    
+    <div class = "row">
       <div class="col s4">
         <%= link_to clients_path do %>
           <%= react_component("DashboardCard",
