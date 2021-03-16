@@ -4,18 +4,18 @@ Rails.application.routes.draw do
     resources :alarms do
       get :export, on: :collection
     end
-    resources :api_keys do
-      get :export, on: :collection
-    end
-    resources :clients do
-      get :export, on: :collection
-    end
-    resources :client_details do
-      get :export, on: :collection
-    end
-    resources :client_groups do
-      get :export, on: :collection
-    end
+    # resources :api_keys do
+    #   get :export, on: :collection
+    # end
+    # resources :clients do
+    #   get :export, on: :collection
+    # end
+    # resources :client_details do
+    #   get :export, on: :collection
+    # end
+    # resources :client_groups do
+    #   get :export, on: :collection
+    # end
     resources :devices do
       get :export, on: :collection
     end
@@ -64,6 +64,7 @@ Rails.application.routes.draw do
   post '/client_groups/:id/update_marker_loc', to: 'client_groups#update_marker_loc', as: 'update_marker_loc'
   post '/client_groups/:id/update_device_state', to: 'client_groups#update_device_state', as: 'update_device_state'
   post '/client_groups/:id/update_map_group_state', to: 'client_groups#update_map_group_state', as: 'update_map_group_state'
+  post '/client_groups/:id/set_zoom_level_for_client_group', to: 'client_groups#set_zoom_level_for_client_group', as: 'set_zoom_level_for_client_group'
 
   delete '/client_groups/:id/delete_map_group', to: 'client_groups#delete_map_group', as: 'delete_map_group'
 

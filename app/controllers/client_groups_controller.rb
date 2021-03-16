@@ -574,6 +574,21 @@ class ClientGroupsController < ApplicationController
     end
   end
 
+  def set_zoom_level_for_client_group
+    @client_group = ClientGroup.find(params[:id])
+    @client_group.update_attribute(:zoom_level, params[:zoom_level])
+
+    if @client_group.save
+      msg = { :status => "ok", :message => "Zoom level successfully updated" }
+    else
+      msg = { :status => "bad_request", :message => "Zoom level could not be updated" }
+    end
+    
+    respond_to do |format|
+      format.json  { render :json => msg }
+    end
+  end
+
   # GET /client_groups/new
   def new
     @client_group = ClientGroup.new
@@ -675,6 +690,7 @@ class ClientGroupsController < ApplicationController
         :ClientID,
         :AlarmReason,
         :AlarmNote,
+        :zoom_level,
       )
     end
 end

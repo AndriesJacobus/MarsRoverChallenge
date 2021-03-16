@@ -4,6 +4,8 @@ import PropTypes from 'prop-types'
 import { Map, GoogleApiWrapper, Marker, Polyline, InfoWindow } from 'google-maps-react';
 import Modal from '@material-ui/core/Modal';
 import TextField from '@material-ui/core/TextField';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 import ActionCable from 'actioncable';
 import CustomTreeView from './CustomTreeView';
 import SortableTreeView from './SortableTreeView';
@@ -11,6 +13,10 @@ import SoundPlayer from './SoundPlayer';
 import Sound from 'react-sound';
 
 React.useLayoutEffect = React.useEffect
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 class GoogleMap extends React.Component {
 
@@ -78,6 +84,10 @@ class GoogleMap extends React.Component {
       alarmReason: "",
       alarmNotes: "",
 
+      mapRef: null,
+      currentZoom: this.props.saved_zoom,
+      snackOpen: false,
+
       offlinePlaying: Sound.status.STOPPED,
       perimeterPlaying: Sound.status.STOPPED,
     }
@@ -112,6 +122,9 @@ class GoogleMap extends React.Component {
 
     this.handleLiveData = this.handleLiveData.bind(this);
     this.stopOrStartPerimeterAlarm = this.stopOrStartPerimeterAlarm.bind(this);
+
+    this.saveZoomLevel = this.saveZoomLevel.bind(this);
+    this.handleSnackClose = this.handleSnackClose.bind(this);
   }
 
   componentDidMount(){
@@ -1211,6 +1224,17 @@ class GoogleMap extends React.Component {
         <div style={deleteMarkerStyle}>
           <a
             className="waves-effect waves-light primary btn"
+            onClick={this.saveZoomLevel} >
+              
+            <i className="material-icons right">youtube_searched_for</i>
+            
+            Save Zoom Level
+          </a>
+        </div>
+        
+        <div style={deleteMarkerStyle}>
+          <a
+            className="waves-effect waves-light primary btn"
             onClick={this.toggleDrawPerimeter} >
 
             {
@@ -1488,6 +1512,37 @@ class GoogleMap extends React.Component {
     />
   }
 
+  saveZoomLevel() {
+    if (this.domNode != null) {
+      let body = JSON.stringify({
+        zoom_level: this.domNode.map.zoom,
+      });
+  
+      fetch('/client_groups/' + this.props.curr_client_group + '/set_zoom_level_for_client_group', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': this.props.auth_token,
+        },
+        body: body,
+      }).then(response => response.json())
+      .then(response => {
+        console.log(response);
+
+        this.setState({
+          snackOpen: true,
+        });
+
+      });
+    }
+  }
+
+  handleSnackClose = () => {
+    this.setState({
+      snackOpen: false,
+    });
+  };
+
   render() {
     return (
       <div
@@ -1500,10 +1555,10 @@ class GoogleMap extends React.Component {
         }
 
         <Map
-          ref={node => this.domNode = node}
+          ref={map => this.domNode = map}
           className="map"
           google={this.props.google}
-          zoom={8}
+          zoom={this.state.currentZoom}
           style={
             (this.props.curr_user_type == "Operator") ? mapStylesOperator : mapStyles
             // mapStyles
@@ -1519,6 +1574,7 @@ class GoogleMap extends React.Component {
             // Play relevant alarms
             this.stopOrStartPerimeterAlarm();
           }}
+          // onZoomChanged={this.zoomChanged}
           onClick={this.onClick} >
 
           {
@@ -1693,6 +1749,25 @@ class GoogleMap extends React.Component {
         {this.addOfflineSound()}
         {this.addPerimeterSound()}
 
+        <div
+          style={{
+            position: 'absolute',
+          }}>
+
+          <Snackbar
+            open={this.state.snackOpen}
+            autoHideDuration={1500}
+            onClose={this.handleSnackClose}
+            // message={"Zoom level saved!"}
+            >
+
+            <Alert onClose={this.handleSnackClose} severity="success">
+              Zoom level saved!
+            </Alert>
+
+          </Snackbar>
+        </div>
+
       </div>
     );
   }
@@ -1729,7 +1804,7 @@ const infoActionButton = {
 const mapStyles = {
   width: "60vw",
   height: '60%',
-  marginLeft: '10%',
+  // marginLeft: '10%',
 };
 const mapStylesOperator = {
   // flex: 0,

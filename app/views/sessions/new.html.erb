@@ -1,18 +1,28 @@
 
-<h3>Login</h3>
-<p id=”alert”><%= alert %></p>
+<div
+  style ="
+    margin: auto;
+    width: 50%;
+    padding: 10px;
+    position: relative;
+    top: 50%;
+  ">
 
-<%= form_tag sessions_path do |form| %>
-  <div class=”field”>
-    <%= label_tag :email %>
-    <%= text_field_tag :email %>
-  </div>
-  <div class=”field”>
-    <%= label_tag :password %>
-    <%= password_field_tag :password %>
-  </div>
-  <br/>
-  <div class=”actions”>
-    <%= submit_tag "Login", class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
-  </div>
-<% end %>
+  <h3 style = "text-align: center;">Login</h3>
+  <p id=”alert”><%= alert %></p>
+
+  <%= form_tag sessions_path do |form| %>
+    <div class=”field”>
+      <%= label_tag :email %>
+      <%= text_field_tag :email %>
+    </div>
+    <div class=”field”>
+      <%= label_tag :password %>
+      <%= password_field_tag :password %>
+    </div>
+    <br/>
+    <div class=”actions”>
+      <%= submit_tag "Login", class: "waves-effect waves-light blue lighten-1 btn-small white-text" %>
+    </div>
+  <% end %>
+</div>

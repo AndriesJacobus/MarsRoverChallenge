@@ -44,6 +44,7 @@
         curr_client_group: @client_group.id,
         map_lat: @client_group.latitude ? @client_group.latitude : -25.850187,
         map_lng: @client_group.longitude ? @client_group.longitude : 28.198042,
+        saved_zoom: @client_group.zoom_level,
         auth_token: form_authenticity_token,
         devices: @devices.as_json,
         map_groups: @map_groups.as_json(include: :devices),
