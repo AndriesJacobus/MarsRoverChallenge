@@ -1893,7 +1893,7 @@ class GoogleMap extends React.Component {
                     ) :
                     (this.state.markerInfo.state == "offline") ? (
                       <div className="chip" style = {circleStyleGrey}>
-                        Offline {this.state.markerInfo.offline_acknowledged == true ? ", Acknowledged" : ""}
+                        Offline{this.state.markerInfo.offline_acknowledged == true ? ", Acknowledged" : ""}
                       </div>
                     ) :
                     (this.state.markerInfo.state == "maintenance") ? (
