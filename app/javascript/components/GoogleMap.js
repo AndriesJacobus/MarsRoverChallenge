@@ -45,6 +45,7 @@ class GoogleMap extends React.Component {
           lng: -122.1434325
         },
         state: "online",
+        offline_acknowledged: null,
       },
 
       // Perim Data
@@ -262,6 +263,29 @@ class GoogleMap extends React.Component {
         });
 
         // Todo: update tree
+      }
+    }
+    else if (data.attribute == "offline_acknowledged") {
+      if (data.update == "device" && data.to == true) {
+        // Stop offline alarm
+        // Find device to update
+        let elementsIndex = this.state.markers.findIndex(e => e.id == data.id);
+
+        // Make copy of markers
+        let newArray = [...this.state.markers];
+
+        // Update device
+        newArray[elementsIndex] = {
+          ...newArray[elementsIndex],
+          offline_acknowledged: data.to
+        }
+
+        // Update state
+        this.setState({
+          markers: newArray,
+        }, () => {
+          this.stopOfflineAlarm()
+        });
       }
     }
     
@@ -539,9 +563,9 @@ class GoogleMap extends React.Component {
         name: marker.name,
         position: marker.position,
         state: marker.state,
+        offline_acknowledged: marker.offline_acknowledged,
       },
 
-      // 
       showPerDel: false,
 
       perInfoLat: 47.6307081,
@@ -565,6 +589,7 @@ class GoogleMap extends React.Component {
           lng: -122.1434325
         },
         state: "online",
+        offline_acknowledged: null,
       },
 
       deviceFromTreeSelected: false,
@@ -1004,6 +1029,7 @@ class GoogleMap extends React.Component {
                 lng: currDevice.Longitude,
               },
               state: currDevice.state,
+              offline_acknowledged: currDevice.offline_acknowledged,
             }
           ],
         }, () => {
@@ -1059,6 +1085,8 @@ class GoogleMap extends React.Component {
   }
 
   offlineMarker() {
+    console.log(this.state.markerInfo)
+    console.log(this.state.markerInfo.offline_acknowledged)
     return <div>
   
       {/* <br/> */}
@@ -1081,6 +1109,26 @@ class GoogleMap extends React.Component {
           </div>
           <br/>
         </span>
+      }
+
+      {
+        (this.state.markerInfo.offline_acknowledged != true) ? (
+          <span>
+            <div
+              onClick={() => {
+                // this.updateDeviceState(this.state.markerInfo.id, "online");
+                this.acknowledgeOfflineAlarm();
+              }}
+              className={"green btn"}
+              style={infoActionButton} >
+
+              <i className="material-icons right">check</i>
+              Acknowledge as Offline
+            </div>
+            <br/>
+          </span>
+        ) :
+        null
       }
 
       {/* {
@@ -1489,7 +1537,7 @@ class GoogleMap extends React.Component {
 
     for (let i = 0; i < markers.length; i++) {
       let marker = markers[i];
-      if (marker.state.toLowerCase().includes("offline")) {
+      if (marker.state.toLowerCase().includes("offline") && marker.offline_acknowledged != true) {
         shouldStopAlarm = false;
         break;
       }
@@ -1544,7 +1592,7 @@ class GoogleMap extends React.Component {
       // Check to see if offline alarm should now start playing
       for (let i = 0; i < markers.length; i++) {
         let marker = markers[i];
-        if (marker.state.toLowerCase().includes("offline")) {
+        if (marker.state.toLowerCase().includes("offline") && marker.offline_acknowledged != true) {
           this.playOfflineAlarm();
           break;
         }
@@ -1729,6 +1777,35 @@ class GoogleMap extends React.Component {
     </InfoWindow>
   }
 
+  acknowledgeOfflineAlarm() {
+
+    if (this.state.markerInfo.state) {
+      let body = JSON.stringify({
+        id: this.state.markerInfo.id,
+        offline_acknowledged: true,
+      });
+  
+      fetch('/acknowledge_offline_alarm_for_device', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': this.props.auth_token,
+        },
+        body: body,
+      }).then(response => response.json())
+      .then(response => {
+        console.log(response);
+
+        if (response.status == "ok") {
+          // Hide info window
+          this.hideInfo();
+        }
+  
+      });
+    }
+    
+  }
+
   render() {
     return (
       <div
@@ -1816,7 +1893,7 @@ class GoogleMap extends React.Component {
                     ) :
                     (this.state.markerInfo.state == "offline") ? (
                       <div className="chip" style = {circleStyleGrey}>
-                        Offline
+                        Offline {this.state.markerInfo.offline_acknowledged == true ? ", Acknowledged" : ""}
                       </div>
                     ) :
                     (this.state.markerInfo.state == "maintenance") ? (

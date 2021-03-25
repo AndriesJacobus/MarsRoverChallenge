@@ -75,6 +75,9 @@ Rails.application.routes.draw do
   # Linking client_group for devices
   get '/set_client_group_for_device', to: 'devices#set_client_group_for_device', as: 'set_client_group_for_device'
 
+  # Marking a device alarm as acknowledged, but still offline 
+  post '/acknowledge_offline_alarm_for_device', to: 'devices#acknowledge_offline_alarm_for_device', as: 'acknowledge_offline_alarm_for_device'
+
   # Linking client_details for clients (sites) and users
   get '/set_client_detail_for_client', to: 'clients#set_client_detail_for_client', as: 'set_client_detail_for_client'
   get '/set_client_detail_for_user', to: 'users#set_client_detail_for_user', as: 'set_client_detail_for_user'

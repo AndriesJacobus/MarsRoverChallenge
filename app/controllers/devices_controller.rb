@@ -116,6 +116,67 @@ class DevicesController < ApplicationController
     end
   end
 
+  # Stop the offline alarm of a device, but keep them offline (not maintenance)
+  def acknowledge_offline_alarm_for_device
+    @device = Device.find_by_id(params[:id])
+
+    if @device
+      @device.update(
+        offline_acknowledged: params[:offline_acknowledged],
+      )
+
+      message = "Device '#{@device.Name}' " + 
+                "with id #{params[:id]} " +
+                "successfully updated with offline_acknowledged to #{params[:offline_acknowledged]}"
+
+      if @device.save
+
+        @alarm = Alarm.new(
+          acknowledged: true,
+          date_acknowledged: Time.now,
+          alarm_reason: "Offline device",
+          device_id: @device.id,
+          user_id: current_user.id,
+          state_change_to: "offline acknowledged",
+          state_change_from: "offline",
+        )
+
+        @alarm.save
+
+        # Send action cable message to update relevant device's state
+        data = {
+          "update": "device",
+          "id": @device.id,
+          "attribute": "offline_acknowledged",
+          "to": true,
+        }
+        ActionCable.server.broadcast("live_map_#{@device.client_group.id}", data)
+
+        respond_to do |format|
+          msg = { :status => "ok", :message => message }
+          format.json  { render :json => msg }
+        end
+
+      else
+
+        respond_to do |format|
+          msg = { :status => "bad_request", :message => @device.errors }
+          format.json  { render :json => msg }
+        end
+
+      end
+
+    else
+
+      respond_to do |format|
+        msg = { :status => "bad_request", :message => @device.errors }
+        format.json  { render :json => msg }
+      end
+
+    end
+
+  end
+
   # PATCH/PUT /devices/1
   # PATCH/PUT /devices/1.json
   def update
@@ -270,6 +331,8 @@ class DevicesController < ApplicationController
         :SigfoxActivationTime,
         :SigfoxCreationTime,
         :SigfoxCreatedByID,
-        :ClientGroupID)
+        :ClientGroupID,
+        :offline_acknowledged,
+      )
     end
 end

@@ -94,7 +94,7 @@
           <% if !@alarm.state_change_to.nil? && @alarm.state_change_to != "" %>
             <% if @alarm.state_change_to == "online" %>
               <p style = "color: lightgreen"><%= @alarm.state_change_to %></p>
-            <% elsif @alarm.state_change_to == "offline" %>
+            <% elsif @alarm.state_change_to == "offline" || @alarm.state_change_to == "offline acknowledged" %>
               <p style = "color: lightgrey"><%= @alarm.state_change_to%></p>
             <% elsif @alarm.state_change_to == "maintenance" %>
               <p style = "color: orange"><%= @alarm.state_change_to %></p>

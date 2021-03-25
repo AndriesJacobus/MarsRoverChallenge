@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_16_133028) do
+ActiveRecord::Schema.define(version: 2021_03_25_062654) do
 
   create_table "alarms", force: :cascade do |t|
     t.boolean "acknowledged"
@@ -88,6 +88,7 @@ ActiveRecord::Schema.define(version: 2021_03_16_133028) do
     t.integer "map_group_id"
     t.integer "client_group_id"
     t.string "state"
+    t.boolean "offline_acknowledged"
     t.index ["client_group_id"], name: "index_devices_on_client_group_id"
     t.index ["map_group_id"], name: "index_devices_on_map_group_id"
   end
