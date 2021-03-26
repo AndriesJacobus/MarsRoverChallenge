@@ -70,7 +70,8 @@ gem 'will_paginate', '~> 3.3.0'
 gem 'ransack'
 
 # Admin export
-gem 'administrate_exportable', '0.3.1'
+gem 'administrate_exportable'
+gem 'mimemagic', github: 'mimemagicrb/mimemagic', ref: '01f92d86d15d85cfd0f20dabd025dcbd36a8a60f'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
