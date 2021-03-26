@@ -35,7 +35,8 @@ gem 'material_icons'
 
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3', group: :development
-gem 'pg', '0.18.1', group: :production
+# gem 'pg', '0.18.1', group: :production
+gem 'pg', group: :production
 
 gem 'rails_12factor', group: :production
 
