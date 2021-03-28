@@ -1,26 +1,34 @@
 {
-  "application.js": "/packs/js/application-441c36160d485dc9187e.js",
-  "application.js.map": "/packs/js/application-441c36160d485dc9187e.js.map",
+  "application.css": "/packs/css/application-415b09e5.css",
+  "application.js": "/packs/js/application-9dcea762be18034ba50d.js",
+  "application.js.map": "/packs/js/application-9dcea762be18034ba50d.js.map",
   "entrypoints": {
     "application": {
+      "css": [
+        "/packs/css/application-415b09e5.css"
+      ],
       "js": [
-        "/packs/js/application-441c36160d485dc9187e.js"
+        "/packs/js/application-9dcea762be18034ba50d.js"
       ],
       "js.map": [
-        "/packs/js/application-441c36160d485dc9187e.js.map"
+        "/packs/js/application-9dcea762be18034ba50d.js.map"
       ]
     },
     "server_rendering": {
+      "css": [
+        "/packs/css/server_rendering-415b09e5.css"
+      ],
       "js": [
-        "/packs/js/server_rendering-dd8f257925f944b23423.js"
+        "/packs/js/server_rendering-b652f9e944e82a9536ea.js"
       ],
       "js.map": [
-        "/packs/js/server_rendering-dd8f257925f944b23423.js.map"
+        "/packs/js/server_rendering-b652f9e944e82a9536ea.js.map"
       ]
     }
   },
   "media/sounds/device_offline_alarm.mp3": "/packs/media/sounds/device_offline_alarm-dc819d1a.mp3",
   "media/sounds/perimeter_alarm.mp3": "/packs/media/sounds/perimeter_alarm-950499d5.mp3",
-  "server_rendering.js": "/packs/js/server_rendering-dd8f257925f944b23423.js",
-  "server_rendering.js.map": "/packs/js/server_rendering-dd8f257925f944b23423.js.map"
+  "server_rendering.css": "/packs/css/server_rendering-415b09e5.css",
+  "server_rendering.js": "/packs/js/server_rendering-b652f9e944e82a9536ea.js",
+  "server_rendering.js.map": "/packs/js/server_rendering-b652f9e944e82a9536ea.js.map"
 }
