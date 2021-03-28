@@ -197,13 +197,14 @@ The functional requirements of the MVP Phase One include:
 ---
 
 ## Project View Hierarchy
-1. Clients (sigf device type)
-   1. Client Admin
-   2. Client Operator
-   3. Client Group (sigf Group)
-      1. MapGroups (Perimeter)
-      2. Devices
-         1. Messages
+1. Clients
+   1. Sites (sigf device type)
+      1. Client Admin
+      2. Client Operator
+      3. Client Group (sigf Group)
+         1. MapGroups (Perimeter)
+         2. Devices
+            1. Messages
 
 ---
 
@@ -322,9 +323,9 @@ The functional requirements of the MVP Phase One include:
     - [x]  Connected to SigFox back end to handle callbacks
 
 - [ ]  6. Assigned to Phase Two
-  - [ ]  Business Rules
-    - [ ]  Actions
-      - [ ]  Ignore (Prevent individual devices in a group from sending notifications)
+  - [x]  Business Rules
+    - [x]  Actions
+      - [x]  Ignore (Prevent individual devices in a group from sending notifications)
   - [ ]  Controller Deliverables
     - [ ]  Cloud server
       - [ ]  Passes on packets received from SigFox devices to local server
