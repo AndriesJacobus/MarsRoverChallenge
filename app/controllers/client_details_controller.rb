@@ -6,10 +6,10 @@ class ClientDetailsController < ApplicationController
   def index
     # Only Admins can view index
     if current_user.usertype == "Sysadmin"
-      @client_details = ClientDetail.all
+      @client_details = ClientDetail.all.order('updated_at DESC')
     elsif current_user.usertype == "Client Admin"
       if current_user.client_detail
-        @client_details = ClientDetail.where(id: current_user.client_detail.id)
+        @client_details = ClientDetail.where(id: current_user.client_detail.id).order('updated_at DESC')
       else
         @client_details = []
       end

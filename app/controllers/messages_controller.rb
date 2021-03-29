@@ -9,7 +9,7 @@ class MessagesController < ApplicationController
   def index
     # Only Admins can view index
     if current_user.usertype == "Sysadmin"
-      @messages = Message.all
+      @messages = Message.all.order('updated_at DESC')
     elsif current_user.usertype == "Client Admin"
       # Todo: filter messages to show only those with the same 'client'
       #       tag as the current Admin
@@ -19,6 +19,8 @@ class MessagesController < ApplicationController
         if message.device.client_group.client && message.device.client_group.client.client_detail && message.device.client_group.client.client_detail == current_user.client_detail
           @messages << message
         end
+
+        @messages.order('updated_at DESC')
       end
     else
       redirect_to root_path, flash: {warning: 'Please log in as an Admin before viewing this page' }

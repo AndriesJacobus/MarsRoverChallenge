@@ -28,7 +28,7 @@
 
   <div class="field">
     <% if !current_user || current_user.usertype == "Operator" %>
-      <% types = []%>
+      <% types = ["Operator"]%>
     <% else %>
       <% if current_user.usertype == "Sysadmin" %>
         <% types = ['Sysadmin', 'Client Admin', 'Operator']%>
