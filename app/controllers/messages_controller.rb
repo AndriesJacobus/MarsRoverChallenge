@@ -20,7 +20,8 @@ class MessagesController < ApplicationController
           @messages << message
         end
 
-        @messages.order('updated_at DESC')
+        @messages.sort_by(&:updated_at)
+        @messages.reverse!
       end
     else
       redirect_to root_path, flash: {warning: 'Please log in as an Admin before viewing this page' }

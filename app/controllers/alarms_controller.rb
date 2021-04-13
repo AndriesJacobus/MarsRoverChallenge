@@ -19,7 +19,8 @@ class AlarmsController < ApplicationController
         end
       end
 
-      @alarms.order('updated_at DESC')
+      @alarms.sort_by(&:updated_at)
+      @alarms.reverse!
     end
   end
 
