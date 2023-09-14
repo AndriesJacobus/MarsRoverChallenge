@@ -1,12 +1,10 @@
 development:
-  # adapter: async
-  adapter: redis
-  url: redis://localhost:6379/1
+  adapter: async
+
+test:
+  adapter: test
 
 production:
   adapter: redis
-  url: redis://redistogo:9c6d1c73483de26ea5e7f3513bbf8141@pike.redistogo.com:11841/
-  # channel_prefix: Wi_I_Cloud_production
-
-test:
-  adapter: async
+  url: <%= ENV.fetch("REDIS_URL") { "redis://localhost:6379/1" } %>
+  channel_prefix: MRC_production

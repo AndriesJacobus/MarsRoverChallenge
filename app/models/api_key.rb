@@ -1,2 +1,0 @@
-class ApiKey < ApplicationRecord
-end

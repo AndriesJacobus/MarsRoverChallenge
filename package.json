@@ -1,42 +1,43 @@
 {
-  "name": "Wi_I_Cloud",
+  "name": "app",
   "private": true,
   "dependencies": {
-    "@babel/core": "^7.9.0",
-    "@babel/preset-react": "^7.9.4",
-    "@material-ui/core": "^4.9.11",
-    "@material-ui/icons": "^4.9.1",
-    "@material-ui/lab": "^4.0.0-alpha.50",
-    "@material-ui/styles": "^4.9.10",
-    "@rails/webpacker": "4.2.2",
-    "@syncfusion/ej2-react-grids": "^18.1.45",
-    "@syncfusion/ej2-react-navigations": "^18.1.45",
-    "actioncable": "^5.2.4-3",
-    "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
-    "d3-array": "^2.4.0",
-    "d3-request": "^1.0.6",
-    "d3-scale": "^3.2.1",
-    "google-map-react": "^1.1.7",
-    "google-maps-react": "^2.0.6",
-    "material-design-icons": "^3.0.1",
-    "material-ui": "^1.0.0-beta.47",
-    "materialize-css": "^1.0.0",
-    "moment": "^2.24.0",
-    "prop-types": "^15.7.2",
-    "react": "^16.13.1",
-    "react-addons-update": "^15.6.2",
-    "react-dom": "^16.13.1",
-    "react-map-gl": "^5.2.5",
-    "react-sortable-tree": "^2.7.1",
-    "react-sortable-tree-theme-file-explorer": "^2.0.0",
-    "react-sound": "^1.2.0",
-    "react_ujs": "^2.6.1",
-    "typeface-roboto": "0.0.75",
-    "use-sound": "^2.0.1",
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.5"
+    "@babel/core": "7",
+    "@babel/plugin-transform-runtime": "7",
+    "@babel/preset-env": "7",
+    "@babel/preset-react": "^7.22.15",
+    "@babel/runtime": "7",
+    "@react-three/drei": "^9.83.9",
+    "@react-three/fiber": "^8.14.1",
+    "babel-loader": "8",
+    "compression-webpack-plugin": "9",
+    "css-loader": "^6.8.1",
+    "css-minimizer-webpack-plugin": "^5.0.1",
+    "mini-css-extract-plugin": "^2.7.6",
+    "prop-types": "^15.8.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react_ujs": "^3.1.1",
+    "shakapacker": "7.0.0",
+    "style-loader": "^3.3.3",
+    "terser-webpack-plugin": "5",
+    "three": "^0.156.1",
+    "webpack": "5",
+    "webpack-assets-manifest": "5",
+    "webpack-cli": "4",
+    "webpack-merge": "5"
   },
+  "version": "0.1.0",
+  "babel": {
+    "presets": [
+      "./node_modules/shakapacker/package/babel/preset.js",
+      "@babel/preset-react"
+    ]
+  },
+  "browserslist": [
+    "defaults"
+  ],
   "devDependencies": {
-    "webpack-dev-server": "^3.10.3"
+    "webpack-dev-server": "4"
   }
 }

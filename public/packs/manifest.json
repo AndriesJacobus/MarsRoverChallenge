@@ -1,34 +1,36 @@
 {
-  "application.css": "/packs/css/application-415b09e5.css",
-  "application.js": "/packs/js/application-9dcea762be18034ba50d.js",
-  "application.js.map": "/packs/js/application-9dcea762be18034ba50d.js.map",
+  "application.js": "/packs/js/application.js",
   "entrypoints": {
     "application": {
-      "css": [
-        "/packs/css/application-415b09e5.css"
-      ],
-      "js": [
-        "/packs/js/application-9dcea762be18034ba50d.js"
-      ],
-      "js.map": [
-        "/packs/js/application-9dcea762be18034ba50d.js.map"
-      ]
+      "assets": {
+        "js": [
+          "/packs/js/runtime.js",
+          "/packs/js/vendors-node_modules_react-three_drei_core_OrbitControls_js-node_modules_react-three_drei_cor-8c14a3.js",
+          "/packs/js/app_javascript_components_sync_recursive_.js",
+          "/packs/js/application.js"
+        ]
+      }
     },
     "server_rendering": {
-      "css": [
-        "/packs/css/server_rendering-415b09e5.css"
-      ],
-      "js": [
-        "/packs/js/server_rendering-b652f9e944e82a9536ea.js"
-      ],
-      "js.map": [
-        "/packs/js/server_rendering-b652f9e944e82a9536ea.js.map"
-      ]
+      "assets": {
+        "js": [
+          "/packs/js/runtime.js",
+          "/packs/js/vendors-node_modules_react-three_drei_core_OrbitControls_js-node_modules_react-three_drei_cor-8c14a3.js",
+          "/packs/js/app_javascript_components_sync_recursive_.js",
+          "/packs/js/server_rendering.js"
+        ]
+      }
     }
   },
-  "media/sounds/device_offline_alarm.mp3": "/packs/media/sounds/device_offline_alarm-dc819d1a.mp3",
-  "media/sounds/perimeter_alarm.mp3": "/packs/media/sounds/perimeter_alarm-950499d5.mp3",
-  "server_rendering.css": "/packs/css/server_rendering-415b09e5.css",
-  "server_rendering.js": "/packs/js/server_rendering-b652f9e944e82a9536ea.js",
-  "server_rendering.js.map": "/packs/js/server_rendering-b652f9e944e82a9536ea.js.map"
+  "js/app_javascript_components_sync_recursive_.80d310dc7c3df08190ec.hot-update.js.map": "/packs/js/app_javascript_components_sync_recursive_.80d310dc7c3df08190ec.hot-update.js.map",
+  "js/app_javascript_components_sync_recursive_.js": "/packs/js/app_javascript_components_sync_recursive_.js",
+  "js/app_javascript_components_sync_recursive_.js.map": "/packs/js/app_javascript_components_sync_recursive_.js.map",
+  "js/application.js.map": "/packs/js/application.js.map",
+  "js/runtime.80d310dc7c3df08190ec.hot-update.js.map": "/packs/js/runtime.80d310dc7c3df08190ec.hot-update.js.map",
+  "js/runtime.js.map": "/packs/js/runtime.js.map",
+  "js/server_rendering.js.map": "/packs/js/server_rendering.js.map",
+  "js/vendors-node_modules_react-three_drei_core_OrbitControls_js-node_modules_react-three_drei_cor-8c14a3.js": "/packs/js/vendors-node_modules_react-three_drei_core_OrbitControls_js-node_modules_react-three_drei_cor-8c14a3.js",
+  "js/vendors-node_modules_react-three_drei_core_OrbitControls_js-node_modules_react-three_drei_cor-8c14a3.js.map": "/packs/js/vendors-node_modules_react-three_drei_core_OrbitControls_js-node_modules_react-three_drei_cor-8c14a3.js.map",
+  "runtime.js": "/packs/js/runtime.js",
+  "server_rendering.js": "/packs/js/server_rendering.js"
 }
