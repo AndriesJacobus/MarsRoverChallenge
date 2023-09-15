@@ -6,6 +6,8 @@ class HomeController < ApplicationController
     @movement = RoverMovement.new(movement_params)
     success = @movement.calculate_output
 
+    @movement.save unless success == false
+
     respond_to do |format|
       msg = {
         :status => success ? "ok" : "i_error",

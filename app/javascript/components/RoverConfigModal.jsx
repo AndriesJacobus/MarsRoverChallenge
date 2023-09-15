@@ -43,7 +43,7 @@ export default function RoverConfigModal (props) {
     })
     .then((response) => response.json())
     .then((data) => {
-      // console.log("Response: ", data);
+      console.log("Response: ", data);
       if (data.status == "ok") {
         alert("Success!");
       }
@@ -116,7 +116,7 @@ export default function RoverConfigModal (props) {
         fontSize: 14,
         marginTop: 10,
       }}>
-        Mars Base to Mission Control... Mars Base to Mission Control... What are your commands?<br/><br/>
+        Mars Base to Mission Control... Mars Base to Mission Control... What are your instructions?<br/><br/>
       </Typography>
       <Typography style = {{
         color: "grey",
