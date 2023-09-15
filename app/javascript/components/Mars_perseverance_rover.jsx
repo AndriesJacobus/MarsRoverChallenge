@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useGLTF } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
+import * as THREE from "three";
 
 export default function Rover(props) {
   useGLTF.preload(props.model);
+  const vec = new THREE.Vector3();
   const { nodes, materials } = useGLTF(props.model);
   const [ roverX, setRoverX ] = useState(props.position[0]);
   const [ roverZ, setRoverZ ] = useState(props.position[2]);
+  const [ done, setDone ] = useState(false);
 
-  console.log("position", props.position);
-  console.log("roverX", roverX);
+  // console.log("position", props.position);
+  // console.log("roverX", roverX);
   // console.log("roverY", roverZ);
 
   // useEffect(() => {
@@ -22,6 +26,25 @@ export default function Rover(props) {
   //     setRoverZ(roverZ + 0.0001);
   //   }, 1);
   // }, [roverZ]);
+  
+  // if (!done) {
+  //   useFrame(state => {
+  //     // state.camera.position.distanceTo(vec) > 0.1
+  //     // state.camera.position.lerp(vec.set(0.025, 2, -0.6), 0.03);
+  //     state.camera.position.lerp(vec.set(0.025, 2, 2), 0.03);
+  //     state.camera.updateProjectionMatrix();
+
+  //     setTimeout(() => {
+  //       setDone(true);
+  //     }, 2000);
+  //   });
+  // }
+  // else {
+  //   // useFrame(state => {
+  //   //   state.camera.rotation.set(THREE.MathUtils.degToRad(10), 0, 0);
+  //   // }, 0);
+  //   useFrame(() => null, 0);
+  // }
 
   return (
     <group {...props} dispose={null}>

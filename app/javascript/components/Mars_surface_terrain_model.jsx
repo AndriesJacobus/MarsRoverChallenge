@@ -1,5 +1,5 @@
-import React, { useRef } from 'react'
-import { useGLTF } from '@react-three/drei'
+import React, { useRef } from 'react';
+import { useGLTF } from '@react-three/drei';
 
 export default function MarsTerrain(props) {
   useGLTF.preload(props.model);
