@@ -1,12 +1,17 @@
-import React, { Suspense, useEffect, useRef } from 'react';
+import React, { Suspense, useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import Rover from './Mars_perseverance_rover';
 import MarsTerrain from './Mars_surface_terrain_model';
 import RoverConfigModal from './RoverConfigModal';
+import RoverControlls from './RoverControlls';
 
 export default function RoverCanvas(props) {
    const configModalRef = useRef(null);
+   const terrainRef = useRef(null);
+   const [showControlls, setShowControlls] = useState(false);
+   const [currentInput, setCurrentInput] = useState(null);
+   const [currentOutput, setCurrentOutput] = useState(null);
 
    useEffect(() => {
       if (configModalRef != null) {
@@ -14,8 +19,16 @@ export default function RoverCanvas(props) {
       }
    }, [configModalRef]);
 
-   function startChallenge() {
-      configModalRef.current(false);
+   function moveRovers(input, output) {
+      setShowControlls(true);
+      setCurrentInput(input);
+      setCurrentOutput(output);
+   }
+
+   function centerCam() {
+      if (terrainRef != null) {
+         terrainRef.current(true);
+      }
    }
 
    return (
@@ -28,7 +41,6 @@ export default function RoverCanvas(props) {
       }}>
          <Canvas
             camera={{ position: [2, 45, 12.25], fov: 10, }}
-            // camera={{ position: [2, 45, 12.25], fov: 100, }}
             style={{
                backgroundColor: '#fcc4a1',
                width: '100vw',
@@ -46,15 +58,19 @@ export default function RoverCanvas(props) {
                <MarsTerrain
                   position = {[-3.5, 0, 3.5]}
                   model = {props.terrainModel}
+                  centerCam = {terrainRef}
                />
             </Suspense>
             <OrbitControls />
          </Canvas>
          <RoverConfigModal
             setModalOpen = {configModalRef}
-            startChallenge = {startChallenge}
+            moveRovers = {moveRovers}
             authToken = {props.authToken}
          />
+         {
+            showControlls && <RoverControlls input = {currentInput} output = {currentOutput} recenterCam = {centerCam} />
+         }
       </div>
    );
 }

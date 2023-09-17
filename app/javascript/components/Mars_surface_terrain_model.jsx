@@ -1,9 +1,33 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useGLTF } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
+import * as THREE from "three";
 
 export default function MarsTerrain(props) {
   useGLTF.preload(props.model);
   const { nodes, materials } = useGLTF(props.model);
+  const [mustCenterCam, setMustCenterCam] = useState(false);
+  const vec = new THREE.Vector3();
+  
+  useEffect(() => {
+    if (props.centerCam) {
+      props.centerCam.current = setMustCenterCam;
+    }
+  }, []);
+
+  if (mustCenterCam) {
+    useFrame(state => {
+      state.camera.position.lerp(vec.set(2, 45, 12.25), 0.1);
+      state.camera.updateProjectionMatrix();
+
+      setTimeout(() => {
+        setMustCenterCam(false);
+      }, 1000);
+    });
+  }
+  else {
+    useFrame(() => null, 0);
+}
 
   return (
     <group {...props} dispose={null}>

@@ -45,7 +45,9 @@ export default function RoverConfigModal (props) {
     .then((data) => {
       console.log("Response: ", data);
       if (data.status == "ok") {
-        alert("Success!");
+        setModalOpen(false);
+        setIntro(true);
+        props.moveRovers(input, data.output);
       }
       else if (data.status == "i_error") {
         alert("Error: input is invalid");
@@ -163,14 +165,13 @@ export default function RoverConfigModal (props) {
         }}
         style = {{
           marginTop: 10,
+          width: "100%",
         }}
       />
       <br/>
       
       <Button
         onClick={() => {
-          // props.startChallenge();
-          // setIntro(true);
           calculateOutput();
         }}
         variant={"outlined"}

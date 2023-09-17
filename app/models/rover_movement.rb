@@ -58,6 +58,12 @@ class RoverMovement < ApplicationRecord
 
     def do_steps(start_pos, instructions)
         grid = self.input.lines[0].split
+
+        puts "grid"
+        puts grid
+        puts grid[0]
+        puts grid[1]
+
         pos = start_pos.split
         x = pos[0].to_i
         y = pos[1].to_i
@@ -81,7 +87,7 @@ class RoverMovement < ApplicationRecord
                 case heading
                     when "N"
                         # Change y
-                        if y == grid[1]
+                        if y == grid[1].to_i
                             return outBoundsString + x.to_s + " " + y.to_s + " " + heading
                         end
 
@@ -89,7 +95,7 @@ class RoverMovement < ApplicationRecord
 
                     when "E"
                         # Change x
-                        if x == grid[0]
+                        if x == grid[0].to_i
                             return outBoundsString + x.to_s + " " + y.to_s + " " + heading
                         end
 
