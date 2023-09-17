@@ -43,7 +43,7 @@ export default function RoverConfigModal (props) {
     })
     .then((response) => response.json())
     .then((data) => {
-      console.log("Response: ", data);
+      // console.log("Response: ", data);
       if (data.status == "ok") {
         setModalOpen(false);
         setIntro(true);
@@ -111,7 +111,7 @@ export default function RoverConfigModal (props) {
           fontWeight: "bold",
         }}
         >
-        Setup config
+        <u>Setup config</u>
       </Typography>
       <Typography style = {{
         color: "grey",

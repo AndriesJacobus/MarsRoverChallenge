@@ -7,49 +7,73 @@ export default function Rover(props) {
   useGLTF.preload(props.model);
   const vec = new THREE.Vector3();
   const { nodes, materials } = useGLTF(props.model);
-  const [ roverX, setRoverX ] = useState(props.position[0]);
-  const [ roverZ, setRoverZ ] = useState(props.position[2]);
-  const [ done, setDone ] = useState(false);
+  const [ roverX, setRoverX ] = useState(props.position[0] + (0.2 * (props.startPosition ? Number(props.startPosition[0]) : 0)));
+  const [ roverZ, setRoverZ ] = useState(props.position[2] - (0.25 * (props.startPosition ? Number(props.startPosition[1]) : 0)));
+  const [ rotation, setRotation ] = useState(Math.PI);
+  const [ currentPositionIndex, setCurrentPositionIndex ] = useState(0);
 
-  // console.log("position", props.position);
-  // console.log("roverX", roverX);
-  // console.log("roverY", roverZ);
+  useEffect(() => {
+    setTimeout(() => {
+      animateRover();
+    }, 1000);
+  }, [currentPositionIndex]);
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setRoverX(roverX - 0.0001);
-  //   }, 1);
-  // }, [roverX]);
+  function rotateRoverTo(degrees) {
+    if (rotation / Math.PI == 2.5 || rotation / Math.PI == -0.5) {
+      setRotation(Math.PI);
+    }
+    else {
+      setRotation(degrees);
+    }
+  }
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setRoverZ(roverZ + 0.0001);
-  //   }, 1);
-  // }, [roverZ]);
-  
-  // if (!done) {
-  //   useFrame(state => {
-  //     // state.camera.position.distanceTo(vec) > 0.1
-  //     // state.camera.position.lerp(vec.set(0.025, 2, -0.6), 0.03);
-  //     state.camera.position.lerp(vec.set(0.025, 2, 2), 0.03);
-  //     state.camera.updateProjectionMatrix();
+  function moveRoverByOne() {
+    let heading = rotation / Math.PI;
 
-  //     setTimeout(() => {
-  //       setDone(true);
-  //     }, 2000);
-  //   });
-  // }
-  // else {
-  //   // useFrame(state => {
-  //   //   state.camera.rotation.set(THREE.MathUtils.degToRad(10), 0, 0);
-  //   // }, 0);
-  //   useFrame(() => null, 0);
-  // }
+    if (heading == 1) {
+      // N
+      setRoverZ(roverZ - 0.25);
+    }
+    else if (heading == 2.5 || heading == 0.5) {
+      // E
+      setRoverX(roverX + 0.2);
+    }
+    else if (heading == 2 || heading == 0) {
+      // S
+      setRoverZ(roverZ + 0.25);
+    }
+    else {
+      // W
+      setRoverX(roverX - 0.2);
+    }
+  }
+
+  function animateRover() {
+    // Execute instruction at index currentPositionIndex
+    if (props.instructions && currentPositionIndex < props.instructions.length) {
+      // Can be L, R, M
+      if (props.instructions[currentPositionIndex] == "L") {
+        // Rotate Left
+        rotateRoverTo(rotation + Math.PI / 2);
+      }
+      else if (props.instructions[currentPositionIndex] == "R") {
+        // Rotate right
+        rotateRoverTo(rotation - (Math.PI / 2));
+      }
+      else {
+        // "M"
+        moveRoverByOne();
+      }
+      
+      setCurrentPositionIndex(currentPositionIndex + 1);
+    }
+  }
 
   return (
     <group {...props} dispose={null}>
       <group
           position={[roverX, props.position[1], roverZ]}
+          rotation={[0, rotation, 0]}
           scale={0.05}
         >
         <group position={[-0.02, 1.156, 0.082]}>

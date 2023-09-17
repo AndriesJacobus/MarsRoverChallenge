@@ -15,7 +15,7 @@ export default function RoverControlls(props) {
      borderRadius: 5,
      padding: 2,
      border: "none",
-     maxHeight: '50vh',
+     maxHeight: '80vh',
      overflow: "auto",
    };
 
@@ -32,7 +32,7 @@ export default function RoverControlls(props) {
                   textAlign: "center"
                }}
                >
-               Rover Details
+               <u>General Details</u>
             </Typography>
             <Typography
                style = {{
@@ -67,6 +67,7 @@ export default function RoverControlls(props) {
                }}>
                {props.output}
             </pre>
+
             <Typography
                id={"modal-title"}
                variant={"h6"}
@@ -77,20 +78,35 @@ export default function RoverControlls(props) {
                   textAlign: "center"
                }}
                >
-               Controls
+               <u>Controls</u>
             </Typography>
-            <Button
-               onClick={() => {
-                  props.recenterCam();
-               }}
-               variant={"outlined"}
-               color={"success"}
-               style = {{
-                  marginTop: 20,
-               }}
-               >
-               Recenter
-            </Button>
+            <div>
+               <Button
+                  onClick={() => {
+                     props.recenterCam();
+                  }}
+                  variant={"outlined"}
+                  color={"success"}
+                  style = {{
+                     marginTop: 20,
+                     marginRight: 5,
+                  }}
+                  >
+                  Recenter
+               </Button>
+               <Button
+                  onClick={() => {
+                     props.refresh();
+                  }}
+                  variant={"outlined"}
+                  color={"success"}
+                  style = {{
+                     marginTop: 20,
+                  }}
+                  >
+                  Clear and refresh
+               </Button>
+            </div>
          </Box>
       </div>
    );
