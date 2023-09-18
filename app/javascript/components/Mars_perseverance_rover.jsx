@@ -9,8 +9,28 @@ export default function Rover(props) {
   const { nodes, materials } = useGLTF(props.model);
   const [ roverX, setRoverX ] = useState(props.position[0] + (0.2 * (props.startPosition ? Number(props.startPosition[0]) : 0)));
   const [ roverZ, setRoverZ ] = useState(props.position[2] - (0.25 * (props.startPosition ? Number(props.startPosition[1]) : 0)));
-  const [ rotation, setRotation ] = useState(Math.PI);
   const [ currentPositionIndex, setCurrentPositionIndex ] = useState(0);
+
+  // const [ rotation, setRotation ] = useState(Math.PI);
+  const [ rotation, setRotation ] = useState(getInitialRotation());
+
+  // Make sure Rover has correct initial rotation
+  function getInitialRotation() {
+    let initRotation = Math.PI;
+    if (props.startPosition[2] != null) {
+      if (props.startPosition[2] == "E") {
+        initRotation = initRotation - (Math.PI / 2);
+      }
+      if (props.startPosition[2] == "S") {
+        initRotation = initRotation - (Math.PI);
+      }
+      if (props.startPosition[2] == "W") {
+        initRotation = initRotation + (Math.PI / 2);
+      }
+    }
+
+    return initRotation;
+  }
 
   useEffect(() => {
     setTimeout(() => {
