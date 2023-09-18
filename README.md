@@ -34,11 +34,11 @@ I set up a basic Rails server with one controller (in addition to the standard `
 ## Front-end
 I built a few React components used to nicely capture and display the challenge.<br/>
 
-* THREE.js
+* THREE.js<br/>
 I took this oppotunity to learn about THREE.js! This is the first time I'm working with THREE.js and thought it would be a perfect fit.<br/>
 The React app includes two main 3D models: `MarsTerrain` and `Rover`.<br/>
 
-* Mechanics
+* Mechanics<br/>
     * When the app starts, the terrain gets loaded
     * The user can input rover data using the popup modal
     * As soon as the user enters valid input data, a series of Rover models get rendered on the Terrain
