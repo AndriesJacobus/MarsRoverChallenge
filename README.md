@@ -23,7 +23,7 @@ I set up a basic Rails server with one controller (in addition to the standard `
 
 * Model: `rover_movement.rb`
     * Contains the helper functions used to calculate the end coordinates of a set of rovers given the starting input
-    * `calculate_output` is the main helper function called be the controller
+    * `calculate_output` is the main helper function called by the controller
     * Includes input validation
     * Returns a string output containing the end coordinates of the rovers
     * In the case that the rover moves out of the grid, it returns the last known position of the rover in the grid (along with a text letting the user know the rover moved out of the grid)
