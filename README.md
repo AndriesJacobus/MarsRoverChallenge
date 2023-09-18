@@ -38,7 +38,7 @@ I built a few React components used to nicely capture and display the challenge.
 I took this oppotunity to learn about THREE.js! This is the first time I'm working with THREE.js and thought it would be a perfect fit.<br/>
 The React app includes two main 3D models: `MarsTerrain` and `Rover`.<br/>
 
-* Mechanics<br/>
+* Mechanics
     * When the app starts, the terrain gets loaded
     * The user can input rover data using the popup modal
     * As soon as the user enters valid input data, a series of Rover models get rendered on the Terrain
