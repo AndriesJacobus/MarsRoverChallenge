@@ -43,7 +43,7 @@ The React app includes two main 3D models: `MarsTerrain` and `Rover`.<br/>
     * The user can input rover data using the popup modal
     * As soon as the user enters valid input data, a series of Rover models get rendered on the Terrain
     * The Rovers are animated according to the input provided
-    * The entire canvas can be controller by the using using their mousepad, including zooming in, zooming out, rotating, and moving the camera position itself
+    * The entire canvas can be controller by the user using their mousepad, including zooming in, zooming out, rotating, and moving the camera position itself
 
 <br/>
 
